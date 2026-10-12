@@ -1,0 +1,177 @@
+{
+ "slug": "tottenham",
+ "pagina": "Tottenham Hotspur F.C.",
+ "seccion": "Current squad",
+ "revision": "2026-10-08T08:54:00Z",
+ "url": "https://en.wikipedia.org/wiki/Tottenham_Hotspur_F.C.",
+ "jugadores": [
+  {
+   "n": "Andy Robertson",
+   "p": "DEF",
+   "num": 3,
+   "c": null
+  },
+  {
+   "n": "Tosin Adarabioyo",
+   "p": "DEF",
+   "num": 4,
+   "c": null
+  },
+  {
+   "n": "Marcos Senesi",
+   "p": "DEF",
+   "num": 5,
+   "c": null
+  },
+  {
+   "n": "Jan Paul van Hecke",
+   "p": "DEF",
+   "num": 6,
+   "c": null
+  },
+  {
+   "n": "Xavi Simons",
+   "p": "MED",
+   "num": 7,
+   "c": null
+  },
+  {
+   "n": "Conor Gallagher",
+   "p": "MED",
+   "num": 8,
+   "c": null
+  },
+  {
+   "n": "Richarlison",
+   "p": "DEL",
+   "num": 9,
+   "c": null
+  },
+  {
+   "n": "James Maddison",
+   "p": "MED",
+   "num": 10,
+   "c": null
+  },
+  {
+   "n": "Mathys Tel",
+   "p": "DEL",
+   "num": 11,
+   "c": null
+  },
+  {
+   "n": "Destiny Udogie",
+   "p": "DEF",
+   "num": 13,
+   "c": null
+  },
+  {
+   "n": "Archie Gray",
+   "p": "MED",
+   "num": 14,
+   "c": null
+  },
+  {
+   "n": "Lucas Bergvall",
+   "p": "MED",
+   "num": 15,
+   "c": null
+  },
+  {
+   "n": "Sandro Tonali",
+   "p": "MED",
+   "num": 16,
+   "c": null
+  },
+  {
+   "n": "Sávio",
+   "p": "DEL",
+   "num": 17,
+   "c": null
+  },
+  {
+   "n": "Mateus Fernandes",
+   "p": "MED",
+   "num": 18,
+   "c": null
+  },
+  {
+   "n": "Dominic Solanke",
+   "p": "DEL",
+   "num": 19,
+   "c": null
+  },
+  {
+   "n": "Mohammed Kudus",
+   "p": "DEL",
+   "num": 20,
+   "c": null
+  },
+  {
+   "n": "Dejan Kulusevski",
+   "p": "DEL",
+   "num": 21,
+   "c": null
+  },
+  {
+   "n": "Omar Marmoush",
+   "p": "DEL",
+   "num": 22,
+   "c": null
+  },
+  {
+   "n": "Pedro Porro",
+   "p": "DEF",
+   "num": 23,
+   "c": null
+  },
+  {
+   "n": "Mykhailo Mudryk",
+   "p": "DEL",
+   "num": 27,
+   "c": null
+  },
+  {
+   "n": "Wilson Odobert",
+   "p": "DEL",
+   "num": 28,
+   "c": null
+  },
+  {
+   "n": "Rodrigo Bentancur",
+   "p": "MED",
+   "num": 30,
+   "c": null
+  },
+  {
+   "n": "Antonín Kinský",
+   "p": "POR",
+   "num": 31,
+   "c": null
+  },
+  {
+   "n": "Ben Davies",
+   "p": "DEF",
+   "num": 33,
+   "c": null
+  },
+  {
+   "n": "Micky van de Ven",
+   "p": "DEF",
+   "num": 37,
+   "c": null
+  },
+  {
+   "n": "Martin Dúbravka",
+   "p": "POR",
+   "num": 39,
+   "c": null
+  },
+  {
+   "n": "Brandon Austin",
+   "p": "POR",
+   "num": 40,
+   "c": null
+  }
+ ]
+}

@@ -1,0 +1,195 @@
+{
+ "slug": "liverpool",
+ "pagina": "Liverpool F.C.",
+ "seccion": "First-team squad",
+ "revision": "2026-10-07T13:04:40Z",
+ "url": "https://en.wikipedia.org/wiki/Liverpool_F.C.",
+ "jugadores": [
+  {
+   "n": "Alisson Becker",
+   "p": "POR",
+   "num": 1,
+   "c": null
+  },
+  {
+   "n": "Joe Gomez",
+   "p": "DEF",
+   "num": 2,
+   "c": null
+  },
+  {
+   "n": "Wataru Endo",
+   "p": "MED",
+   "num": 3,
+   "c": null
+  },
+  {
+   "n": "Virgil van Dijk",
+   "p": "DEF",
+   "num": 4,
+   "c": null
+  },
+  {
+   "n": "Jérémy Jacquet",
+   "p": "DEF",
+   "num": 5,
+   "c": null
+  },
+  {
+   "n": "Milos Kerkez",
+   "p": "DEF",
+   "num": 6,
+   "c": null
+  },
+  {
+   "n": "Florian Wirtz",
+   "p": "MED",
+   "num": 7,
+   "c": null
+  },
+  {
+   "n": "Dominik Szoboszlai",
+   "p": "MED",
+   "num": 8,
+   "c": null
+  },
+  {
+   "n": "Alexander Isak",
+   "p": "DEL",
+   "num": 9,
+   "c": null
+  },
+  {
+   "n": "Alexis Mac Allister",
+   "p": "MED",
+   "num": 10,
+   "c": null
+  },
+  {
+   "n": "Conor Bradley",
+   "p": "DEF",
+   "num": 12,
+   "c": null
+  },
+  {
+   "n": "Federico Chiesa",
+   "p": "DEL",
+   "num": 14,
+   "c": null
+  },
+  {
+   "n": "Giovanni Leoni",
+   "p": "DEF",
+   "num": 15,
+   "c": null
+  },
+  {
+   "n": "Cody Gakpo",
+   "p": "DEL",
+   "num": 18,
+   "c": null
+  },
+  {
+   "n": "Kostas Tsimikas",
+   "p": "DEF",
+   "num": 21,
+   "c": null
+  },
+  {
+   "n": "Hugo Ekitike",
+   "p": "DEL",
+   "num": 22,
+   "c": null
+  },
+  {
+   "n": "Víctor Muñoz",
+   "p": "DEL",
+   "num": 23,
+   "c": null
+  },
+  {
+   "n": "Giorgi Mamardashvili",
+   "p": "POR",
+   "num": 25,
+   "c": null
+  },
+  {
+   "n": "Freddie Woodman",
+   "p": "POR",
+   "num": 28,
+   "c": null
+  },
+  {
+   "n": "Bradley Barcola",
+   "p": "DEL",
+   "num": 29,
+   "c": null
+  },
+  {
+   "n": "Jeremie Frimpong",
+   "p": "DEF",
+   "num": 30,
+   "c": null
+  },
+  {
+   "n": "Ronald Araújo",
+   "p": "DEF",
+   "num": 33,
+   "c": null
+  },
+  {
+   "n": "Ryan Gravenberch",
+   "p": "MED",
+   "num": 38,
+   "c": null
+  },
+  {
+   "n": "Trey Nyoni",
+   "p": "MED",
+   "num": 42,
+   "c": null
+  },
+  {
+   "n": "Luke Chambers",
+   "p": "DEF",
+   "num": 44,
+   "c": null
+  },
+  {
+   "n": "James McConnell",
+   "p": "MED",
+   "num": 53,
+   "c": null
+  },
+  {
+   "n": "Vítězslav Jaroš",
+   "p": "POR",
+   "num": 56,
+   "c": null
+  },
+  {
+   "n": "Lewis Koumas",
+   "p": "DEL",
+   "num": 67,
+   "c": null
+  },
+  {
+   "n": "Rio Ngumoha",
+   "p": "DEL",
+   "num": 73,
+   "c": null
+  },
+  {
+   "n": "Jayden Danns",
+   "p": "DEL",
+   "num": 76,
+   "c": null
+  },
+  {
+   "n": "Harvey Davies",
+   "p": "POR",
+   "num": 95,
+   "c": null
+  }
+ ]
+}

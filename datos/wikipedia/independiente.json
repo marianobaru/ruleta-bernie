@@ -1,0 +1,165 @@
+{
+ "slug": "independiente",
+ "pagina": "Club Atlético Independiente",
+ "seccion": "Current squad",
+ "revision": "2026-10-03T07:59:10Z",
+ "url": "https://en.wikipedia.org/wiki/Club_Atl%C3%A9tico_Independiente",
+ "jugadores": [
+  {
+   "n": "Joaquín Blázquez",
+   "p": "POR",
+   "num": 1,
+   "c": null
+  },
+  {
+   "n": "Franco Calderón",
+   "p": "DEF",
+   "num": 2,
+   "c": null
+  },
+  {
+   "n": "Jonathan De Irastorza",
+   "p": "DEF",
+   "num": 3,
+   "c": null
+  },
+  {
+   "n": "Santiago Arias",
+   "p": "DEF",
+   "num": 4,
+   "c": null
+  },
+  {
+   "n": "Chimy Ávila",
+   "p": "DEL",
+   "num": 6,
+   "c": null
+  },
+  {
+   "n": "Santiago Montiel",
+   "p": "DEL",
+   "num": 7,
+   "c": null
+  },
+  {
+   "n": "Maximiliano Meza",
+   "p": "DEL",
+   "num": 8,
+   "c": null
+  },
+  {
+   "n": "Luciano Cabral",
+   "p": "MED",
+   "num": 10,
+   "c": null
+  },
+  {
+   "n": "Juan Fedorco",
+   "p": "DEF",
+   "num": 13,
+   "c": null
+  },
+  {
+   "n": "Lautaro Millán",
+   "p": "MED",
+   "num": 14,
+   "c": null
+  },
+  {
+   "n": "Imanol Machuca",
+   "p": "DEL",
+   "num": 15,
+   "c": null
+  },
+  {
+   "n": "Mateo Pérez Curci",
+   "p": "MED",
+   "num": 16,
+   "c": null
+  },
+  {
+   "n": "Matías Abaldo",
+   "p": "DEL",
+   "num": 19,
+   "c": null
+  },
+  {
+   "n": "Rodrigo Márquez",
+   "p": "DEL",
+   "num": 20,
+   "c": null
+  },
+  {
+   "n": "Facundo Zabala",
+   "p": "DEF",
+   "num": 22,
+   "c": null
+  },
+  {
+   "n": "Iván Marcone",
+   "p": "MED",
+   "num": 23,
+   "c": null
+  },
+  {
+   "n": "Leonardo Godoy",
+   "p": "DEF",
+   "num": 29,
+   "c": null
+  },
+  {
+   "n": "David Martínez",
+   "p": "MED",
+   "num": 32,
+   "c": null
+  },
+  {
+   "n": "Rodrigo Rey",
+   "p": "POR",
+   "num": 33,
+   "c": null
+  },
+  {
+   "n": "Felipe Tempone",
+   "p": "DEL",
+   "num": 34,
+   "c": null
+  },
+  {
+   "n": "Juan Miguel Arrayago",
+   "p": "DEF",
+   "num": 35,
+   "c": null
+  },
+  {
+   "n": "Sebastián Valdez",
+   "p": "DEF",
+   "num": 36,
+   "c": null
+  },
+  {
+   "n": "Joel Medina",
+   "p": "MED",
+   "num": 37,
+   "c": null
+  },
+  {
+   "n": "Ignacio Malcorra",
+   "p": "MED",
+   "num": 40,
+   "c": null
+  },
+  {
+   "n": "Santiago Mele",
+   "p": "POR",
+   "num": 77,
+   "c": null
+  },
+  {
+   "n": "Iván Morales",
+   "p": "DEL",
+   "num": null,
+   "c": null
+  }
+ ]
+}

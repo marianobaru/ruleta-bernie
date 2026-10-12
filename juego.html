@@ -1,0 +1,2443 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La Ruleta de Bernie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;1,800&family=Barlow:wght@400;500;600;700&family=Doto:wght@800&display=swap">
+<style>
+/* Layout: cancha de noche. Ruleta y marcador al centro; la cancha de cada jugador a los costados (abajo en tablet y celular). */
+:root {
+  --grass-a: #1c6833;
+  --grass-b: #21753a;
+  --chalk: #f3f7f1;
+  --chalk-faint: rgba(243, 247, 241, .5);
+  --led: #ffc94a;
+  --led-deep: #b9841a;
+  --led-dim: #5a4518;
+  --led-glow: rgba(255, 201, 74, .55);
+  --board: #0b120e;
+  --board-edge: #26382c;
+  --board-inner: #141f18;
+  --ink: #111813;
+  --muted: #b3cbb9;
+  --chip: rgba(6, 18, 11, .5);
+  --chip-strong: rgba(6, 18, 11, .78);
+  --line-soft: rgba(243, 247, 241, .35);
+  --sel: rgba(243, 247, 241, .09);
+  --shadow: rgba(0, 0, 0, .45);
+  --shade: rgba(3, 12, 6, .7);
+  --flood: rgba(255, 255, 225, .12);
+  --dot: rgba(255, 201, 74, .07);
+
+  --p1: #ff7a59;
+  --p1-soft: rgba(255, 122, 89, .3);
+  --p2: #4cc4ff;
+  --p2-soft: rgba(76, 196, 255, .3);
+  --gold: #e8c45a;
+  --silver: #c9d2d6;
+  --bronze: #cf9364;
+
+  --f-display: "Barlow Condensed", "Arial Narrow", "Helvetica Neue", system-ui, sans-serif;
+  --f-body: "Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-led: "Doto", ui-monospace, "SF Mono", Menlo, monospace;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+body {
+  margin: 0;
+  font-family: var(--f-body);
+  font-size: 16px;
+  color: var(--chalk);
+  background-color: var(--grass-a);
+  background-image:
+    radial-gradient(130% 90% at 50% 10%, transparent 45%, var(--shade) 100%),
+    radial-gradient(45% 35% at 0% 0%, var(--flood), transparent 70%),
+    radial-gradient(45% 35% at 100% 0%, var(--flood), transparent 70%),
+    repeating-linear-gradient(90deg, var(--grass-a) 0 64px, var(--grass-b) 64px 128px);
+  background-attachment: fixed;
+}
+
+.app {
+  max-width: 1360px;
+  margin-inline: auto;
+  padding-inline: 16px;
+  padding-block: 18px 40px;
+  display: grid;
+  gap: 18px 28px;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "head" "center" "p0" "p1" "foot";
+}
+@media (min-width: 720px) {
+  .app {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas: "head head" "center center" "p0 p1" "foot foot";
+  }
+}
+@media (min-width: 1140px) {
+  .app {
+    padding-inline: 28px;
+    grid-template-columns: minmax(0, 1fr) minmax(400px, 460px) minmax(0, 1fr);
+    grid-template-areas: "head head head" "p0 center p1" "foot foot foot";
+    align-items: start;
+  }
+}
+
+/* ---------- Encabezado ---------- */
+.head {
+  grid-area: head;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px 24px;
+}
+.eyebrow {
+  margin: 0 0 6px;
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: .85rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--led);
+}
+h1 {
+  margin: 0;
+  font-family: var(--f-display);
+  font-style: italic;
+  font-weight: 800;
+  font-size: clamp(2.4rem, 6.5vw, 4rem);
+  line-height: .86;
+  letter-spacing: -.01em;
+  text-transform: uppercase;
+  text-wrap: balance;
+  text-shadow: 0 3px 0 var(--shadow);
+}
+.facts { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.facts li {
+  padding: 4px 11px;
+  border: 1.5px solid var(--line-soft);
+  border-radius: 999px;
+  font-size: .85rem;
+  font-weight: 600;
+  background: var(--chip);
+}
+
+/* ---------- Canchas de los jugadores ---------- */
+.team-panel {
+  --pc: var(--p1);
+  --pc-soft: var(--p1-soft);
+  min-width: 0;
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 2px solid var(--board-edge);
+  border-radius: 16px;
+  background: var(--chip-strong);
+  transition: border-color .3s ease, box-shadow .3s ease;
+}
+#panel0 { grid-area: p0; }
+#panel1 { grid-area: p1; --pc: var(--p2); --pc-soft: var(--p2-soft); }
+.team-panel.active { border-color: var(--pc); box-shadow: 0 0 0 5px var(--pc-soft), 0 18px 40px var(--shadow); }
+.team-panel.winner { border-color: var(--gold); box-shadow: 0 0 0 5px var(--led-glow), 0 18px 40px var(--shadow); }
+
+.tp-head { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.tp-badge {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--pc);
+  color: var(--ink);
+  font-family: var(--f-display);
+  font-style: italic;
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+.tp-name {
+  flex: 1;
+  min-width: 0;
+  padding: 2px 0;
+  border: 0;
+  border-bottom: 2px dashed var(--line-soft);
+  background: transparent;
+  color: var(--chalk);
+  font-family: var(--f-display);
+  font-style: italic;
+  font-weight: 800;
+  font-size: 1.7rem;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+.tp-name::placeholder { color: var(--muted); opacity: .7; }
+.tp-name:focus-visible { outline: none; border-bottom-color: var(--pc); }
+.tp-name:disabled { border-bottom-color: transparent; color: var(--chalk); -webkit-text-fill-color: var(--chalk); opacity: 1; }
+.tp-score { flex: none; display: grid; justify-items: end; }
+.tp-score .led { font-size: 1.9rem; }
+
+.forms { display: flex; flex-wrap: wrap; gap: 6px; }
+.forms button {
+  padding: 6px 11px;
+  border: 1.5px solid var(--line-soft);
+  border-radius: 8px;
+  background: var(--board);
+  color: var(--chalk);
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: .03em;
+  cursor: pointer;
+}
+.forms button:hover { border-color: var(--pc); }
+.forms button[aria-checked="true"] { background: var(--pc); border-color: var(--pc); color: var(--ink); }
+.forms button:focus-visible { outline: 3px solid var(--chalk); outline-offset: 2px; }
+.tp-sub { margin: 0; font-size: .92rem; line-height: 1.4; color: var(--muted); }
+.tp-sub b { color: var(--chalk); font-weight: 600; }
+
+.pitch {
+  position: relative;
+  container-type: inline-size;
+  aspect-ratio: 7 / 9;
+  max-width: 100%;
+  overflow: hidden;
+  border-radius: 10px;
+  background: repeating-linear-gradient(180deg, var(--grass-b) 0 11.111%, var(--grass-a) 11.111% 22.222%);
+}
+.mk { position: absolute; border: 2px solid var(--chalk-faint); pointer-events: none; }
+.mk-out { inset: 3%; }
+.mk-half { left: 3%; right: 3%; top: 50%; height: 0; border-width: 2px 0 0; }
+.mk-circle { left: 50%; top: 50%; width: 24%; aspect-ratio: 1; border-radius: 50%; translate: -50% -50%; }
+.mk-box-t { left: 22%; right: 22%; top: 3%; height: 13%; border-top: 0; }
+.mk-box-b { left: 22%; right: 22%; bottom: 3%; height: 13%; border-bottom: 0; }
+.mk-goal-t { left: 38%; right: 38%; top: 3%; height: 5%; border-top: 0; }
+.mk-goal-b { left: 38%; right: 38%; bottom: 3%; height: 5%; border-bottom: 0; }
+.pitch-empty {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 16px;
+  text-align: center;
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 1.3rem;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--chalk);
+}
+
+.tok {
+  position: absolute;
+  width: 21cqw;
+  translate: -50% -32%;
+  display: grid;
+  justify-items: center;
+  gap: 1cqw;
+  text-align: center;
+}
+.tok.new { animation: drop .55s cubic-bezier(.3, 1.6, .5, 1); }
+@keyframes drop {
+  0% { transform: translateY(-14px) scale(.6); opacity: 0; }
+  100% { transform: none; opacity: 1; }
+}
+.tok-shirt { position: relative; width: 12.5cqw; aspect-ratio: 1; }
+.tok-shirt svg { display: block; width: 100%; height: 100%; filter: drop-shadow(0 2px 2px var(--shadow)); }
+.tok-empty {
+  display: grid;
+  place-items: center;
+  width: 10.5cqw;
+  aspect-ratio: 1;
+  margin-block: 1cqw;
+  border: 2px dashed var(--chalk-faint);
+  border-radius: 50%;
+  background: var(--chip);
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: max(10px, 3.2cqw);
+  color: var(--chalk);
+}
+.tok-name {
+  max-width: 100%;
+  padding: .5cqw 1.4cqw;
+  border-radius: 4px;
+  background: var(--board);
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: max(10px, 3.5cqw);
+  line-height: 1.1;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tok-rate {
+  position: absolute;
+  top: -1.5cqw;
+  right: -4.5cqw;
+  min-width: 6.5cqw;
+  padding: .6cqw 1.2cqw;
+  border-radius: 5px;
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: max(11px, 3.8cqw);
+  line-height: 1;
+  color: var(--ink);
+  box-shadow: 0 2px 4px var(--shadow);
+  animation: drop .45s cubic-bezier(.3, 1.6, .5, 1);
+}
+.tier-gold { background: var(--gold); }
+.tier-silver { background: var(--silver); }
+.tier-bronze { background: var(--bronze); }
+
+/* ---------- Columna central ---------- */
+.center { grid-area: center; min-width: 0; display: grid; gap: 16px; align-content: start; }
+@media (min-width: 720px) and (max-width: 1139px) {
+  .center { width: min(100%, 560px); justify-self: center; }
+}
+
+.board {
+  --pc: var(--led);
+  position: relative;
+  overflow: hidden;
+  padding: 14px 16px 18px;
+  background: var(--board);
+  border: 2px solid var(--board-edge);
+  border-radius: 14px;
+  box-shadow: inset 0 0 0 4px var(--board-inner), 0 18px 40px var(--shadow);
+}
+.board::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(var(--dot) 1.1px, transparent 1.6px);
+  background-size: 6px 6px;
+  pointer-events: none;
+}
+.board > * { position: relative; }
+.board.pop { animation: pop .5s cubic-bezier(.3, 1.6, .5, 1); }
+@keyframes pop {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.035); }
+  100% { transform: scale(1); }
+}
+.board-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+  border-bottom: 1px dashed var(--board-edge);
+}
+.lbl {
+  margin: 0;
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: .8rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.led {
+  font-family: var(--f-led);
+  font-weight: 800;
+  font-size: 2.2rem;
+  line-height: 1;
+  letter-spacing: .06em;
+  font-variant-numeric: tabular-nums;
+  color: var(--led);
+  text-shadow: 0 0 14px var(--led-glow);
+}
+.turn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--board-inner);
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: .95rem;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--chalk);
+}
+.turn::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--pc); }
+.turn[hidden] { display: none; }
+.sound {
+  margin-left: auto;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1.5px solid var(--board-edge);
+  border-radius: 10px;
+  background: var(--board-inner);
+  color: var(--muted);
+  cursor: pointer;
+}
+.sound svg { width: 22px; height: 22px; }
+.sound[aria-pressed="true"] { color: var(--led); }
+.sound .off { display: none; }
+.sound[aria-pressed="false"] .on { display: none; }
+.sound[aria-pressed="false"] .off { display: inline; }
+.sound:focus-visible, .link:focus-visible { outline: 3px solid var(--chalk); outline-offset: 2px; }
+
+.result { display: grid; grid-template-columns: 60px minmax(0, 1fr); align-items: center; gap: 14px; }
+.shirt svg { display: block; width: 60px; height: 60px; }
+.big {
+  margin: 2px 0 6px;
+  font-family: var(--f-display);
+  font-style: italic;
+  font-weight: 800;
+  font-size: clamp(1.8rem, 5vw, 2.4rem);
+  line-height: .95;
+  text-transform: uppercase;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+.big.rolling { color: var(--led); text-shadow: 0 0 12px var(--led-glow); }
+.big .hl { color: var(--pc); }
+.meta { margin: 0; font-size: .95rem; line-height: 1.4; color: var(--muted); }
+.meta b { color: var(--chalk); font-weight: 600; }
+
+/* ---------- Ruleta ---------- */
+.wheel-view { display: flex; justify-content: center; padding-top: 12px; }
+.wheel {
+  position: relative;
+  isolation: isolate;
+  width: min(100%, 440px);
+  max-width: 100%;
+  aspect-ratio: 1 / 1;
+}
+.wheel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 4px solid var(--chalk);
+  border-radius: 50%;
+  opacity: .9;
+}
+.wheel::after {
+  content: "";
+  position: absolute;
+  inset: 3.5%;
+  border-radius: 50%;
+  box-shadow: 0 18px 44px var(--shadow);
+  z-index: -1;
+}
+.rotor { position: absolute; inset: 3.5%; will-change: transform; }
+.rotor svg { display: block; width: 100%; height: 100%; }
+.pointer {
+  position: absolute;
+  left: 50%;
+  top: -3%;
+  width: 10%;
+  translate: -50% 0;
+  transform-origin: 50% 24%;
+  z-index: 2;
+  filter: drop-shadow(0 4px 4px var(--shadow));
+  transition: transform .45s cubic-bezier(.3, 1.8, .5, 1);
+}
+.pointer.live { transition: none; }
+.ptr-body { fill: var(--chalk); stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+.ptr-dot { fill: var(--led); }
+.rim { fill: var(--board); }
+.rim-line { fill: none; stroke: var(--board-edge); stroke-width: 2; }
+.sep { stroke: var(--board); stroke-width: 2.5; }
+.lab {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: .02em;
+  paint-order: stroke;
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+.dim { fill: var(--board); opacity: 0; transition: opacity .4s ease; pointer-events: none; }
+.decided .seg:not(.won) .dim { opacity: .62; }
+.edge { fill: none; stroke: var(--chalk); stroke-width: 6; stroke-linejoin: round; display: none; }
+.seg.won .edge { display: inline; }
+.hub-ring { fill: var(--board); }
+.bulb { fill: var(--led); }
+.spinning .bulb { animation: chase .3s steps(1) infinite; }
+.spinning .bulb.alt { animation-delay: -.15s; }
+.flash .bulb { animation: chase .24s steps(1) 7; }
+@keyframes chase {
+  0% { fill: var(--led); }
+  50% { fill: var(--led-dim); }
+}
+
+/* ---------- Plantel ---------- */
+.squad {
+  --pc: var(--p1);
+  --pc-soft: var(--p1-soft);
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  background: var(--board);
+  border: 2px solid var(--board-edge);
+  border-radius: 14px;
+  box-shadow: 0 18px 40px var(--shadow);
+}
+.squad[hidden] { display: none; }
+.sq-head { display: grid; grid-template-columns: 52px minmax(0, 1fr); align-items: center; gap: 12px; }
+.sq-head svg { display: block; width: 52px; height: 52px; }
+.sq-title {
+  margin: 2px 0 0;
+  font-family: var(--f-display);
+  font-style: italic;
+  font-weight: 800;
+  font-size: 1.7rem;
+  line-height: .95;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+.sq-picker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--pc-soft);
+}
+.sq-picker .who { font-family: var(--f-display); font-weight: 800; font-style: italic; font-size: 1.25rem; text-transform: uppercase; margin-right: 4px; }
+.need {
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--board);
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: .9rem;
+  letter-spacing: .05em;
+}
+.need.ok { background: var(--pc); color: var(--ink); }
+.need.zero { opacity: .45; text-decoration: line-through; }
+.sq-rule { flex-basis: 100%; margin: 2px 0 0; font-size: .92rem; line-height: 1.35; color: var(--chalk); }
+.sq-group.off .lbl { opacity: .6; }
+.sq-list { display: grid; gap: 14px; max-height: min(56vh, 560px); overflow-y: auto; padding-right: 4px; overscroll-behavior: contain; }
+.sq-group { display: grid; gap: 5px; }
+.sq-group-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.tag { font-family: var(--f-display); font-weight: 700; font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.row {
+  display: grid;
+  grid-template-columns: 2.3rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 7px 10px;
+  border: 1.5px solid transparent;
+  border-radius: 9px;
+  background: var(--board-inner);
+  color: var(--chalk);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.row:hover:not(:disabled) { border-color: var(--line-soft); }
+.row[aria-pressed="true"] { border-color: var(--pc); background: var(--sel); box-shadow: inset 0 0 0 1px var(--pc); }
+.row:focus-visible { outline: 3px solid var(--chalk); outline-offset: 1px; }
+.row:disabled { cursor: default; opacity: .42; }
+.row .num { font-family: var(--f-led); font-weight: 800; color: var(--led); font-variant-numeric: tabular-nums; }
+.row .nm { min-width: 0; font-weight: 600; overflow-wrap: anywhere; }
+.row .club { display: block; font-size: .8rem; font-weight: 400; color: var(--muted); }
+.row .pos {
+  padding: 2px 7px;
+  border: 1px solid var(--line-soft);
+  border-radius: 5px;
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: .8rem;
+  letter-spacing: .06em;
+}
+.row .own { display: inline-flex; align-items: center; gap: 6px; font-size: .8rem; color: var(--chalk); }
+.row .own::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--oc); }
+.sq-none { margin: 0; color: var(--muted); line-height: 1.45; }
+
+/* ---------- Botones ---------- */
+.cta { display: grid; gap: 10px; }
+.cta[hidden] { display: none; }
+.spin {
+  appearance: none;
+  border: 0;
+  border-radius: 14px;
+  padding: 15px 20px 13px;
+  font-family: var(--f-display);
+  font-style: italic;
+  font-weight: 800;
+  font-size: 1.9rem;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: var(--led);
+  box-shadow: 0 6px 0 var(--led-deep), 0 14px 26px var(--shadow);
+  cursor: pointer;
+  transition: transform .08s ease, box-shadow .08s ease, filter .2s ease;
+  overflow-wrap: anywhere;
+}
+.spin.small { font-size: 1.45rem; padding: 12px 16px 10px; }
+.spin:hover { filter: brightness(1.06); }
+.spin:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--led-deep), 0 8px 16px var(--shadow); }
+.spin:disabled {
+  cursor: default;
+  filter: saturate(.5) brightness(.75);
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 var(--led-deep), 0 8px 16px var(--shadow);
+}
+.spin:focus-visible { outline: 3px solid var(--chalk); outline-offset: 4px; }
+.hint { margin: 0; text-align: center; font-size: .88rem; line-height: 1.4; color: var(--muted); }
+.hint kbd {
+  font-family: var(--f-body);
+  font-weight: 600;
+  padding: 1px 7px;
+  border: 1px solid var(--line-soft);
+  border-radius: 6px;
+  background: var(--chip);
+}
+@media (hover: none) { .kbd-hint { display: none; } }
+
+.abort { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px 14px; font-size: .88rem; color: var(--muted); }
+.abort[hidden] { display: none; }
+.link {
+  padding: 2px 4px;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.link.strong { color: var(--chalk); font-weight: 600; }
+
+.foot { grid-area: foot; margin: 0; text-align: center; font-size: .82rem; line-height: 1.5; color: var(--muted); }
+
+#confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+@media (prefers-reduced-motion: reduce) {
+  .spinning .bulb, .flash .bulb, .board.pop, .tok.new, .tok-rate { animation: none; }
+  .pointer, .dim, .team-panel { transition: none; }
+}
+</style>
+
+<main class="app">
+  <header class="head">
+    <div>
+      <p class="eyebrow">Draft de fútbol · 2 jugadores</p>
+      <h1>La Ruleta de Bernie</h1>
+    </div>
+    <ul class="facts" aria-label="Reglas">
+      <li>11 puestos por cancha</li>
+      <li>Cada uno tira su ruleta</li>
+      <li>Mismo puesto para los dos</li>
+      <li>Los puntajes se ven al final</li>
+    </ul>
+  </header>
+
+  <section class="team-panel" id="panel0" aria-label="Cancha del jugador 1">
+    <header class="tp-head">
+      <span class="tp-badge" aria-hidden="true">J1</span>
+      <label class="sr-only" for="name0">Nombre del jugador 1</label>
+      <input class="tp-name" id="name0" maxlength="14" placeholder="Jugador 1" autocomplete="off" spellcheck="false">
+      <div class="tp-score"><span class="lbl">Puntos</span><span class="led" id="total0">--</span></div>
+    </header>
+    <div class="forms" id="forms0" role="radiogroup" aria-label="Formación del jugador 1"></div>
+    <p class="tp-sub" id="sub0"></p>
+    <div class="pitch">
+      <div class="mk mk-out"></div><div class="mk mk-half"></div><div class="mk mk-circle"></div>
+      <div class="mk mk-box-t"></div><div class="mk mk-box-b"></div><div class="mk mk-goal-t"></div><div class="mk mk-goal-b"></div>
+      <div id="toks0"></div>
+    </div>
+  </section>
+
+  <section class="center" aria-label="Ruleta y plantel">
+    <section class="board" id="board">
+      <div class="board-top">
+        <p class="lbl">Ronda</p>
+        <span class="led" id="round">00</span>
+        <span class="turn" id="turn" hidden></span>
+        <button class="sound" id="sound" type="button" aria-pressed="true" aria-label="Sonido activado">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/>
+            <path class="on" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/>
+            <path class="off" d="M17 9l5 6M22 9l-5 6"/>
+          </svg>
+        </button>
+      </div>
+      <div class="result">
+        <div class="shirt" id="shirt"></div>
+        <div>
+          <p class="lbl" id="status">Previa del partido</p>
+          <p class="big" id="big">Armen los equipos</p>
+          <p class="meta" id="meta"></p>
+        </div>
+      </div>
+    </section>
+
+    <div class="wheel-view" id="wheelView">
+      <div class="wheel" id="wheel">
+        <svg class="pointer" id="pointer" viewBox="0 0 40 52" aria-hidden="true">
+          <path class="ptr-body" d="M20 50 L5.5 22 A16 16 0 1 1 34.5 22 Z"/>
+          <circle class="ptr-dot" cx="20" cy="17" r="6"/>
+        </svg>
+        <div class="rotor" id="rotor"></div>
+      </div>
+    </div>
+
+    <section class="squad" id="squadView" hidden aria-labelledby="sqTitle">
+      <header class="sq-head">
+        <div id="sqShirt"></div>
+        <div>
+          <p class="lbl" id="sqMeta"></p>
+          <h2 class="sq-title" id="sqTitle"></h2>
+        </div>
+      </header>
+      <div class="sq-picker" id="sqPicker"></div>
+      <div class="sq-list" id="sqList"></div>
+      <button class="spin small" id="confirm" type="button" disabled>Elegí un futbolista</button>
+    </section>
+
+    <div class="cta" id="ctaBox">
+      <button class="spin" id="cta" type="button">Empezar partido</button>
+      <p class="hint" id="hint"></p>
+    </div>
+
+    <div class="abort" id="abortBox" hidden>
+      <button class="link" id="abort" type="button">Terminar partido</button>
+      <span id="abortAsk" hidden>¿Seguro? Se borra este partido.</span>
+      <button class="link strong" id="abortYes" type="button" hidden>Sí, terminar</button>
+      <button class="link" id="abortNo" type="button" hidden>Seguir jugando</button>
+    </div>
+  </section>
+
+  <section class="team-panel" id="panel1" aria-label="Cancha del jugador 2">
+    <header class="tp-head">
+      <span class="tp-badge" aria-hidden="true">J2</span>
+      <label class="sr-only" for="name1">Nombre del jugador 2</label>
+      <input class="tp-name" id="name1" maxlength="14" placeholder="Jugador 2" autocomplete="off" spellcheck="false">
+      <div class="tp-score"><span class="lbl">Puntos</span><span class="led" id="total1">--</span></div>
+    </header>
+    <div class="forms" id="forms1" role="radiogroup" aria-label="Formación del jugador 2"></div>
+    <p class="tp-sub" id="sub1"></p>
+    <div class="pitch">
+      <div class="mk mk-out"></div><div class="mk mk-half"></div><div class="mk mk-circle"></div>
+      <div class="mk mk-box-t"></div><div class="mk mk-box-b"></div><div class="mk mk-goal-t"></div><div class="mk mk-goal-b"></div>
+      <div id="toks1"></div>
+    </div>
+  </section>
+
+  <p class="foot" id="foot"></p>
+</main>
+
+<p class="sr-only" aria-live="polite" id="announce"></p>
+<canvas id="confetti" aria-hidden="true"></canvas>
+
+<script>
+// Generado por herramientas/armar_planteles.py — no editar a mano.
+// Planteles: sección "Current squad" de Wikipedia. Puntajes: datos/puntajes.json (estimados, escala 1-99).
+window.PLANTELES = {"actualizado":"12/10/2026","equipos":{"boca":{"fecha":"Wikipedia, 16/09/2026","url":"https://en.wikipedia.org/wiki/Boca_Juniors","jugadores":[
+{"n":"Álvaro Montero","p":"POR","num":1,"r":72},
+{"n":"Lautaro Di Lollo","p":"DEF","num":2,"r":70},
+{"n":"Lautaro Blanco","p":"DEF","num":3,"r":72},
+{"n":"Nicolás Figal","p":"DEF","num":4,"r":71},
+{"n":"Leandro Paredes","p":"MED","num":5,"r":78},
+{"n":"Rodrigo Battaglia","p":"MED","num":6,"r":72},
+{"n":"Carlos Palacios","p":"MED","num":7,"r":73},
+{"n":"Tomás Belmonte","p":"MED","num":8,"r":71},
+{"n":"Milton Giménez","p":"DEL","num":9,"r":72},
+{"n":"Tomás Aranda","p":"MED","num":10,"r":66},
+{"n":"Ángel Romero","p":"DEL","num":11,"r":73},
+{"n":"Leandro Brey","p":"POR","num":12,"r":68},
+{"n":"Javier García","p":"POR","num":13,"r":65},
+{"n":"Williams Alarcón","p":"MED","num":15,"r":70},
+{"n":"Miguel Merentiel","p":"DEL","num":16,"r":75},
+{"n":"Leandro Lozano","p":"DEF","num":17,"r":64},
+{"n":"Milton Delgado","p":"MED","num":18,"r":69},
+{"n":"Leonel Flores","p":"DEL","num":19,"r":64},
+{"n":"Alan Velasco","p":"MED","num":20,"r":71},
+{"n":"Sebastián Villa","p":"MED","num":22,"r":74},
+{"n":"Camilo Rey Domenech","p":"MED","num":23,"r":62},
+{"n":"Dylan Gorosito","p":"DEF","num":24,"r":63},
+{"n":"Santiago Ascacíbar","p":"MED","num":25,"r":73},
+{"n":"Marco Pellegrino","p":"DEF","num":26,"r":70},
+{"n":"Malcom Braida","p":"MED","num":27,"r":70},
+{"n":"Adam Bareiro","p":"DEL","num":28,"r":72},
+{"n":"Enner Valencia","p":"DEL","num":30,"r":72},
+{"n":"Ayrton Costa","p":"DEF","num":32,"r":69}]},"river":{"fecha":"Wikipedia, 11/10/2026","url":"https://en.wikipedia.org/wiki/Club_Atl%C3%A9tico_River_Plate","jugadores":[
+{"n":"Tobías Ramírez","p":"DEF","num":2,"r":62},
+{"n":"Francisco Ortega","p":"DEF","num":3,"r":66},
+{"n":"Juan Carlos Portillo","p":"DEF","num":5,"r":68},
+{"n":"Aníbal Moreno","p":"MED","num":6,"r":72},
+{"n":"Mauro Arambarri","p":"MED","num":8,"r":74},
+{"n":"Sebastián Driussi","p":"DEL","num":9,"r":74},
+{"n":"Ángel Correa","p":"DEL","num":10,"r":77},
+{"n":"Lautaro Rivero","p":"DEF","num":13,"r":67},
+{"n":"Fausto Vera","p":"MED","num":15,"r":72},
+{"n":"Lucas Beltrán","p":"DEL","num":18,"r":72},
+{"n":"Rafael Santos Borré","p":"DEL","num":19,"r":73},
+{"n":"Giovanni González","p":"DEF","num":20,"r":70},
+{"n":"Marcos Acuña","p":"DEF","num":21,"r":75},
+{"n":"Thiago Almada","p":"MED","num":23,"r":79},
+{"n":"Juan Cruz Meza","p":"MED","num":24,"r":65},
+{"n":"Lautaro Pereyra","p":"DEL","num":25,"r":66},
+{"n":"Tomás Galván","p":"MED","num":26,"r":69},
+{"n":"Lucas Martínez Quarta","p":"DEF","num":28,"r":74},
+{"n":"Gonzalo Montiel","p":"DEF","num":29,"r":74},
+{"n":"Nicolás Otamendi","p":"DEF","num":30,"r":76},
+{"n":"Facundo González","p":"DEF","num":31,"r":67},
+{"n":"Agustín Ruberto","p":"DEL","num":32,"r":66},
+{"n":"Ezequiel Centurión","p":"POR","num":33,"r":70},
+{"n":"Santiago Beltrán","p":"POR","num":41,"r":70},
+{"n":"Lucas Silva","p":"MED","num":44,"r":64},
+{"n":"Tobías Andrada","p":"MED","num":50,"r":62},
+{"n":"Jeremías Martinet","p":"POR","num":57,"r":62}]},"racing":{"fecha":"Wikipedia, 10/10/2026","url":"https://en.wikipedia.org/wiki/Racing_Club_de_Avellaneda","jugadores":[
+{"n":"Francisco Gómez","p":"POR","num":1,"r":63},
+{"n":"Matías Pérez","p":"DEF","num":2,"r":66},
+{"n":"Marco Di Césare","p":"DEF","num":3,"r":71},
+{"n":"Ezequiel Cannavo","p":"DEF","num":4,"r":68},
+{"n":"Matías Kranevitter","p":"MED","num":5,"r":70},
+{"n":"Marcos Rojo","p":"DEF","num":6,"r":70},
+{"n":"Duván Vergara","p":"DEL","num":7,"r":70},
+{"n":"Alan Forneris","p":"MED","num":8,"r":64},
+{"n":"Adrián Martínez","p":"DEL","num":9,"r":75},
+{"n":"Matko Miljević","p":"MED","num":10,"r":69},
+{"n":"Matías Zaracho","p":"MED","num":11,"r":72},
+{"n":"Juan Barinaga","p":"DEF","num":14,"r":66},
+{"n":"Ulises Ortegoza","p":"MED","num":16,"r":63},
+{"n":"Tomás Conechny","p":"DEL","num":17,"r":68},
+{"n":"Alfonso Espino","p":"DEF","num":18,"r":68},
+{"n":"Ignacio Rodríguez","p":"DEF","num":19,"r":63},
+{"n":"Gastón Lodico","p":"MED","num":20,"r":66},
+{"n":"Valentín Carboni","p":"DEL","num":21,"r":72},
+{"n":"Elías Torres","p":"DEL","num":22,"r":66},
+{"n":"Nazareno Colombo","p":"DEF","num":23,"r":66},
+{"n":"Adrián Fernández","p":"MED","num":24,"r":68},
+{"n":"Facundo Cambeses","p":"POR","num":25,"r":70},
+{"n":"Matías Tagliamonte","p":"POR","num":30,"r":62},
+{"n":"Lautaro Díaz","p":"DEL","num":32,"r":64},
+{"n":"Leonel Pérez","p":"MED","num":33,"r":63},
+{"n":"Gonzalo Escudero","p":"DEF","num":43,"r":62},
+{"n":"Alejandro Tello","p":"MED","num":46,"r":62}]},"central":{"fecha":"Wikipedia, 06/10/2026","url":"https://en.wikipedia.org/wiki/Rosario_Central","jugadores":[
+{"n":"Axel Werner","p":"POR","num":1,"r":68},
+{"n":"Sebastián Zaracho","p":"DEF","num":2,"r":64},
+{"n":"Agustín Sández","p":"DEF","num":3,"r":70},
+{"n":"Ulises Ciccioli","p":"DEF","num":4,"r":64},
+{"n":"Franco Ibarra","p":"MED","num":5,"r":69},
+{"n":"Juan Cruz Komar","p":"DEF","num":6,"r":68},
+{"n":"Jáminton Campaz","p":"DEL","num":8,"r":72},
+{"n":"Marco Ruben","p":"DEL","num":9,"r":68},
+{"n":"Franco Cervi","p":"DEL","num":10,"r":69},
+{"n":"Ángel Di María","p":"DEL","num":11,"r":80},
+{"n":"Gastón Ávila","p":"DEF","num":13,"r":68},
+{"n":"Facundo Mallo","p":"DEF","num":15,"r":68},
+{"n":"Tomás Badaloni","p":"DEL","num":16,"r":64},
+{"n":"Julián Fernández","p":"DEL","num":18,"r":63},
+{"n":"Santiago Segovia","p":"MED","num":19,"r":64},
+{"n":"Vicente Pizarro","p":"MED","num":20,"r":68},
+{"n":"Enzo Copetti","p":"DEL","num":22,"r":70},
+{"n":"Conan Ledesma","p":"POR","num":23,"r":66},
+{"n":"Juan Giménez","p":"DEF","num":24,"r":63},
+{"n":"Giovanni Cantizano","p":"DEL","num":26,"r":62},
+{"n":"Gaspar Duarte","p":"DEL","num":27,"r":64},
+{"n":"Pol Fernández","p":"MED","num":28,"r":69},
+{"n":"Federico Navarro","p":"MED","num":31,"r":68},
+{"n":"Emanuel Coronel","p":"DEF","num":32,"r":65},
+{"n":"Alexis Soto","p":"DEF","num":33,"r":66},
+{"n":"Damián Fernández","p":"POR","num":38,"r":62},
+{"n":"Fabricio Oviedo","p":"DEL","num":39,"r":63},
+{"n":"Ignacio Ovando","p":"DEF","num":46,"r":63},
+{"n":"Luca Raffin","p":"DEF","num":47,"r":62},
+{"n":"Alan Rodríguez","p":"MED","num":88,"r":66}]},"sanlorenzo":{"fecha":"Wikipedia, 07/10/2026","url":"https://en.wikipedia.org/wiki/San_Lorenzo_de_Almagro","jugadores":[
+{"n":"Mateo Clemente","p":"POR","num":1,"r":62},
+{"n":"Danilo Arboleda","p":"DEF","num":2,"r":66},
+{"n":"Teo Rodríguez Pagano","p":"DEF","num":3,"r":64},
+{"n":"Ignacio Perruzzi","p":"MED","num":5,"r":66},
+{"n":"Mathías De Ritis","p":"DEF","num":6,"r":64},
+{"n":"Ezequiel Cerutti","p":"DEL","num":7,"r":68},
+{"n":"Manuel Insaurralde","p":"MED","num":8,"r":66},
+{"n":"Alexis Cuello","p":"DEL","num":9,"r":68},
+{"n":"Facundo Gulli","p":"MED","num":10,"r":63},
+{"n":"Matías Reali","p":"DEL","num":11,"r":67},
+{"n":"Juan Rattalino","p":"MED","num":13,"r":62},
+{"n":"Agustín Ladstatter","p":"DEL","num":14,"r":65},
+{"n":"Mauricio Cardillo","p":"MED","num":15,"r":63},
+{"n":"Guzmán Corujo","p":"DEF","num":16,"r":66},
+{"n":"Diego Herazo","p":"DEL","num":18,"r":66},
+{"n":"Emiliano Amor","p":"DEF","num":19,"r":64},
+{"n":"Facundo Altamirano","p":"POR","num":20,"r":69},
+{"n":"Gustavo Del Prete","p":"DEL","num":21,"r":64},
+{"n":"Juan Pablo Álvarez","p":"DEL","num":22,"r":62},
+{"n":"Gastón Hernández","p":"DEF","num":23,"r":68},
+{"n":"Nicolás Tripichio","p":"MED","num":24,"r":66},
+{"n":"José Devecchi","p":"POR","num":25,"r":62},
+{"n":"Gonzalo Abrego","p":"MED","num":26,"r":63},
+{"n":"Martín Río","p":"MED","num":27,"r":62},
+{"n":"Nahuel Barrios","p":"DEL","num":28,"r":68},
+{"n":"Rodrigo Auzmendi","p":"DEL","num":29,"r":66},
+{"n":"Nahuel Arias","p":"DEF","num":30,"r":62},
+{"n":"Ezequiel Herrera","p":"DEF","num":32,"r":63},
+{"n":"Alejo Córdoba","p":"DEF","num":35,"r":62},
+{"n":"Daniel Herrera","p":"DEF","num":36,"r":63},
+{"n":"Facundo Farías","p":"MED","num":38,"r":70},
+{"n":"Franco Lorenzón","p":"DEF","num":42,"r":62}]},"independiente":{"fecha":"Wikipedia, 03/10/2026","url":"https://en.wikipedia.org/wiki/Club_Atl%C3%A9tico_Independiente","jugadores":[
+{"n":"Joaquín Blázquez","p":"POR","num":1,"r":63},
+{"n":"Franco Calderón","p":"DEF","num":2,"r":66},
+{"n":"Jonathan De Irastorza","p":"DEF","num":3,"r":64},
+{"n":"Santiago Arias","p":"DEF","num":4,"r":70},
+{"n":"Chimy Ávila","p":"DEL","num":6,"r":70},
+{"n":"Santiago Montiel","p":"DEL","num":7,"r":70},
+{"n":"Maximiliano Meza","p":"DEL","num":8,"r":71},
+{"n":"Luciano Cabral","p":"MED","num":10,"r":71},
+{"n":"Juan Fedorco","p":"DEF","num":13,"r":66},
+{"n":"Lautaro Millán","p":"MED","num":14,"r":68},
+{"n":"Imanol Machuca","p":"DEL","num":15,"r":68},
+{"n":"Mateo Pérez Curci","p":"MED","num":16,"r":64},
+{"n":"Matías Abaldo","p":"DEL","num":19,"r":69},
+{"n":"Rodrigo Márquez","p":"DEL","num":20,"r":64},
+{"n":"Facundo Zabala","p":"DEF","num":22,"r":64},
+{"n":"Iván Marcone","p":"MED","num":23,"r":70},
+{"n":"Leonardo Godoy","p":"DEF","num":29,"r":66},
+{"n":"David Martínez","p":"MED","num":32,"r":63},
+{"n":"Rodrigo Rey","p":"POR","num":33,"r":70},
+{"n":"Felipe Tempone","p":"DEL","num":34,"r":64},
+{"n":"Juan Miguel Arrayago","p":"DEF","num":35,"r":62},
+{"n":"Sebastián Valdez","p":"DEF","num":36,"r":65},
+{"n":"Joel Medina","p":"MED","num":37,"r":63},
+{"n":"Ignacio Malcorra","p":"MED","num":40,"r":70},
+{"n":"Santiago Mele","p":"POR","num":77,"r":67},
+{"n":"Iván Morales","p":"DEL","num":null,"r":68}]},"barcelona":{"fecha":"Wikipedia, 04/10/2026","url":"https://en.wikipedia.org/wiki/FC_Barcelona","jugadores":[
+{"n":"Joan Garcia","p":"POR","num":1,"r":84},
+{"n":"João Cancelo","p":"DEF","num":2,"r":83},
+{"n":"Alejandro Balde","p":"DEF","num":3,"r":82},
+{"n":"Brian Fariñas","p":"MED","num":4,"r":62},
+{"n":"Pau Cubarsí","p":"DEF","num":5,"r":84},
+{"n":"Gavi","p":"MED","num":6,"r":82},
+{"n":"Fermín López","p":"MED","num":7,"r":82},
+{"n":"Pedri","p":"MED","num":8,"r":89},
+{"n":"Gabriel Jesus","p":"DEL","num":9,"r":79},
+{"n":"Lamine Yamal","p":"DEL","num":10,"r":91},
+{"n":"Raphinha","p":"DEL","num":11,"r":88},
+{"n":"Xavi Espart","p":"DEF","num":12,"r":64},
+{"n":"Wojciech Szczęsny","p":"POR","num":13,"r":80},
+{"n":"Karim Adeyemi","p":"DEL","num":14,"r":80},
+{"n":"Andreas Christensen","p":"DEF","num":15,"r":80},
+{"n":"Rodri","p":"MED","num":16,"r":88},
+{"n":"Anthony Gordon","p":"DEL","num":17,"r":83},
+{"n":"Gerard Martín","p":"DEF","num":18,"r":77},
+{"n":"Roony Bardghji","p":"DEL","num":19,"r":72},
+{"n":"Dani Olmo","p":"MED","num":20,"r":84},
+{"n":"Frenkie de Jong","p":"MED","num":21,"r":86},
+{"n":"Marc Bernal","p":"MED","num":22,"r":74},
+{"n":"Jules Koundé","p":"DEF","num":23,"r":85},
+{"n":"Eric Garcia","p":"DEF","num":24,"r":80},
+{"n":"Dominik Livaković","p":"POR","num":25,"r":78},
+{"n":"Jesse Bisiwu","p":"DEL","num":27,"r":62},
+{"n":"Hamza Abdelkarim","p":"DEL","num":29,"r":66}]},"napoles":{"fecha":"Wikipedia, 11/10/2026","url":"https://en.wikipedia.org/wiki/SSC_Napoli","jugadores":[
+{"n":"Alex Meret","p":"POR","num":1,"r":81},
+{"n":"Costantino Favasuli","p":"DEF","num":2,"r":64},
+{"n":"Alessandro Buongiorno","p":"DEF","num":4,"r":83},
+{"n":"Benoît Badiashile","p":"DEF","num":5,"r":78},
+{"n":"Billy Gilmour","p":"MED","num":6,"r":80},
+{"n":"David Neres","p":"DEL","num":7,"r":80},
+{"n":"Scott McTominay","p":"MED","num":8,"r":86},
+{"n":"Kevin De Bruyne","p":"MED","num":11,"r":86},
+{"n":"Claudio Pugliese","p":"POR","num":12,"r":60},
+{"n":"Amir Rrahmani","p":"DEF","num":13,"r":81},
+{"n":"Nikita Contini","p":"POR","num":14,"r":62},
+{"n":"Rafa Marín","p":"DEF","num":16,"r":75},
+{"n":"Mathías Olivera","p":"DEF","num":17,"r":79},
+{"n":"Rasmus Højlund","p":"DEL","num":19,"r":81},
+{"n":"Lorenzo Lucca","p":"DEL","num":20,"r":76},
+{"n":"Matteo Politano","p":"DEL","num":21,"r":80},
+{"n":"Giovanni Di Lorenzo","p":"DEF","num":22,"r":83},
+{"n":"Giovane","p":"DEL","num":23,"r":70},
+{"n":"Antonio Vergara","p":"MED","num":26,"r":70},
+{"n":"Alisson Santos","p":"DEL","num":27,"r":74},
+{"n":"Sam Beukema","p":"DEF","num":31,"r":80},
+{"n":"Vanja Milinković-Savić","p":"POR","num":32,"r":80},
+{"n":"Luca Marianucci","p":"DEF","num":35,"r":66},
+{"n":"Leonardo Spinazzola","p":"DEF","num":37,"r":76},
+{"n":"Stanislav Lobotka","p":"MED","num":68,"r":84},
+{"n":"Noa Lang","p":"DEL","num":70,"r":80},
+{"n":"Frank Anguissa","p":"MED","num":99,"r":82}]},"realmadrid":{"fecha":"Wikipedia, 08/09/2026","url":"https://en.wikipedia.org/wiki/Real_Madrid_CF","jugadores":[
+{"n":"Thibaut Courtois","p":"POR","num":1,"r":89},
+{"n":"Raúl Asencio","p":"DEF","num":2,"r":77},
+{"n":"Éder Militão","p":"DEF","num":3,"r":84},
+{"n":"Dean Huijsen","p":"DEF","num":4,"r":83},
+{"n":"Jude Bellingham","p":"MED","num":5,"r":89},
+{"n":"Eduardo Camavinga","p":"MED","num":6,"r":83},
+{"n":"Vinícius Júnior","p":"DEL","num":7,"r":89},
+{"n":"Federico Valverde","p":"MED","num":8,"r":89},
+{"n":"Endrick","p":"DEL","num":9,"r":78},
+{"n":"Kylian Mbappé","p":"DEL","num":10,"r":91},
+{"n":"Rodrygo","p":"DEL","num":11,"r":84},
+{"n":"Trent Alexander-Arnold","p":"DEF","num":12,"r":86},
+{"n":"Andriy Lunin","p":"POR","num":13,"r":80},
+{"n":"Aurélien Tchouaméni","p":"MED","num":14,"r":85},
+{"n":"Arda Güler","p":"MED","num":15,"r":84},
+{"n":"Ibrahima Konaté","p":"DEF","num":16,"r":85},
+{"n":"Marc Cucurella","p":"DEF","num":17,"r":84},
+{"n":"Álvaro Carreras","p":"DEF","num":18,"r":80},
+{"n":"Carlos Espí","p":"DEL","num":19,"r":64},
+{"n":"Bernardo Silva","p":"MED","num":20,"r":86},
+{"n":"Brahim Díaz","p":"DEL","num":21,"r":80},
+{"n":"Antonio Rüdiger","p":"DEF","num":22,"r":84},
+{"n":"Ferland Mendy","p":"DEF","num":23,"r":80},
+{"n":"Denzel Dumfries","p":"DEF","num":24,"r":83},
+{"n":"Yan Diomande","p":"DEL","num":25,"r":74},
+{"n":"Thiago Pitarch","p":"MED","num":27,"r":64}]},"psg":{"fecha":"Wikipedia, 08/10/2026","url":"https://en.wikipedia.org/wiki/Paris_Saint-Germain_FC","jugadores":[
+{"n":"Achraf Hakimi","p":"DEF","num":2,"r":89},
+{"n":"Lucas Beraldo","p":"DEF","num":4,"r":77},
+{"n":"Marquinhos","p":"DEF","num":5,"r":86},
+{"n":"Illia Zabarnyi","p":"DEF","num":6,"r":81},
+{"n":"Khvicha Kvaratskhelia","p":"DEL","num":7,"r":88},
+{"n":"Fabián Ruiz","p":"MED","num":8,"r":85},
+{"n":"Ferran Torres","p":"DEL","num":9,"r":81},
+{"n":"Ousmane Dembélé","p":"DEL","num":10,"r":91},
+{"n":"Maghnes Akliouche","p":"MED","num":11,"r":79},
+{"n":"Lucas Digne","p":"DEF","num":12,"r":79},
+{"n":"Désiré Doué","p":"DEL","num":14,"r":86},
+{"n":"Alessandro Longoni","p":"POR","num":16,"r":60},
+{"n":"Vitinha","p":"MED","num":17,"r":89},
+{"n":"Lucas Hernandez","p":"DEF","num":21,"r":82},
+{"n":"Mika Godts","p":"DEL","num":22,"r":74},
+{"n":"Senny Mayulu","p":"MED","num":24,"r":74},
+{"n":"Nuno Mendes","p":"DEF","num":25,"r":88},
+{"n":"Dro Fernández","p":"MED","num":27,"r":72},
+{"n":"Lucas Chevalier","p":"POR","num":30,"r":84},
+{"n":"Warren Zaïre-Emery","p":"MED","num":33,"r":81},
+{"n":"Matvey Safonov","p":"POR","num":39,"r":80},
+{"n":"Quentin Ndjantou","p":"DEL","num":47,"r":68},
+{"n":"Willian Pacho","p":"DEF","num":51,"r":86},
+{"n":"João Neves","p":"MED","num":87,"r":87}]},"benfica":{"fecha":"Wikipedia, 17/09/2026","url":"https://en.wikipedia.org/wiki/S.L._Benfica","jugadores":[
+{"n":"Anatoliy Trubin","p":"POR","num":1,"r":83},
+{"n":"Clément Lenglet","p":"DEF","num":2,"r":77},
+{"n":"Alessandro Circati","p":"DEF","num":3,"r":72},
+{"n":"Enzo Barrenechea","p":"MED","num":5,"r":78},
+{"n":"Alexander Bah","p":"DEF","num":6,"r":77},
+{"n":"Fredrik Aursnes","p":"MED","num":8,"r":80},
+{"n":"Heorhiy Sudakov","p":"MED","num":10,"r":80},
+{"n":"Dodi Lukébakio","p":"DEL","num":11,"r":80},
+{"n":"Jakub Kamiński","p":"MED","num":13,"r":77},
+{"n":"Vangelis Pavlidis","p":"DEL","num":14,"r":81},
+{"n":"Manu Silva","p":"MED","num":16,"r":76},
+{"n":"Leandro Barreiro","p":"MED","num":18,"r":76},
+{"n":"Andreas Schjelderup","p":"DEL","num":21,"r":76},
+{"n":"Jhon Durán","p":"DEL","num":22,"r":79},
+{"n":"Samuel Soares","p":"POR","num":24,"r":72},
+{"n":"Gianluca Prestianni","p":"DEL","num":25,"r":72},
+{"n":"Samuel Dahl","p":"DEF","num":26,"r":74},
+{"n":"Rafa Silva","p":"MED","num":27,"r":79},
+{"n":"Claudio Echeverri","p":"MED","num":30,"r":72},
+{"n":"Gabriel Índio","p":"DEF","num":33,"r":62},
+{"n":"Souffian El Karouani","p":"DEF","num":34,"r":76},
+{"n":"João Palhinha","p":"MED","num":36,"r":83},
+{"n":"Tomás Araújo","p":"DEF","num":44,"r":79},
+{"n":"Diogo Ferreira","p":"POR","num":50,"r":62},
+{"n":"Daniel Banjaqui","p":"DEF","num":58,"r":64},
+{"n":"José Neto","p":"DEF","num":62,"r":66},
+{"n":"Anísio Cabral","p":"DEL","num":72,"r":66}]},"ajax":{"fecha":"Wikipedia, 01/10/2026","url":"https://en.wikipedia.org/wiki/AFC_Ajax","jugadores":[
+{"n":"Marc-André ter Stegen","p":"POR","num":1,"r":85},
+{"n":"Lucas Rosa","p":"DEF","num":2,"r":74},
+{"n":"Anton Gaaei","p":"DEF","num":3,"r":73},
+{"n":"Sofyan Amrabat","p":"MED","num":4,"r":78},
+{"n":"Owen Wijndal","p":"DEF","num":5,"r":73},
+{"n":"Thilo Kehrer","p":"DEF","num":6,"r":77},
+{"n":"Simon Adingra","p":"DEL","num":7,"r":76},
+{"n":"Julian Brandt","p":"MED","num":8,"r":82},
+{"n":"Kasper Dolberg","p":"DEL","num":9,"r":77},
+{"n":"Oscar Gloukh","p":"MED","num":10,"r":77},
+{"n":"Viktor Tsyhankov","p":"MED","num":11,"r":79},
+{"n":"Caio Henrique","p":"DEF","num":12,"r":79},
+{"n":"Youri Baas","p":"DEF","num":15,"r":75},
+{"n":"Daley Blind","p":"DEF","num":17,"r":76},
+{"n":"Davy Klaassen","p":"MED","num":18,"r":74},
+{"n":"Oliver Edvardsen","p":"DEL","num":20,"r":71},
+{"n":"Jofre Torrents","p":"DEF","num":21,"r":70},
+{"n":"Joeri Heerkens","p":"POR","num":22,"r":64},
+{"n":"Steven Berghuis","p":"DEL","num":23,"r":76},
+{"n":"Jorthy Mokio","p":"MED","num":24,"r":72},
+{"n":"Maarten Paes","p":"POR","num":26,"r":75},
+{"n":"Yves Bissouma","p":"MED","num":28,"r":79},
+{"n":"Aaron Bouwman","p":"DEF","num":30,"r":68},
+{"n":"Dies Janse","p":"DEF","num":36,"r":66},
+{"n":"Marcos Leonardo","p":"DEL","num":38,"r":78},
+{"n":"Rayane Bounida","p":"MED","num":43,"r":70},
+{"n":"Abdellah Ouazane","p":"MED","num":68,"r":66},
+{"n":"Tolu Arokodare","p":"DEL","num":99,"r":74}]},"bayern":{"fecha":"Wikipedia, 11/10/2026","url":"https://en.wikipedia.org/wiki/FC_Bayern_Munich","jugadores":[
+{"n":"Manuel Neuer","p":"POR","num":1,"r":84},
+{"n":"Dayot Upamecano","p":"DEF","num":2,"r":84},
+{"n":"Kim Min-jae","p":"DEF","num":3,"r":82},
+{"n":"Jonathan Tah","p":"DEF","num":4,"r":85},
+{"n":"Joshua Kimmich","p":"MED","num":6,"r":87},
+{"n":"Serge Gnabry","p":"DEL","num":7,"r":80},
+{"n":"Tom Bischof","p":"MED","num":8,"r":77},
+{"n":"Harry Kane","p":"DEL","num":9,"r":90},
+{"n":"Jamal Musiala","p":"MED","num":10,"r":88},
+{"n":"Nathaniel Brown","p":"DEF","num":11,"r":76},
+{"n":"Luis Díaz","p":"DEL","num":14,"r":86},
+{"n":"Michael Olise","p":"DEL","num":17,"r":88},
+{"n":"Alphonso Davies","p":"DEF","num":19,"r":82},
+{"n":"Hiroki Itō","p":"DEF","num":21,"r":78},
+{"n":"Sacha Boey","p":"DEF","num":23,"r":75},
+{"n":"Sven Ulreich","p":"POR","num":26,"r":71},
+{"n":"Konrad Laimer","p":"MED","num":27,"r":81},
+{"n":"Ismael Saibari","p":"MED","num":34,"r":77},
+{"n":"Bara Sapoko Ndiaye","p":"MED","num":39,"r":65},
+{"n":"Jonas Urbig","p":"POR","num":40,"r":76},
+{"n":"Lennart Karl","p":"MED","num":42,"r":76},
+{"n":"Josip Stanišić","p":"DEF","num":44,"r":78},
+{"n":"Aleksandar Pavlović","p":"MED","num":45,"r":83},
+{"n":"David Santos Daiber","p":"MED","num":47,"r":62}]},"mancity":{"fecha":"Wikipedia, 12/10/2026","url":"https://en.wikipedia.org/wiki/Manchester_City_F.C.","jugadores":[
+{"n":"Gianluigi Donnarumma","p":"POR","num":1,"r":89},
+{"n":"Rúben Dias","p":"DEF","num":3,"r":88},
+{"n":"Elliot Anderson","p":"MED","num":5,"r":82},
+{"n":"Marc Guéhi","p":"DEF","num":6,"r":84},
+{"n":"Iliman Ndiaye","p":"DEL","num":7,"r":79},
+{"n":"Mateo Kovačić","p":"MED","num":8,"r":82},
+{"n":"Erling Haaland","p":"DEL","num":9,"r":91},
+{"n":"Rayan Cherki","p":"MED","num":10,"r":84},
+{"n":"Jérémy Doku","p":"DEL","num":11,"r":82},
+{"n":"Marcus Bettinelli","p":"POR","num":13,"r":68},
+{"n":"Enzo Fernández","p":"MED","num":17,"r":86},
+{"n":"Rayan Aït-Nouri","p":"DEF","num":21,"r":81},
+{"n":"Vitor Reis","p":"DEF","num":22,"r":72},
+{"n":"Joško Gvardiol","p":"DEF","num":24,"r":85},
+{"n":"Matheus Nunes","p":"DEF","num":27,"r":79},
+{"n":"Gerónimo Rulli","p":"POR","num":28,"r":80},
+{"n":"Ayyoub Bouaddi","p":"MED","num":32,"r":75},
+{"n":"Nico O'Reilly","p":"MED","num":33,"r":78},
+{"n":"Allan","p":"DEL","num":37,"r":66},
+{"n":"Antoine Semenyo","p":"DEL","num":42,"r":82},
+{"n":"Abdukodir Khusanov","p":"DEF","num":45,"r":77},
+{"n":"Phil Foden","p":"MED","num":47,"r":85},
+{"n":"Ryan McAidoo","p":"DEL","num":56,"r":64},
+{"n":"Kaden Braithwaite","p":"DEF","num":61,"r":63},
+{"n":"Floyd Samba","p":"MED","num":75,"r":62},
+{"n":"Rico Lewis","p":"DEF","num":82,"r":79}]},"liverpool":{"fecha":"Wikipedia, 07/10/2026","url":"https://en.wikipedia.org/wiki/Liverpool_F.C.","jugadores":[
+{"n":"Alisson Becker","p":"POR","num":1,"r":88},
+{"n":"Joe Gomez","p":"DEF","num":2,"r":78},
+{"n":"Wataru Endo","p":"MED","num":3,"r":77},
+{"n":"Virgil van Dijk","p":"DEF","num":4,"r":88},
+{"n":"Jérémy Jacquet","p":"DEF","num":5,"r":72},
+{"n":"Milos Kerkez","p":"DEF","num":6,"r":80},
+{"n":"Florian Wirtz","p":"MED","num":7,"r":88},
+{"n":"Dominik Szoboszlai","p":"MED","num":8,"r":85},
+{"n":"Alexander Isak","p":"DEL","num":9,"r":87},
+{"n":"Alexis Mac Allister","p":"MED","num":10,"r":87},
+{"n":"Conor Bradley","p":"DEF","num":12,"r":78},
+{"n":"Federico Chiesa","p":"DEL","num":14,"r":78},
+{"n":"Giovanni Leoni","p":"DEF","num":15,"r":76},
+{"n":"Cody Gakpo","p":"DEL","num":18,"r":83},
+{"n":"Kostas Tsimikas","p":"DEF","num":21,"r":76},
+{"n":"Hugo Ekitike","p":"DEL","num":22,"r":84},
+{"n":"Víctor Muñoz","p":"DEL","num":23,"r":76},
+{"n":"Giorgi Mamardashvili","p":"POR","num":25,"r":83},
+{"n":"Freddie Woodman","p":"POR","num":28,"r":68},
+{"n":"Bradley Barcola","p":"DEL","num":29,"r":84},
+{"n":"Jeremie Frimpong","p":"DEF","num":30,"r":82},
+{"n":"Ronald Araújo","p":"DEF","num":33,"r":83},
+{"n":"Ryan Gravenberch","p":"MED","num":38,"r":85},
+{"n":"Trey Nyoni","p":"MED","num":42,"r":72},
+{"n":"Luke Chambers","p":"DEF","num":44,"r":69},
+{"n":"James McConnell","p":"MED","num":53,"r":70},
+{"n":"Vítězslav Jaroš","p":"POR","num":56,"r":70},
+{"n":"Lewis Koumas","p":"DEL","num":67,"r":68},
+{"n":"Rio Ngumoha","p":"DEL","num":73,"r":70},
+{"n":"Jayden Danns","p":"DEL","num":76,"r":67},
+{"n":"Harvey Davies","p":"POR","num":95,"r":63}]},"tottenham":{"fecha":"Wikipedia, 08/10/2026","url":"https://en.wikipedia.org/wiki/Tottenham_Hotspur_F.C.","jugadores":[
+{"n":"Andy Robertson","p":"DEF","num":3,"r":81},
+{"n":"Tosin Adarabioyo","p":"DEF","num":4,"r":76},
+{"n":"Marcos Senesi","p":"DEF","num":5,"r":79},
+{"n":"Jan Paul van Hecke","p":"DEF","num":6,"r":80},
+{"n":"Xavi Simons","p":"MED","num":7,"r":83},
+{"n":"Conor Gallagher","p":"MED","num":8,"r":81},
+{"n":"Richarlison","p":"DEL","num":9,"r":79},
+{"n":"James Maddison","p":"MED","num":10,"r":82},
+{"n":"Mathys Tel","p":"DEL","num":11,"r":77},
+{"n":"Destiny Udogie","p":"DEF","num":13,"r":80},
+{"n":"Archie Gray","p":"MED","num":14,"r":76},
+{"n":"Lucas Bergvall","p":"MED","num":15,"r":78},
+{"n":"Sandro Tonali","p":"MED","num":16,"r":86},
+{"n":"Sávio","p":"DEL","num":17,"r":81},
+{"n":"Mateus Fernandes","p":"MED","num":18,"r":78},
+{"n":"Dominic Solanke","p":"DEL","num":19,"r":80},
+{"n":"Mohammed Kudus","p":"DEL","num":20,"r":83},
+{"n":"Dejan Kulusevski","p":"DEL","num":21,"r":82},
+{"n":"Omar Marmoush","p":"DEL","num":22,"r":82},
+{"n":"Pedro Porro","p":"DEF","num":23,"r":82},
+{"n":"Mykhailo Mudryk","p":"DEL","num":27,"r":75},
+{"n":"Wilson Odobert","p":"DEL","num":28,"r":76},
+{"n":"Rodrigo Bentancur","p":"MED","num":30,"r":79},
+{"n":"Antonín Kinský","p":"POR","num":31,"r":74},
+{"n":"Ben Davies","p":"DEF","num":33,"r":75},
+{"n":"Micky van de Ven","p":"DEF","num":37,"r":84},
+{"n":"Martin Dúbravka","p":"POR","num":39,"r":75},
+{"n":"Brandon Austin","p":"POR","num":40,"r":64}]},"dortmund":{"fecha":"Wikipedia, 10/10/2026","url":"https://en.wikipedia.org/wiki/Borussia_Dortmund","jugadores":[
+{"n":"Gregor Kobel","p":"POR","num":1,"r":85},
+{"n":"Waldemar Anton","p":"DEF","num":3,"r":80},
+{"n":"Nico Schlotterbeck","p":"DEF","num":4,"r":84},
+{"n":"Ramy Bensebaini","p":"DEF","num":5,"r":77},
+{"n":"Jobe Bellingham","p":"MED","num":7,"r":78},
+{"n":"Felix Nmecha","p":"MED","num":8,"r":80},
+{"n":"Serhou Guirassy","p":"DEL","num":9,"r":84},
+{"n":"Maximilian Beier","p":"MED","num":14,"r":79},
+{"n":"Carney Chukwuemeka","p":"MED","num":17,"r":75},
+{"n":"Ethan Nwaneri","p":"MED","num":18,"r":79},
+{"n":"Konstantinos Karetsas","p":"MED","num":19,"r":74},
+{"n":"Marcel Sabitzer","p":"MED","num":20,"r":79},
+{"n":"Fábio Silva","p":"DEL","num":21,"r":77},
+{"n":"Joane Gadou","p":"DEF","num":22,"r":73},
+{"n":"Emre Can","p":"MED","num":23,"r":78},
+{"n":"Daniel Svensson","p":"DEF","num":24,"r":77},
+{"n":"Joey Veerman","p":"MED","num":25,"r":79},
+{"n":"Julian Ryerson","p":"DEF","num":26,"r":80},
+{"n":"Justin Lerma","p":"MED","num":28,"r":70},
+{"n":"Patrick Drewes","p":"POR","num":30,"r":68},
+{"n":"Silas Ostrzinski","p":"POR","num":31,"r":64},
+{"n":"Alexander Meyer","p":"POR","num":33,"r":68},
+{"n":"Kauã Prates","p":"DEF","num":36,"r":70},
+{"n":"Filippo Mane","p":"DEF","num":39,"r":69},
+{"n":"Samuele Inácio","p":"DEL","num":40,"r":68},
+{"n":"Mathis Albert","p":"DEL","num":41,"r":64},
+{"n":"Enzo dos Santos","p":"MED","num":44,"r":65},
+{"n":"Giannis Konstantelias","p":"MED","num":45,"r":74},
+{"n":"Mussa Kaba","p":"MED","num":48,"r":64},
+{"n":"Luca Reggiani","p":"DEF","num":49,"r":68}]},"manutd":{"fecha":"Wikipedia, 11/10/2026","url":"https://en.wikipedia.org/wiki/Manchester_United_F.C.","jugadores":[
+{"n":"Senne Lammens","p":"POR","num":1,"r":78},
+{"n":"Diogo Dalot","p":"DEF","num":2,"r":82},
+{"n":"Noussair Mazraoui","p":"DEF","num":3,"r":79},
+{"n":"Matthijs de Ligt","p":"DEF","num":4,"r":81},
+{"n":"Harry Maguire","p":"DEF","num":5,"r":78},
+{"n":"Lisandro Martínez","p":"DEF","num":6,"r":84},
+{"n":"Mason Mount","p":"MED","num":7,"r":78},
+{"n":"Bruno Fernandes","p":"MED","num":8,"r":87},
+{"n":"Marcus Rashford","p":"DEL","num":9,"r":80},
+{"n":"Matheus Cunha","p":"DEL","num":10,"r":83},
+{"n":"Joshua Zirkzee","p":"DEL","num":11,"r":77},
+{"n":"Karl Darlow","p":"POR","num":12,"r":69},
+{"n":"Patrick Dorgu","p":"DEF","num":13,"r":77},
+{"n":"Leny Yoro","p":"DEF","num":15,"r":79},
+{"n":"Amad Diallo","p":"DEL","num":16,"r":81},
+{"n":"Andrey Santos","p":"MED","num":17,"r":78},
+{"n":"Youri Tielemans","p":"MED","num":18,"r":81},
+{"n":"Bryan Mbeumo","p":"DEL","num":19,"r":83},
+{"n":"Carlos Baleba","p":"MED","num":20,"r":80},
+{"n":"Tom Heaton","p":"POR","num":22,"r":66},
+{"n":"Luke Shaw","p":"DEF","num":23,"r":77},
+{"n":"Manuel Ugarte","p":"MED","num":25,"r":79},
+{"n":"Ayden Heaven","p":"DEF","num":26,"r":72},
+{"n":"Benjamin Šeško","p":"DEL","num":30,"r":81},
+{"n":"Shea Lacey","p":"DEL","num":31,"r":66},
+{"n":"Kobbie Mainoo","p":"MED","num":37,"r":80},
+{"n":"Jack Fletcher","p":"MED","num":38,"r":64},
+{"n":"Tyler Fletcher","p":"MED","num":39,"r":63},
+{"n":"Harry Amass","p":"DEF","num":41,"r":70},
+{"n":"Dermot Mee","p":"POR","num":45,"r":62}]},"alnassr":{"fecha":"Wikipedia, 11/10/2026","url":"https://en.wikipedia.org/wiki/Al-Nassr_FC","jugadores":[
+{"n":"Nawaf Al-Aqidi","p":"POR","num":1,"r":72},
+{"n":"Sultan Al-Ghannam","p":"DEF","num":2,"r":72},
+{"n":"Mohamed Simakan","p":"DEF","num":3,"r":81},
+{"n":"Nader Al-Sharari","p":"DEF","num":4,"r":68},
+{"n":"Abdulelah Al-Amri","p":"DEF","num":5,"r":70},
+{"n":"Saad Al-Nasser","p":"DEF","num":6,"r":64},
+{"n":"Cristiano Ronaldo","p":"DEL","num":7,"r":85},
+{"n":"Hayder Abdulkareem","p":"MED","num":8,"r":70},
+{"n":"Abdullah Al-Hamdan","p":"DEL","num":9,"r":70},
+{"n":"Sadio Mané","p":"DEL","num":10,"r":82},
+{"n":"Samú Costa","p":"MED","num":11,"r":79},
+{"n":"Nawaf Boushal","p":"DEF","num":12,"r":68},
+{"n":"Sami Al-Najei","p":"MED","num":14,"r":70},
+{"n":"Mohammed Maran","p":"DEL","num":16,"r":69},
+{"n":"Abdullah Al-Khaibari","p":"MED","num":17,"r":70},
+{"n":"Ângelo Gabriel","p":"MED","num":20,"r":75},
+{"n":"Kingsley Coman","p":"DEL","num":21,"r":82},
+{"n":"Abdulhadi Al-Alwan","p":"POR","num":22,"r":60},
+{"n":"Ayman Yahya","p":"MED","num":23,"r":70},
+{"n":"Bento","p":"POR","num":24,"r":80},
+{"n":"Iñigo Martínez","p":"DEF","num":26,"r":82},
+{"n":"Abdulrahman Ghareeb","p":"MED","num":29,"r":72},
+{"n":"Raghed Al-Najjar","p":"POR","num":36,"r":64},
+{"n":"Youssef Al-Tahan","p":"DEF","num":40,"r":60},
+{"n":"Majed Qasheesh","p":"DEF","num":50,"r":62},
+{"n":"Abdulrahman Al-Otaibi","p":"POR","num":53,"r":60},
+{"n":"Rakan Al-Ghamdi","p":"DEF","num":56,"r":60},
+{"n":"Saad Haqawi","p":"DEL","num":60,"r":60},
+{"n":"Mubarak Al-Buainain","p":"POR","num":61,"r":60},
+{"n":"Awad Aman","p":"DEF","num":70,"r":60},
+{"n":"João Félix","p":"DEL","num":79,"r":80},
+{"n":"Salem Al-Najdi","p":"DEF","num":83,"r":66},
+{"n":"Bassam Hazazi","p":"MED","num":88,"r":62},
+{"n":"Abdulrahaman Sufyani","p":"MED","num":94,"r":60}]},"argentina":{"fecha":"Wikipedia, 09/10/2026","url":"https://en.wikipedia.org/wiki/Argentina_national_football_team","jugadores":[
+{"n":"Juan Musso","p":"POR","num":1,"r":78,"c":"Atlético Madrid"},
+{"n":"Gerónimo Rulli","p":"POR","num":12,"r":80,"c":"Manchester City"},
+{"n":"Emiliano Martínez","p":"POR","num":23,"r":86,"c":"Chelsea"},
+{"n":"Santiago Beltrán","p":"POR","num":27,"r":70,"c":"River Plate"},
+{"n":"Leonardo Balerdi","p":"DEF","num":2,"r":80,"c":"Roma"},
+{"n":"Nicolás Tagliafico","p":"DEF","num":3,"r":80,"c":"Lyon"},
+{"n":"Agustín Giay","p":"DEF","num":4,"r":74,"c":"Palmeiras"},
+{"n":"Lisandro Martínez","p":"DEF","num":6,"r":84,"c":"Manchester United"},
+{"n":"Cristian Romero","p":"DEF","num":13,"r":85,"c":"Atlético Madrid"},
+{"n":"Nicolás Otamendi","p":"DEF","num":19,"r":76,"c":"River Plate"},
+{"n":"Facundo Medina","p":"DEF","num":25,"r":80,"c":"Bayer Leverkusen"},
+{"n":"Tomás Palacios","p":"DEF","num":32,"r":74,"c":"Estudiantes"},
+{"n":"Román Vega","p":"DEF","num":33,"r":72,"c":"Zenit Saint Petersburg"},
+{"n":"Valentín Gómez","p":"DEF","num":34,"r":74,"c":"Betis"},
+{"n":"Equi Fernández","p":"MED","num":5,"r":78,"c":"Bayer Leverkusen"},
+{"n":"Rodrigo De Paul","p":"MED","num":7,"r":82,"c":"Inter Miami"},
+{"n":"Enzo Fernández","p":"MED","num":8,"r":86,"c":"Manchester City"},
+{"n":"Giovani Lo Celso","p":"MED","num":11,"r":79,"c":"Betis"},
+{"n":"Exequiel Palacios","p":"MED","num":14,"r":81,"c":"Ipswich Town"},
+{"n":"Nico Paz","p":"MED","num":18,"r":82,"c":"Como"},
+{"n":"Alexis Mac Allister","p":"MED","num":20,"r":87,"c":"Liverpool"},
+{"n":"Valentín Barco","p":"MED","num":24,"r":75,"c":"Chelsea"},
+{"n":"Santiago Simón","p":"MED","num":26,"r":70,"c":"Toluca"},
+{"n":"Julián Alvarez","p":"DEL","num":9,"r":87,"c":"Atlético Madrid"},
+{"n":"Lionel Messi","p":"DEL","num":10,"r":86,"c":"Inter Miami"},
+{"n":"Nico González","p":"DEL","num":15,"r":80,"c":"Juventus"},
+{"n":"Gianluca Prestianni","p":"DEL","num":16,"r":72,"c":"Benfica"},
+{"n":"Giuliano Simeone","p":"DEL","num":17,"r":79,"c":"Atlético Madrid"},
+{"n":"José Manuel López","p":"DEL","num":21,"r":76,"c":"Palmeiras"},
+{"n":"Lautaro Martínez","p":"DEL","num":22,"r":88,"c":"Internazionale"},
+{"n":"Matías Soulé","p":"DEL","num":28,"r":80,"c":"Roma"},
+{"n":"Santiago Castro","p":"DEL","num":29,"r":76,"c":"Roma"},
+{"n":"Franco Mastantuono","p":"DEL","num":30,"r":78,"c":"Fiorentina"},
+{"n":"Leonel Flores","p":"DEL","num":31,"r":64,"c":"Boca Juniors"}]},"brasil":{"fecha":"Wikipedia, 06/10/2026","url":"https://en.wikipedia.org/wiki/Brazil_national_football_team","jugadores":[
+{"n":"Hugo Souza","p":"POR","num":1,"r":76,"c":"Corinthians"},
+{"n":"Otávio","p":"POR","num":12,"r":70,"c":"Cruzeiro"},
+{"n":"Pedro Morisco","p":"POR","num":23,"r":66,"c":"Coritiba"},
+{"n":"Vanderson","p":"DEF","num":2,"r":78,"c":"Monaco"},
+{"n":"Gabriel Magalhães","p":"DEF","num":3,"r":87,"c":"Arsenal"},
+{"n":"Marquinhos","p":"DEF","num":4,"r":86,"c":"Paris Saint-Germain"},
+{"n":"Douglas Santos","p":"DEF","num":6,"r":78,"c":"Zenit Saint Petersburg"},
+{"n":"Matheuzinho","p":"DEF","num":13,"r":74,"c":"Corinthians"},
+{"n":"Vitor Reis","p":"DEF","num":14,"r":72,"c":"Manchester City"},
+{"n":"Arthur Dias","p":"DEF","num":15,"r":66,"c":"Athletico Paranaense"},
+{"n":"Mauro Júnior","p":"DEF","num":16,"r":72,"c":"PSV"},
+{"n":"Jair","p":"DEF","num":24,"r":70,"c":"Nottingham Forest"},
+{"n":"Danilo","p":"MED","num":5,"r":73,"c":"Botafogo"},
+{"n":"Bruno Guimarães","p":"MED","num":8,"r":87,"c":"Arsenal"},
+{"n":"Breno Bidon","p":"MED","num":17,"r":72,"c":"Corinthians"},
+{"n":"Douglas Luiz","p":"MED","num":18,"r":79,"c":"Juventus"},
+{"n":"Matheus Martinelli","p":"MED","num":20,"r":72,"c":"Fluminense"},
+{"n":"Andrey Santos","p":"MED","num":21,"r":78,"c":"Manchester United"},
+{"n":"Gabriel Bontempo","p":"MED","num":25,"r":66,"c":"Santos"},
+{"n":"Vinícius Júnior","p":"DEL","num":7,"r":89,"c":"Real Madrid"},
+{"n":"Endrick","p":"DEL","num":9,"r":78,"c":"Real Madrid"},
+{"n":"Estêvão","p":"DEL","num":11,"r":82,"c":"Chelsea"},
+{"n":"Pedro","p":"DEL","num":19,"r":79,"c":"Flamengo"},
+{"n":"Samuel Lino","p":"DEL","num":22,"r":79,"c":"Flamengo"},
+{"n":"Rayan","p":"DEL","num":26,"r":74,"c":"Bournemouth"}]},"portugal":{"fecha":"Wikipedia, 11/10/2026","url":"https://en.wikipedia.org/wiki/Portugal_national_football_team","jugadores":[
+{"n":"Diogo Costa","p":"POR","num":1,"r":86,"c":"Porto"},
+{"n":"Rui Silva","p":"POR","num":12,"r":80,"c":"Sporting CP"},
+{"n":"Samuel Soares","p":"POR","num":22,"r":72,"c":"Benfica"},
+{"n":"Diogo Dalot","p":"DEF","num":2,"r":82,"c":"Manchester United"},
+{"n":"Rúben Dias","p":"DEF","num":3,"r":88,"c":"Manchester City"},
+{"n":"Tomás Araújo","p":"DEF","num":4,"r":79,"c":"Benfica"},
+{"n":"Nuno Tavares","p":"DEF","num":5,"r":79,"c":"Lazio"},
+{"n":"Renato Veiga","p":"DEF","num":13,"r":77,"c":"Villarreal"},
+{"n":"Gonçalo Inácio","p":"DEF","num":null,"r":82,"c":"Sporting CP"},
+{"n":"Nuno Mendes","p":"DEF","num":19,"r":88,"c":"Paris Saint-Germain"},
+{"n":"João Cancelo","p":"DEF","num":20,"r":83,"c":"Barcelona"},
+{"n":"João Palhinha","p":"MED","num":6,"r":83,"c":"Benfica"},
+{"n":"Bruno Fernandes","p":"MED","num":8,"r":87,"c":"Manchester United"},
+{"n":"Bernardo Silva","p":"MED","num":10,"r":86,"c":"Real Madrid"},
+{"n":"João Neves","p":"MED","num":15,"r":87,"c":"Paris Saint-Germain"},
+{"n":"Rúben Neves","p":"MED","num":21,"r":82,"c":"Al-Hilal"},
+{"n":"Vitinha","p":"MED","num":23,"r":89,"c":"Paris Saint-Germain"},
+{"n":"Rafael Leão","p":"DEL","num":7,"r":85,"c":"Galatasaray"},
+{"n":"Gonçalo Ramos","p":"DEL","num":9,"r":80,"c":"AC Milan"},
+{"n":"João Félix","p":"DEL","num":11,"r":80,"c":"Al-Nassr"},
+{"n":"Francisco Conceição","p":"DEL","num":14,"r":80,"c":"Juventus"},
+{"n":"Francisco Trincão","p":"DEL","num":16,"r":81,"c":"Al-Ahli"},
+{"n":"Pedro Neto","p":"DEL","num":17,"r":82,"c":"Chelsea"},
+{"n":"Fábio Silva","p":"DEL","num":18,"r":77,"c":"Borussia Dortmund"}]},"francia":{"fecha":"Wikipedia, 12/10/2026","url":"https://en.wikipedia.org/wiki/France_national_football_team","jugadores":[
+{"n":"Guillaume Restes","p":"POR","num":1,"r":77,"c":"Toulouse"},
+{"n":"Mike Maignan","p":"POR","num":16,"r":87,"c":"AC Milan"},
+{"n":"Jean Butez","p":"POR","num":23,"r":78,"c":"Como"},
+{"n":"Pierre Kalulu","p":"DEF","num":2,"r":81,"c":"Juventus"},
+{"n":"Adrien Truffert","p":"DEF","num":3,"r":78,"c":"Bournemouth"},
+{"n":"Jules Koundé","p":"DEF","num":5,"r":85,"c":"Barcelona"},
+{"n":"Andy Diouf","p":"DEF","num":13,"r":76,"c":"Inter Milan"},
+{"n":"Leny Yoro","p":"DEF","num":15,"r":79,"c":"Manchester United"},
+{"n":"Maxence Lacroix","p":"DEF","num":17,"r":80,"c":"Chelsea"},
+{"n":"Jérémy Jacquet","p":"DEF","num":22,"r":72,"c":"Liverpool"},
+{"n":"Eduardo Camavinga","p":"MED","num":6,"r":83,"c":"Real Madrid"},
+{"n":"Manu Koné","p":"MED","num":8,"r":83,"c":"Roma"},
+{"n":"Rayan Cherki","p":"MED","num":9,"r":84,"c":"Manchester City"},
+{"n":"Adrien Rabiot","p":"MED","num":14,"r":82,"c":"AC Milan"},
+{"n":"Maghnes Akliouche","p":"MED","num":18,"r":79,"c":"Paris Saint-Germain"},
+{"n":"Lucas Da Cunha","p":"MED","num":21,"r":75,"c":"Como"},
+{"n":"Ousmane Dembélé","p":"DEL","num":7,"r":91,"c":"Paris Saint-Germain"},
+{"n":"Michael Olise","p":"DEL","num":11,"r":88,"c":"Bayern Munich"},
+{"n":"Bradley Barcola","p":"DEL","num":12,"r":84,"c":"Liverpool"},
+{"n":"Esteban Lepaul","p":"DEL","num":19,"r":76,"c":"Rennes"},
+{"n":"Désiré Doué","p":"DEL","num":20,"r":86,"c":"Paris Saint-Germain"}]},"inglaterra":{"fecha":"Wikipedia, 10/10/2026","url":"https://en.wikipedia.org/wiki/England_national_football_team","jugadores":[
+{"n":"Jordan Pickford","p":"POR","num":1,"r":83,"c":"Everton"},
+{"n":"James Trafford","p":"POR","num":13,"r":78,"c":"Leeds United"},
+{"n":"Jason Steele","p":"POR","num":23,"r":72,"c":"Brighton & Hove Albion"},
+{"n":"Trent Alexander-Arnold","p":"DEF","num":2,"r":86,"c":"Real Madrid"},
+{"n":"Lewis Hall","p":"DEF","num":3,"r":80,"c":"Newcastle United"},
+{"n":"Marc Guéhi","p":"DEF","num":6,"r":84,"c":"Manchester City"},
+{"n":"Trevoh Chalobah","p":"DEF","num":12,"r":80,"c":"Como"},
+{"n":"Jarrad Branthwaite","p":"DEF","num":15,"r":80,"c":"Everton"},
+{"n":"Jarell Quansah","p":"DEF","num":22,"r":77,"c":"Bayer Leverkusen"},
+{"n":"Rico Lewis","p":"DEF","num":null,"r":79,"c":"Manchester City"},
+{"n":"Elliot Anderson","p":"MED","num":8,"r":82,"c":"Manchester City"},
+{"n":"Jude Bellingham","p":"MED","num":10,"r":89,"c":"Real Madrid"},
+{"n":"Myles Lewis-Skelly","p":"MED","num":16,"r":78,"c":"Arsenal"},
+{"n":"James Garner","p":"MED","num":18,"r":79,"c":"Everton"},
+{"n":"Morgan Gibbs-White","p":"MED","num":20,"r":82,"c":"Nottingham Forest"},
+{"n":"Bukayo Saka","p":"DEL","num":7,"r":88,"c":"Arsenal"},
+{"n":"Harry Kane","p":"DEL","num":9,"r":90,"c":"Bayern Munich"},
+{"n":"Anthony Gordon","p":"DEL","num":11,"r":83,"c":"Barcelona"},
+{"n":"Rio Ngumoha","p":"DEL","num":14,"r":70,"c":"Liverpool"},
+{"n":"Morgan Rogers","p":"DEL","num":17,"r":83,"c":"Chelsea"},
+{"n":"Dominic Calvert-Lewin","p":"DEL","num":19,"r":77,"c":"Leeds United"},
+{"n":"Eberechi Eze","p":"DEL","num":21,"r":84,"c":"Arsenal"}]},"noruega":{"fecha":"Wikipedia, 12/10/2026","url":"https://en.wikipedia.org/wiki/Norway_national_football_team","jugadores":[
+{"n":"Ørjan Nyland","p":"POR","num":1,"r":77,"c":"RB Leipzig"},
+{"n":"Sander Tangvik","p":"POR","num":12,"r":70,"c":"Hamburger SV"},
+{"n":"Egil Selvik","p":"POR","num":13,"r":70,"c":"Brest"},
+{"n":"Odin Bjørtuft","p":"DEF","num":2,"r":72,"c":"Bodø/Glimt"},
+{"n":"Kristoffer Ajer","p":"DEF","num":3,"r":76,"c":"Brentford"},
+{"n":"Leo Østigård","p":"DEF","num":4,"r":77,"c":"Genoa"},
+{"n":"David Møller Wolfe","p":"DEF","num":5,"r":74,"c":"Hamburger SV"},
+{"n":"Fredrik Sjøvold","p":"DEF","num":14,"r":68,"c":"Bodø/Glimt"},
+{"n":"Sondre Langås","p":"DEF","num":15,"r":70,"c":"Derby County"},
+{"n":"Marcus Holmgren Pedersen","p":"DEF","num":16,"r":75,"c":"Olympiacos"},
+{"n":"Torbjørn Heggem","p":"DEF","num":17,"r":74,"c":"Bologna"},
+{"n":"Julian Ryerson","p":"DEF","num":26,"r":80,"c":"Borussia Dortmund"},
+{"n":"Patrick Berg","p":"MED","num":6,"r":77,"c":"Bodø/Glimt"},
+{"n":"Fredrik Aursnes","p":"MED","num":7,"r":80,"c":"Benfica"},
+{"n":"Sander Berge","p":"MED","num":8,"r":79,"c":"Fulham"},
+{"n":"Martin Ødegaard","p":"MED","num":10,"r":87,"c":"Arsenal"},
+{"n":"Kristian Thorstvedt","p":"MED","num":18,"r":77,"c":"Sassuolo"},
+{"n":"Thelo Aasgaard","p":"MED","num":19,"r":74,"c":"Anderlecht"},
+{"n":"Erling Haaland","p":"DEL","num":9,"r":91,"c":"Manchester City"},
+{"n":"Jørgen Strand Larsen","p":"DEL","num":11,"r":79,"c":"Crystal Palace"},
+{"n":"Ole Didrik Blomberg","p":"DEL","num":17,"r":70,"c":"Bodø/Glimt"},
+{"n":"Antonio Nusa","p":"DEL","num":20,"r":80,"c":"RB Leipzig"},
+{"n":"Andreas Schjelderup","p":"DEL","num":21,"r":76,"c":"Benfica"},
+{"n":"Oscar Bobb","p":"DEL","num":22,"r":79,"c":"Fulham"},
+{"n":"Erik Botheim","p":"DEL","num":23,"r":73,"c":"Viking"}]},"eeuu":{"fecha":"Wikipedia, 12/10/2026","url":"https://en.wikipedia.org/wiki/United_States_men%27s_national_soccer_team","jugadores":[
+{"n":"Matt Freese","p":"POR","num":1,"r":74,"c":"New York City FC"},
+{"n":"Diego Kochen","p":"POR","num":24,"r":64,"c":"Lyngby"},
+{"n":"Chris Brady","p":"POR","num":25,"r":70,"c":"Chicago Fire"},
+{"n":"Brian Schwake","p":"POR","num":28,"r":66,"c":"Nashville SC"},
+{"n":"Sergiño Dest","p":"DEF","num":2,"r":77,"c":"PSV Eindhoven"},
+{"n":"Chris Richards","p":"DEF","num":3,"r":79,"c":"Crystal Palace"},
+{"n":"Antonee Robinson","p":"DEF","num":5,"r":81,"c":"Fulham"},
+{"n":"Auston Trusty","p":"DEF","num":6,"r":74,"c":"Celtic"},
+{"n":"Miles Robinson","p":"DEF","num":12,"r":73,"c":"FC Cincinnati"},
+{"n":"Peyton Miller","p":"DEF","num":13,"r":66,"c":"New England Revolution"},
+{"n":"Alex Freeman","p":"DEF","num":16,"r":70,"c":"Villarreal"},
+{"n":"George Campbell","p":"DEF","num":18,"r":66,"c":"West Bromwich Albion"},
+{"n":"Neil Pierre","p":"DEF","num":20,"r":64,"c":"Philadelphia Union"},
+{"n":"Frankie Westfield","p":"DEF","num":21,"r":64,"c":"Philadelphia Union"},
+{"n":"Tyler Adams","p":"MED","num":4,"r":79,"c":"Bournemouth"},
+{"n":"Gio Reyna","p":"MED","num":7,"r":77,"c":"Strasbourg"},
+{"n":"Yunus Musah","p":"MED","num":10,"r":77,"c":"AC Milan"},
+{"n":"Zavier Gozo","p":"MED","num":11,"r":64,"c":"Crystal Palace"},
+{"n":"Sebastian Berhalter","p":"MED","num":14,"r":70,"c":"Middlesbrough"},
+{"n":"Brooklyn Raines","p":"MED","num":15,"r":64,"c":"New England Revolution"},
+{"n":"Malik Tillman","p":"MED","num":17,"r":80,"c":"Bayer Leverkusen"},
+{"n":"Adri Mehmeti","p":"MED","num":26,"r":62,"c":"New York Red Bulls"},
+{"n":"Mathis Albert","p":"MED","num":27,"r":64,"c":"Borussia Dortmund"},
+{"n":"Cavan Sullivan","p":"DEL","num":8,"r":66,"c":"Philadelphia Union"},
+{"n":"Damion Downs","p":"DEL","num":9,"r":72,"c":"St. Louis City SC"},
+{"n":"Julian Hall","p":"DEL","num":19,"r":64,"c":"New York Red Bulls"},
+{"n":"Justin Ellis","p":"DEL","num":22,"r":62,"c":"Orlando City"},
+{"n":"Cole Campbell","p":"DEL","num":23,"r":68,"c":"SV Elversberg"}]},"alemania":{"fecha":"Wikipedia, 09/10/2026","url":"https://en.wikipedia.org/wiki/Germany_national_football_team","jugadores":[
+{"n":"Jonas Urbig","p":"POR","num":1,"r":76,"c":"Bayern Munich"},
+{"n":"Finn Dahmen","p":"POR","num":12,"r":78,"c":"FC Augsburg"},
+{"n":"Noah Atubolu","p":"POR","num":21,"r":79,"c":"Eintracht Frankfurt"},
+{"n":"Marc-André ter Stegen","p":"POR","num":null,"r":85,"c":"Ajax"},
+{"n":"Alexander Nübel","p":"POR","num":null,"r":81,"c":"Beşiktaş"},
+{"n":"Malick Thiaw","p":"DEF","num":2,"r":82,"c":"Newcastle United"},
+{"n":"Waldemar Anton","p":"DEF","num":3,"r":80,"c":"Borussia Dortmund"},
+{"n":"Finn Jeltsch","p":"DEF","num":4,"r":74,"c":"VfB Stuttgart"},
+{"n":"Philipp Treu","p":"DEF","num":13,"r":74,"c":"SC Freiburg"},
+{"n":"Ridle Baku","p":"DEF","num":16,"r":79,"c":"RB Leipzig"},
+{"n":"Maximilian Mittelstädt","p":"DEF","num":18,"r":79,"c":"VfB Stuttgart"},
+{"n":"David Raum","p":"DEF","num":22,"r":81,"c":"RB Leipzig"},
+{"n":"Jonathan Tah","p":"DEF","num":null,"r":85,"c":"Bayern Munich"},
+{"n":"Nathaniel Brown","p":"DEF","num":null,"r":76,"c":"Bayern Munich"},
+{"n":"Josha Vagnoman","p":"DEF","num":null,"r":74,"c":"VfB Stuttgart"},
+{"n":"Yann Aurel Bisseck","p":"DEF","num":null,"r":81,"c":"Inter Milan"},
+{"n":"Hennes Behrens","p":"DEF","num":null,"r":66,"c":"FC Augsburg"},
+{"n":"Max Rosenfelder","p":"DEF","num":null,"r":72,"c":"SC Freiburg"},
+{"n":"Aleksandar Pavlović","p":"MED","num":5,"r":83,"c":"Bayern Munich"},
+{"n":"Yannik Engelhardt","p":"MED","num":6,"r":70,"c":"SC Freiburg"},
+{"n":"Said El Mala","p":"MED","num":7,"r":78,"c":"1. FC Köln"},
+{"n":"Tom Bischof","p":"MED","num":8,"r":77,"c":"Bayern Munich"},
+{"n":"Mika Baur","p":"MED","num":14,"r":68,"c":"Celtic"},
+{"n":"Lennart Karl","p":"MED","num":15,"r":76,"c":"Bayern Munich"},
+{"n":"Florian Wirtz","p":"MED","num":17,"r":88,"c":"Liverpool"},
+{"n":"Bambasé Conté","p":"MED","num":19,"r":70,"c":"TSG Hoffenheim"},
+{"n":"Felix Keidel","p":"MED","num":20,"r":70,"c":"SV Elversberg"},
+{"n":"Vitaly Janelt","p":"MED","num":23,"r":76,"c":"Brentford"},
+{"n":"Joshua Kimmich","p":"MED","num":null,"r":87,"c":"Bayern Munich"},
+{"n":"Felix Nmecha","p":"MED","num":null,"r":80,"c":"Borussia Dortmund"},
+{"n":"Nadiem Amiri","p":"MED","num":null,"r":80,"c":"Mainz 05"},
+{"n":"Karim Adeyemi","p":"MED","num":null,"r":80,"c":"Barcelona"},
+{"n":"Chris Führich","p":"MED","num":null,"r":78,"c":"VfB Stuttgart"},
+{"n":"Kevin Schade","p":"MED","num":null,"r":78,"c":"Brentford"},
+{"n":"Anton Stach","p":"MED","num":null,"r":79,"c":"Leeds United"},
+{"n":"Derry Scherhant","p":"DEL","num":9,"r":72,"c":"SC Freiburg"},
+{"n":"Jonathan Burkardt","p":"DEL","num":10,"r":80,"c":"Eintracht Frankfurt"},
+{"n":"Nick Woltemade","p":"DEL","num":11,"r":81,"c":"Juventus"},
+{"n":"Younes Ebnoutalib","p":"DEL","num":null,"r":72,"c":"Eintracht Frankfurt"}]},"italia":{"fecha":"Wikipedia, 09/10/2026","url":"https://en.wikipedia.org/wiki/Italy_national_football_team","jugadores":[
+{"n":"Gianluigi Donnarumma","p":"POR","num":1,"r":89,"c":"Manchester City"},
+{"n":"Marco Carnesecchi","p":"POR","num":12,"r":81,"c":"Atalanta"},
+{"n":"Guglielmo Vicario","p":"POR","num":13,"r":83,"c":"Juventus"},
+{"n":"Massimo Pessina","p":"POR","num":null,"r":64,"c":"Bologna"},
+{"n":"Michael Kayode","p":"DEF","num":2,"r":75,"c":"Brentford"},
+{"n":"Matteo Ruggeri","p":"DEF","num":3,"r":77,"c":"Aston Villa"},
+{"n":"Riccardo Calafiori","p":"DEF","num":5,"r":81,"c":"Arsenal"},
+{"n":"Alessandro Bastoni","p":"DEF","num":6,"r":86,"c":"Inter Milan"},
+{"n":"Giorgio Scalvini","p":"DEF","num":19,"r":80,"c":"Atalanta"},
+{"n":"Giovanni Di Lorenzo","p":"DEF","num":22,"r":83,"c":"Napoli"},
+{"n":"Gianluca Mancini","p":"DEF","num":23,"r":82,"c":"Roma"},
+{"n":"Diego Coppola","p":"DEF","num":null,"r":74,"c":"Paris FC"},
+{"n":"Daniele Ghilardi","p":"DEF","num":null,"r":72,"c":"Roma"},
+{"n":"Eddy Kouadio","p":"DEF","num":null,"r":64,"c":"Monza"},
+{"n":"Alessandro Romano","p":"MED","num":4,"r":66,"c":"Cagliari"},
+{"n":"Sandro Tonali","p":"MED","num":8,"r":86,"c":"Tottenham Hotspur"},
+{"n":"Nicolò Fagioli","p":"MED","num":10,"r":78,"c":"Fiorentina"},
+{"n":"Issa Doumbia","p":"MED","num":15,"r":72,"c":"Sporting CP"},
+{"n":"Davide Frattesi","p":"MED","num":16,"r":81,"c":"Lazio"},
+{"n":"Nicolò Barella","p":"MED","num":18,"r":87,"c":"Inter Milan"},
+{"n":"Samuele Ricci","p":"MED","num":null,"r":80,"c":"Como"},
+{"n":"Rolando Mandragora","p":"MED","num":null,"r":78,"c":"Torino"},
+{"n":"Nicolò Cambiaghi","p":"DEL","num":7,"r":75,"c":"Bologna"},
+{"n":"Pio Esposito","p":"DEL","num":9,"r":76,"c":"Inter Milan"},
+{"n":"Gianluca Scamacca","p":"DEL","num":11,"r":79,"c":"Atalanta"},
+{"n":"Samuele Inácio","p":"DEL","num":14,"r":68,"c":"Borussia Dortmund"},
+{"n":"Daniel Maldini","p":"DEL","num":17,"r":76,"c":"Cagliari"},
+{"n":"Sebastiano Esposito","p":"DEL","num":20,"r":74,"c":"Sassuolo"},
+{"n":"Antonio Vergara","p":"DEL","num":21,"r":70,"c":"Napoli"},
+{"n":"Mohamed Alì Zoma","p":"DEL","num":null,"r":64,"c":"1. FC Nürnberg"}]}}};
+
+</script>
+<script>
+(() => {
+  // Colores de cada camiseta. stripes = bastones verticales, hoops = rayas horizontales,
+  // band = franja horizontal, center = franja vertical central, sash = banda cruzada, ring = vivos del borde.
+  const TEAMS = [
+    { slug: 'boca', short: 'Boca', name: 'Boca Juniors', meta: 'Club · Argentina', kit: { base: '#0b3c8c', band: ['#f7c21a', .42, .56] }, text: '#ffffff', halo: '#06265a', trim: '#f7c21a' },
+    { slug: 'river', short: 'River', name: 'River Plate', meta: 'Club · Argentina', kit: { base: '#f6f6f2', sash: '#d6182d' }, text: '#b3121c', halo: '#ffffff', trim: '#d6182d' },
+    { slug: 'racing', short: 'Racing', name: 'Racing Club', meta: 'Club · Argentina', kit: { base: '#78bfe9', stripes: ['#ffffff', 5] }, text: '#0d2c54', halo: '#ffffff', trim: '#0d2c54' },
+    { slug: 'central', short: 'Central', name: 'Rosario Central', meta: 'Club · Argentina', kit: { base: '#0a2a6b', stripes: ['#f6c800', 5] }, text: '#ffffff', halo: '#0a2a6b', trim: '#f6c800' },
+    { slug: 'sanlorenzo', short: 'San Lorenzo', name: 'San Lorenzo', meta: 'Club · Argentina', kit: { base: '#1c2b5a', stripes: ['#c8102e', 5] }, text: '#ffffff', halo: '#101a38', trim: '#c8102e' },
+    { slug: 'independiente', short: 'Independiente', name: 'Independiente', meta: 'Club · Argentina', kit: { base: '#d3121f' }, text: '#ffffff', halo: '#7a0a12', trim: '#ffffff' },
+    { slug: 'barcelona', short: 'Barcelona', name: 'FC Barcelona', meta: 'Club · España', kit: { base: '#a50044', stripes: ['#004d98', 5], ring: ['#edbb00'] }, text: '#ffd23f', halo: '#1b1030', trim: '#edbb00' },
+    { slug: 'napoles', short: 'Nápoles', name: 'Nápoles', meta: 'Club · Italia', kit: { base: '#1a9ad6' }, text: '#ffffff', halo: '#0b4a73', trim: '#ffffff' },
+    { slug: 'realmadrid', short: 'Real Madrid', name: 'Real Madrid', meta: 'Club · España', kit: { base: '#fafafa', ring: ['#e3b23c'] }, text: '#23336e', halo: '#ffffff', trim: '#e3b23c' },
+    { slug: 'psg', short: 'PSG', name: 'Paris Saint-Germain', meta: 'Club · Francia', kit: { base: '#0b2348', center: ['#d7262e', .3, '#ffffff'] }, text: '#ffffff', halo: '#0b2348', trim: '#d7262e' },
+    { slug: 'benfica', short: 'Benfica', name: 'Benfica', meta: 'Club · Portugal', kit: { base: '#e2001a', ring: ['#ffffff'] }, text: '#ffffff', halo: '#7d0010', trim: '#ffffff' },
+    { slug: 'ajax', short: 'Ajax', name: 'Ajax', meta: 'Club · Países Bajos', kit: { base: '#ffffff', center: ['#d2122e', .38] }, text: '#ffffff', halo: '#7a0a12', trim: '#d2122e' },
+    { slug: 'bayern', short: 'Bayern', name: 'Bayern Múnich', meta: 'Club · Alemania', kit: { base: '#dc052d', ring: ['#ffffff', '#0066b2'] }, text: '#ffffff', halo: '#75001a', trim: '#ffffff' },
+    { slug: 'mancity', short: 'Man City', name: 'Manchester City', meta: 'Club · Inglaterra', kit: { base: '#6cabdd', ring: ['#1c2c5b'] }, text: '#1c2c5b', halo: '#ffffff', trim: '#1c2c5b' },
+    { slug: 'liverpool', short: 'Liverpool', name: 'Liverpool', meta: 'Club · Inglaterra', kit: { base: '#c8102e', ring: ['#f6eb61'] }, text: '#ffffff', halo: '#5e0712', trim: '#f6eb61' },
+    { slug: 'tottenham', short: 'Tottenham', name: 'Tottenham Hotspur', meta: 'Club · Inglaterra', kit: { base: '#ffffff', ring: ['#132257'] }, text: '#132257', halo: '#ffffff', trim: '#132257' },
+    { slug: 'dortmund', short: 'Dortmund', name: 'Borussia Dortmund', meta: 'Club · Alemania', kit: { base: '#fde100', ring: ['#000000'] }, text: '#000000', halo: '#fff7a8', trim: '#000000' },
+    { slug: 'manutd', short: 'Man United', name: 'Manchester United', meta: 'Club · Inglaterra', kit: { base: '#da291c', ring: ['#000000'] }, text: '#ffffff', halo: '#5a0d07', trim: '#fbe122' },
+    { slug: 'alnassr', short: 'Al Nassr', name: 'Al Nassr', meta: 'Club · Arabia Saudita', kit: { base: '#fcd116', ring: ['#0b2d72'] }, text: '#0b2d72', halo: '#fff3b0', trim: '#0b2d72' },
+    { slug: 'argentina', short: 'Argentina', name: 'Selección Argentina', meta: 'Selección nacional', kit: { base: '#75aadb', stripes: ['#ffffff', 3], ring: ['#f6b40e'] }, text: '#14284a', halo: '#ffffff', trim: '#f6b40e' },
+    { slug: 'brasil', short: 'Brasil', name: 'Brasil', meta: 'Selección nacional', kit: { base: '#ffdf00', ring: ['#009c3b'] }, text: '#0a6e3a', halo: '#fff7b0', trim: '#009c3b' },
+    { slug: 'portugal', short: 'Portugal', name: 'Portugal', meta: 'Selección nacional', kit: { base: '#c8102e', ring: ['#046a38'] }, text: '#ffffff', halo: '#6b0717', trim: '#046a38' },
+    { slug: 'francia', short: 'Francia', name: 'Francia', meta: 'Selección nacional', kit: { base: '#1b2a5e', ring: ['#e1000f', '#ffffff'] }, text: '#ffffff', halo: '#0d1633', trim: '#ffffff' },
+    { slug: 'inglaterra', short: 'Inglaterra', name: 'Inglaterra', meta: 'Selección nacional', kit: { base: '#ffffff', ring: ['#cf142b'] }, text: '#0f1e46', halo: '#ffffff', trim: '#0f1e46' },
+    { slug: 'noruega', short: 'Noruega', name: 'Noruega', meta: 'Selección nacional', kit: { base: '#ba0c2f', ring: ['#ffffff', '#00205b'] }, text: '#ffffff', halo: '#5e0618', trim: '#00205b' },
+    { slug: 'eeuu', short: 'EE.UU.', name: 'Estados Unidos', meta: 'Selección nacional', kit: { base: '#ffffff', hoops: ['#b31942', 7], ring: ['#0a3161'] }, text: '#0a3161', halo: '#ffffff', trim: '#0a3161' },
+    { slug: 'alemania', short: 'Alemania', name: 'Alemania', meta: 'Selección nacional', kit: { base: '#ffffff', ring: ['#000000', '#dd0000', '#ffce00'] }, text: '#111111', halo: '#ffffff', trim: '#111111' },
+    { slug: 'italia', short: 'Italia', name: 'Italia', meta: 'Selección nacional', kit: { base: '#1f6fc5', ring: ['#009246', '#ffffff', '#ce2b37'] }, text: '#ffffff', halo: '#0c3466', trim: '#ffffff' },
+  ];
+  const TEAM_BY_SLUG = Object.fromEntries(TEAMS.map((t) => [t.slug, t]));
+
+  // Puestos de cada formación: [grupo, etiqueta, x %, y %]. El arco propio está abajo.
+  const POR = ['POR', 'ARQ', 50, 89];
+  const DEF4 = [['DEF', 'LI', 14, 69], ['DEF', 'DFC', 38, 72], ['DEF', 'DFC', 62, 72], ['DEF', 'LD', 86, 69]];
+  const DEF3 = [['DEF', 'DFC', 25, 71], ['DEF', 'DFC', 50, 73], ['DEF', 'DFC', 75, 71]];
+  const DEL2 = [['DEL', 'DC', 35, 23], ['DEL', 'DC', 65, 23]];
+  const DEL3 = [['DEL', 'EI', 17, 26], ['DEL', 'DC', 50, 20], ['DEL', 'ED', 83, 26]];
+  const FORMATIONS = {
+    '4-3-3': [POR, ...DEF4, ['MED', 'MC', 26, 49], ['MED', 'MCD', 50, 54], ['MED', 'MC', 74, 49], ...DEL3],
+    '4-4-2': [POR, ...DEF4, ['MED', 'MI', 14, 47], ['MED', 'MC', 38, 51], ['MED', 'MC', 62, 51], ['MED', 'MD', 86, 47], ...DEL2],
+    '3-5-2': [POR, ...DEF3, ['MED', 'MI', 12, 46], ['MED', 'MC', 31, 52], ['MED', 'MCD', 50, 56], ['MED', 'MC', 69, 52], ['MED', 'MD', 88, 46], ...DEL2],
+    '4-2-3-1': [POR, ...DEF4, ['MED', 'MCD', 35, 56], ['MED', 'MCD', 65, 56], ['MED', 'MI', 16, 36], ['MED', 'MCO', 50, 39], ['MED', 'MD', 84, 36], ['DEL', 'DC', 50, 16]],
+    '3-4-3': [POR, ...DEF3, ['MED', 'MI', 14, 48], ['MED', 'MC', 38, 52], ['MED', 'MC', 62, 52], ['MED', 'MD', 86, 48], ...DEL3],
+    '5-3-2': [POR, ['DEF', 'LI', 12, 63], ['DEF', 'DFC', 31, 71], ['DEF', 'DFC', 50, 73], ['DEF', 'DFC', 69, 71], ['DEF', 'LD', 88, 63], ['MED', 'MC', 26, 46], ['MED', 'MCD', 50, 50], ['MED', 'MC', 74, 46], ...DEL2],
+  };
+  const FORM_KEYS = Object.keys(FORMATIONS);
+  const GROUPS = [['POR', 'Arqueros', 'ARQ'], ['DEF', 'Defensores', 'DEF'], ['MED', 'Mediocampistas', 'MED'], ['DEL', 'Delanteros', 'DEL']];
+  const GROUP_ABBR = Object.fromEntries(GROUPS.map((g) => [g[0], g[2]]));
+  const GROUP_FULL = { POR: 'el arquero', DEF: 'los defensores', MED: 'los mediocampistas', DEL: 'los delanteros' };
+  const GROUP_ONE = { POR: 'arquero', DEF: 'defensor', MED: 'mediocampista', DEL: 'delantero' };
+
+  const DATA = window.PLANTELES || { equipos: {} };
+  const squad = (slug) => (DATA.equipos[slug] ? DATA.equipos[slug].jugadores : null);
+
+  const N = TEAMS.length;
+  const SEG = 360 / N;
+  const R = 270;
+  const RIM = 292;
+  const HALF = SEG / 2 * Math.PI / 180;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fast = location.hash === '#rapido';   // giros cortos para probar una partida entera
+
+  const $ = (id) => document.getElementById(id);
+  const rotorEl = $('rotor'), pointerEl = $('pointer'), wheelEl = $('wheel');
+  const boardEl = $('board'), roundEl = $('round'), turnEl = $('turn'), statusEl = $('status'), bigEl = $('big'), metaEl = $('meta'), shirtEl = $('shirt');
+  const wheelView = $('wheelView'), squadView = $('squadView');
+  const sqShirt = $('sqShirt'), sqMeta = $('sqMeta'), sqTitle = $('sqTitle'), sqPicker = $('sqPicker'), sqList = $('sqList'), confirmBtn = $('confirm');
+  const ctaBox = $('ctaBox'), ctaBtn = $('cta'), hintEl = $('hint');
+  const abortBox = $('abortBox'), abortBtn = $('abort'), abortAsk = $('abortAsk'), abortYes = $('abortYes'), abortNo = $('abortNo');
+  const soundBtn = $('sound'), announceEl = $('announce');
+
+  const f = (n) => n.toFixed(2);
+  const pad = (n) => String(n).padStart(2, '0');
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+  const cssVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
+  function rand01() {
+    try {
+      const a = new Uint32Array(1);
+      crypto.getRandomValues(a);
+      return a[0] / 4294967296;
+    } catch (e) {
+      return Math.random();
+    }
+  }
+
+  // Apellido para mostrar en la cancha ("Ángel Di María" → "Di María", "Vinícius Jr." queda igual)
+  const PARTICLES = new Set(['de', 'del', 'da', 'das', 'do', 'dos', 'di', 'van', 'von', 'der', 'den', 'ter', 'mac', 'la', 'le', 'el', 'al', 'ben']);
+  function shortName(d) {
+    if (d.s) return d.s;
+    const w = d.n.split(' ');
+    if (w.length === 1) return d.n;
+    let i = w.length - 1;
+    if (i > 0 && /^(jr\.?|júnior|junior|filho|neto)$/i.test(w[i])) i--;
+    while (i > 0 && PARTICLES.has(w[i - 1].toLowerCase())) i--;
+    return w.slice(i).join(' ').replace(/ J[úu]nior$/i, ' Jr.');
+  }
+
+  // ---------- Dibujo de camisetas ----------
+  function kitLayers(k, b) {
+    let s = `<rect x="${f(b.x)}" y="${f(b.y)}" width="${f(b.w)}" height="${f(b.h)}" fill="${k.base}"/>`;
+    if (k.stripes) {
+      const [c, n] = k.stripes, sw = b.w / n;
+      for (let i = 1; i < n; i += 2) s += `<rect x="${f(b.x + i * sw)}" y="${f(b.y)}" width="${f(sw)}" height="${f(b.h)}" fill="${c}"/>`;
+    }
+    if (k.hoops) {
+      const [c, n] = k.hoops, hh = b.h / n;
+      for (let i = 1; i < n; i += 2) s += `<rect x="${f(b.x)}" y="${f(b.y + i * hh)}" width="${f(b.w)}" height="${f(hh)}" fill="${c}"/>`;
+    }
+    if (k.band) {
+      const [c, a, z] = k.band;
+      s += `<rect x="${f(b.x)}" y="${f(b.y + b.h * a)}" width="${f(b.w)}" height="${f(b.h * (z - a))}" fill="${c}"/>`;
+    }
+    if (k.center) {
+      const [c, fr, edge] = k.center, w = b.w * fr, cx = b.x + b.w / 2;
+      if (edge) s += `<rect x="${f(cx - w / 2 - b.w * .05)}" y="${f(b.y)}" width="${f(w + b.w * .1)}" height="${f(b.h)}" fill="${edge}"/>`;
+      s += `<rect x="${f(cx - w / 2)}" y="${f(b.y)}" width="${f(w)}" height="${f(b.h)}" fill="${c}"/>`;
+    }
+    if (k.sash) {
+      const t = b.w * .3, L = (b.w + b.h) * 1.6, cx = b.x + b.w / 2, cy = b.y + b.h / 2;
+      s += `<rect x="${f(cx - L / 2)}" y="${f(cy - t / 2)}" width="${f(L)}" height="${f(t)}" fill="${k.sash}" transform="rotate(38 ${f(cx)} ${f(cy)})"/>`;
+    }
+    return s;
+  }
+
+  const JERSEY = 'M33 10 L43 6 Q50 13 57 6 L67 10 L92 24 L83 42 L73 37 L73 94 L27 94 L27 37 L17 42 L8 24 Z';
+  let jid = 0;
+  function jersey(t) {
+    const id = 'jc' + (++jid);
+    return `<svg viewBox="0 0 100 100" aria-hidden="true">
+      <defs><clipPath id="${id}"><path d="${JERSEY}"/></clipPath></defs>
+      <g clip-path="url(#${id})">${kitLayers(t.kit, { x: 8, y: 6, w: 84, h: 88 })}</g>
+      <path d="${JERSEY}" fill="none" stroke="#000" stroke-opacity=".35" stroke-width="2.5" stroke-linejoin="round"/>
+      <path d="M43 6 Q50 13 57 6" fill="none" stroke="${t.trim}" stroke-width="4" stroke-linecap="round"/>
+    </svg>`;
+  }
+  const BLANK_JERSEY = `<svg viewBox="0 0 100 100" aria-hidden="true">
+      <path d="${JERSEY}" fill="#141f18" stroke="#b3cbb9" stroke-opacity=".6" stroke-width="2.5" stroke-dasharray="5 4" stroke-linejoin="round"/>
+      <text x="50" y="64" text-anchor="middle" font-family="Barlow Condensed, Arial Narrow, sans-serif" font-weight="800" font-size="34" fill="#ffc94a">?</text>
+    </svg>`;
+  const TROPHY = `<svg viewBox="0 0 100 100" aria-hidden="true">
+      <path d="M30 20H15c0 15 7 23 18 25M70 20h15c0 15-7 23-18 25" fill="none" stroke="#ffc94a" stroke-width="5" stroke-linecap="round"/>
+      <path d="M29 12h42v20c0 15-9 25-21 27-12-2-21-12-21-27z" fill="#ffc94a"/>
+      <rect x="44" y="58" width="12" height="14" fill="#e0a92e"/>
+      <rect x="31" y="72" width="38" height="12" rx="2" fill="#b9841a"/>
+    </svg>`;
+
+  // ---------- Ruleta ----------
+  function pent(cx, cy, r, rot) {
+    return Array.from({ length: 5 }, (_, k) => {
+      const a = (rot + 72 * k) * Math.PI / 180;
+      return `${f(cx + r * Math.cos(a))},${f(cy + r * Math.sin(a))}`;
+    }).join(' ');
+  }
+
+  function buildWheel() {
+    const x1 = R * Math.sin(HALF), y1 = -R * Math.cos(HALF);
+    const WEDGE = `M0 0 L${f(-x1)} ${f(y1)} A${R} ${R} 0 0 1 ${f(x1)} ${f(y1)} Z`;
+    const box = { x: -x1, y: -R, w: 2 * x1, h: R };
+
+    let segs = '';
+    TEAMS.forEach((t, i) => {
+      const rings = (t.kit.ring || []).map((c, j) =>
+        `<circle r="${R - 3 - j * 6}" fill="none" stroke="${c}" stroke-width="6"/>`).join('');
+      segs += `<g class="seg" transform="rotate(${f((i + .5) * SEG)})">
+        <g clip-path="url(#wedgeClip)">${kitLayers(t.kit, box)}${rings}</g>
+        <text class="lab" x="244" y="0" dy=".34em" transform="rotate(-90)" text-anchor="end" fill="${t.text}" stroke="${t.halo}">${t.short.toUpperCase()}</text>
+        <path class="dim" d="${WEDGE}"/>
+        <path class="edge" d="${WEDGE}"/>
+      </g>`;
+    });
+
+    let seps = '', bulbs = '';
+    for (let i = 0; i < N; i++) {
+      const a = (i * SEG - 90) * Math.PI / 180;
+      seps += `<line class="sep" x1="0" y1="0" x2="${f(R * Math.cos(a))}" y2="${f(R * Math.sin(a))}"/>`;
+      bulbs += `<circle class="bulb" cx="${f(281 * Math.cos(a))}" cy="${f(281 * Math.sin(a))}" r="5.5"/>`;
+      const m = ((i + .5) * SEG - 90) * Math.PI / 180;
+      bulbs += `<circle class="bulb alt" cx="${f(281 * Math.cos(m))}" cy="${f(281 * Math.sin(m))}" r="3.8"/>`;
+    }
+
+    let ball = `<circle class="hub-ring" r="64"/><g clip-path="url(#ballClip)"><circle r="56" fill="#f4f6f1"/>`;
+    ball += `<polygon points="${pent(0, 0, 17, -90)}" fill="#141a16"/>`;
+    for (let k = 0; k < 5; k++) {
+      const deg = -90 + 72 * k, a = deg * Math.PI / 180, b = (deg + 36) * Math.PI / 180;
+      ball += `<line x1="${f(17 * Math.cos(a))}" y1="${f(17 * Math.sin(a))}" x2="${f(42 * Math.cos(a))}" y2="${f(42 * Math.sin(a))}" stroke="#141a16" stroke-width="2.5"/>`;
+      ball += `<polygon points="${pent(54 * Math.cos(a), 54 * Math.sin(a), 15, deg + 180)}" fill="#141a16"/>`;
+      ball += `<line x1="${f(38 * Math.cos(b))}" y1="${f(38 * Math.sin(b))}" x2="${f(58 * Math.cos(b))}" y2="${f(58 * Math.sin(b))}" stroke="#141a16" stroke-width="2.5"/>`;
+    }
+    ball += `</g><circle r="56" fill="none" stroke="#141a16" stroke-width="3"/>`;
+
+    rotorEl.innerHTML = `<svg id="wheelSvg" viewBox="${-RIM} ${-RIM} ${RIM * 2} ${RIM * 2}" role="img" aria-label="Ruleta con ${N} equipos">
+      <defs>
+        <clipPath id="wedgeClip"><path d="${WEDGE}"/></clipPath>
+        <clipPath id="ballClip"><circle r="56"/></clipPath>
+      </defs>
+      <circle class="rim" r="${RIM}"/>
+      ${segs}${seps}
+      <circle class="rim-line" r="${R}"/>
+      ${bulbs}${ball}
+    </svg>`;
+  }
+  buildWheel();
+  const wheelSvg = $('wheelSvg');
+  const segEls = [...wheelSvg.querySelectorAll('.seg')];
+
+  let rot = -SEG / 2;
+  let spinning = false;
+  const indexAt = (r) => Math.floor((((-r) % 360) + 360) % 360 / SEG) % N;
+  const paint = () => { rotorEl.style.transform = `rotate(${rot}deg)`; };
+  // Con la pestaña oculta el navegador frena requestAnimationFrame; así el giro igual termina.
+  const nextFrame = (fn) => (document.hidden ? setTimeout(() => fn(performance.now()), 16) : requestAnimationFrame(fn));
+  const clearWheelMarks = () => {
+    wheelSvg.classList.remove('decided', 'flash', 'spinning');
+    segEls.forEach((s) => s.classList.remove('won'));
+  };
+
+  function spinWheel(onTeam) {
+    return new Promise((resolve) => {
+      spinning = true;
+      const idx = Math.floor(rand01() * N);
+      const jitter = (rand01() * 2 - 1) * SEG * .36;
+      const c = (idx + .5) * SEG + jitter;
+      const targetMod = ((360 - c) % 360 + 360) % 360;
+      const curMod = ((rot % 360) + 360) % 360;
+      let delta = targetMod - curMod;
+      if (delta < 0) delta += 360;
+      const turns = reduce ? 1 : 5 + Math.floor(rand01() * 2);
+      const from = rot, to = rot + delta + turns * 360;
+      const dur = fast ? 400 : reduce ? 1400 : 5400 + rand01() * 900;
+
+      clearWheelMarks();
+      if (!reduce) wheelSvg.classList.add('spinning');
+      pointerEl.classList.add('live');
+
+      let last = -1;
+      const t0 = performance.now();
+      function frame(now) {
+        const t = Math.min(1, (now - t0) / dur);
+        rot = from + (to - from) * (1 - Math.pow(1 - t, 4));
+        paint();
+        const cur = indexAt(rot);
+        if (cur !== last) {
+          if (last !== -1) tick();
+          last = cur;
+          onTeam(cur);
+        }
+        // La flecha se engancha en cada luz del borde y salta al pasarla
+        const p = (((rot % SEG) + SEG) % SEG) / SEG;
+        pointerEl.style.transform = `rotate(${-(p > .65 ? (p - .65) / .35 * 20 : 0)}deg)`;
+        if (t < 1) { nextFrame(frame); return; }
+
+        rot = ((rot % 360) + 360) % 360;
+        paint();
+        pointerEl.classList.remove('live');
+        pointerEl.style.transform = 'rotate(0deg)';
+        const i = indexAt(rot);
+        wheelSvg.classList.remove('spinning');
+        wheelSvg.classList.add('decided');
+        if (!reduce) wheelSvg.classList.add('flash');
+        segEls[i].classList.add('won');
+        spinning = false;
+        resolve(i);
+      }
+      nextFrame(frame);
+    });
+  }
+
+  // ---------- Sonido (se genera en el momento, sin archivos) ----------
+  let ac = null, lastTick = 0;
+  function audio() {
+    if (!G.sound) return null;
+    if (!ac) {
+      try { ac = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return null; }
+    }
+    if (ac.state === 'suspended') ac.resume();
+    return ac;
+  }
+  function beep(type, f0, f1, dur, vol) {
+    const a = audio(); if (!a) return;
+    const t = a.currentTime, o = a.createOscillator(), g = a.createGain();
+    o.type = type;
+    o.frequency.setValueAtTime(f0, t);
+    o.frequency.exponentialRampToValueAtTime(f1, t + dur * .7);
+    g.gain.setValueAtTime(.0001, t);
+    g.gain.exponentialRampToValueAtTime(vol, t + .005);
+    g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    o.connect(g).connect(a.destination);
+    o.start(t); o.stop(t + dur + .01);
+  }
+  function tick() {
+    const now = performance.now();
+    if (now - lastTick < 28) return;
+    lastTick = now;
+    beep('square', 1400, 500, .045, .06);
+  }
+  const popSound = () => beep('triangle', 520, 1100, .16, .12);
+  const revealSound = (r) => beep('triangle', 300 + r * 6, 600 + r * 8, .14, .1);
+  function whistle() {
+    const a = audio(); if (!a) return;
+    const blast = (start, dur) => {
+      const o = a.createOscillator(), lfo = a.createOscillator(), lg = a.createGain(), g = a.createGain();
+      o.type = 'sine'; o.frequency.value = 2650;
+      lfo.frequency.value = 34; lg.gain.value = 150;
+      lfo.connect(lg).connect(o.frequency);
+      g.gain.setValueAtTime(.0001, start);
+      g.gain.exponentialRampToValueAtTime(.16, start + .02);
+      g.gain.setValueAtTime(.16, start + dur - .05);
+      g.gain.exponentialRampToValueAtTime(.0001, start + dur);
+      o.connect(g).connect(a.destination);
+      o.start(start); lfo.start(start);
+      o.stop(start + dur + .02); lfo.stop(start + dur + .02);
+    };
+    const t = a.currentTime;
+    blast(t + .02, .16);
+    blast(t + .28, .5);
+  }
+
+  // ---------- Estado del partido ----------
+  // phase: setup → spin ⇄ pick → full → reveal → done
+  // Cada ronda: tira el primero y elige un puesto; después tira el otro y elige ese mismo puesto (req).
+  const KEY = 'ruleta-bernie-partido-v3';
+  function fresh(prev) {
+    return {
+      phase: 'setup',
+      names: prev ? prev.names : ['Bernie', ''],
+      forms: prev ? prev.forms : [null, null],
+      picks: [[], []],
+      round: 0,
+      team: null,
+      pickers: [],   // quiénes faltan tirar en esta ronda, en orden
+      req: null,     // puesto que tiene que elegir el segundo de la ronda
+      sel: null,
+      last: '',
+      sound: prev ? prev.sound : true,
+    };
+  }
+  let G = fresh();
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(G)); } catch (e) { /* sin almacenamiento */ }
+  }
+  function load() {
+    try {
+      const s = JSON.parse(localStorage.getItem(KEY) || 'null');
+      if (s && s.phase && Array.isArray(s.picks)) return s;
+    } catch (e) { /* ignorar */ }
+    return null;
+  }
+
+  let landing = false;       // mostrando el equipo que salió antes de abrir el plantel
+  let revealStep = 0;        // cuántos puestos ya mostraron su puntaje
+  let justPlaced = null;     // para animar la camiseta recién fichada
+  let askAbort = false;
+
+  const nameOf = (p) => (G.names[p] || '').trim() || `Jugador ${p + 1}`;
+  const slotsOf = (p) => FORMATIONS[G.forms[p]] || [];
+  const filled = (p) => G.picks[p].filter(Boolean).length;
+  const complete = (p) => filled(p) >= 11;
+  const nextPickers = (round) => { const first = (round - 1) % 2; return [first, 1 - first].filter((p) => !complete(p)); };
+  const spinner = () => (G.pickers.length ? G.pickers[0] : nextPickers(G.round + 1)[0]);
+  function needs(p) {
+    const out = { POR: 0, DEF: 0, MED: 0, DEL: 0 };
+    slotsOf(p).forEach((s, i) => { if (!G.picks[p][i]) out[s[0]]++; });
+    return out;
+  }
+  // Puestos que puede elegir p ahora.
+  // why: 'req' = el segundo copia el puesto del primero; 'common' = el primero elige entre los que les faltan a los dos;
+  // 'free' = sin restricción (no hay puestos en común o juega solo).
+  function allowed(p) {
+    const mine = needs(p);
+    const open = GROUPS.map(([g]) => g).filter((g) => mine[g] > 0);
+    if (G.req && mine[G.req] > 0) return { groups: [G.req], why: 'req' };
+    const other = G.pickers[0] === p ? G.pickers[1] : undefined;
+    if (other !== undefined) {
+      const theirs = needs(other);
+      const common = open.filter((g) => theirs[g] > 0);
+      if (common.length) return { groups: common, why: 'common', other };
+    }
+    return { groups: open, why: 'free' };
+  }
+  function needsText(p) {
+    const n = needs(p);
+    return GROUPS.filter(([g]) => n[g] > 0).map(([g]) => `${n[g]} ${GROUP_ABBR[g]}`).join(' · ');
+  }
+  // Un futbolista puede estar en su club y en su selección: si ya lo fichó alguien, no se puede volver a elegir.
+  function owner(name) {
+    for (let p = 0; p < 2; p++) if (G.picks[p].some((x) => x && x.n === name)) return p;
+    return -1;
+  }
+  function dataOf(pick) {
+    const sq = squad(pick.s);
+    return (sq && sq.find((x) => x.n === pick.n)) || { n: pick.n, p: '?', d: '', r: 0 };
+  }
+  const tier = (r) => (r >= 80 ? 'tier-gold' : r >= 70 ? 'tier-silver' : 'tier-bronze');
+  function total(p, upto = 11) {
+    return G.picks[p].slice(0, upto).reduce((sum, x) => sum + (x ? dataOf(x).r : 0), 0);
+  }
+  function placeSlot(p, d) {
+    const slots = slotsOf(p);
+    let best = -1;
+    slots.forEach((s, i) => {
+      if (G.picks[p][i] || s[0] !== d.p) return;
+      if (best === -1 || (s[1] === d.d && slots[best][1] !== d.d)) best = i;
+    });
+    return best;
+  }
+  const colorOf = (p) => (p === 0 ? 'var(--p1)' : 'var(--p2)');
+
+  // ---------- Pintar ----------
+  function renderPanels() {
+    for (let p = 0; p < 2; p++) {
+      const panel = $('panel' + p), input = $('name' + p), forms = $('forms' + p), sub = $('sub' + p), toks = $('toks' + p), tot = $('total' + p);
+      const setup = G.phase === 'setup';
+      if (document.activeElement !== input) input.value = G.names[p] || '';
+      input.disabled = !setup;
+
+      forms.hidden = !setup;
+      if (setup) {
+        forms.innerHTML = FORM_KEYS.map((k) =>
+          `<button type="button" role="radio" aria-checked="${G.forms[p] === k}" data-f="${k}">${k}</button>`).join('');
+      }
+
+      const active = (G.phase === 'pick' && !landing && G.pickers[0] === p) ||
+                     (G.phase === 'spin' && !spinning && spinner() === p);
+      panel.classList.toggle('active', active);
+
+      const showRates = G.phase === 'done' || G.phase === 'reveal';
+      const upto = G.phase === 'done' ? 11 : revealStep;
+      tot.textContent = showRates ? String(total(p, upto)).padStart(3, '0') : '--';
+
+      const t0 = total(0), t1 = total(1);
+      panel.classList.toggle('winner', G.phase === 'done' && (p === 0 ? t0 > t1 : t1 > t0));
+
+      if (setup) {
+        sub.innerHTML = G.forms[p]
+          ? `Formación <b>${G.forms[p]}</b>. Se puede cambiar hasta que empiece el partido.`
+          : 'Elegí la formación de tu equipo.';
+      } else if (G.phase === 'done') {
+        const best = G.picks[p].filter(Boolean).map(dataOf).sort((a, b) => b.r - a.r)[0];
+        sub.innerHTML = `<b>${G.forms[p]}</b> · promedio <b>${(total(p) / 11).toFixed(1).replace('.', ',')}</b>` +
+          (best ? ` · figura: <b>${esc(best.n)}</b> (${best.r})` : '');
+      } else {
+        const left = needsText(p);
+        sub.innerHTML = `<b>${G.forms[p]}</b> · ${filled(p)}/11 fichados` + (left ? ` · le faltan ${left}` : ' · ¡completo!');
+      }
+
+      if (!G.forms[p]) {
+        toks.innerHTML = '<p class="pitch-empty">Elegí una formación</p>';
+        continue;
+      }
+      toks.innerHTML = slotsOf(p).map((s, i) => {
+        const [, lab, x, y] = s;
+        const pick = G.picks[p][i];
+        if (!pick) return `<div class="tok" style="left:${x}%;top:${y}%"><div class="tok-empty">${lab}</div></div>`;
+        const t = TEAM_BY_SLUG[pick.s], d = dataOf(pick);
+        const rate = showRates && i < upto ? `<span class="tok-rate ${tier(d.r)}">${d.r}</span>` : '';
+        const isNew = justPlaced && justPlaced.p === p && justPlaced.i === i;
+        return `<div class="tok${isNew ? ' new' : ''}" style="left:${x}%;top:${y}%" title="${esc(d.n)} · ${esc(t.name)}">
+          <div class="tok-shirt">${jersey(t)}${rate}</div>
+          <div class="tok-name">${esc(shortName(d))}</div>
+        </div>`;
+      }).join('');
+    }
+    justPlaced = null;
+  }
+
+  function setTurn(p) {
+    if (p === null || p === undefined) { turnEl.hidden = true; boardEl.style.setProperty('--pc', 'var(--led)'); return; }
+    turnEl.hidden = false;
+    turnEl.textContent = nameOf(p);
+    boardEl.style.setProperty('--pc', colorOf(p));
+  }
+
+  function renderBoard() {
+    roundEl.textContent = pad(G.round);
+    bigEl.classList.remove('rolling');
+    const ph = G.phase;
+    if (ph === 'setup') {
+      setTurn(null);
+      shirtEl.innerHTML = BLANK_JERSEY;
+      statusEl.textContent = 'Previa del partido';
+      bigEl.textContent = 'Armen los equipos';
+      metaEl.textContent = 'Cada jugador escribe su nombre y elige la formación. En cada ronda tira uno, ficha un futbolista del equipo que salga y elige el puesto; después tira el otro y elige el mismo puesto de su equipo.';
+    } else if (ph === 'spin') {
+      const inRound = G.pickers.length > 0;
+      const order = inRound ? G.pickers : nextPickers(G.round + 1);
+      const p = order[0];
+      setTurn(p);
+      shirtEl.innerHTML = BLANK_JERSEY;
+      statusEl.textContent = `Ronda ${inRound ? G.round : G.round + 1}`;
+      bigEl.innerHTML = `Gira <span class="hl">${esc(nameOf(p))}</span>`;
+      let msg;
+      if (inRound && G.req) msg = `Ahora tira <b>${esc(nameOf(p))}</b> y del equipo que salga tiene que elegir un <b>${GROUP_ONE[G.req]}</b>.`;
+      else if (inRound) msg = `Ahora tira <b>${esc(nameOf(p))}</b> y elige cualquier puesto que le falte.`;
+      else if (order.length > 1) msg = `Ronda nueva: tira <b>${esc(nameOf(p))}</b> y elige el puesto. Después tira <b>${esc(nameOf(order[1]))}</b> y elige el mismo.`;
+      else msg = `Solo le falta completar a <b>${esc(nameOf(p))}</b>.`;
+      metaEl.innerHTML = (G.last ? `${G.last} ` : '') + msg;
+    } else if (ph === 'pick') {
+      const t = TEAMS[G.team], p = G.pickers[0];
+      shirtEl.innerHTML = jersey(t);
+      if (landing) {
+        setTurn(null);
+        statusEl.textContent = `Ronda ${G.round} · salió`;
+        bigEl.textContent = t.name;
+        metaEl.textContent = t.meta;
+      } else {
+        setTurn(p);
+        statusEl.textContent = `Ronda ${G.round} · ${t.short}`;
+        bigEl.innerHTML = `Elige <span class="hl">${esc(nameOf(p))}</span>`;
+        const a = allowed(p);
+        metaEl.innerHTML = a.why === 'req'
+          ? `Tiene que elegir un <b>${GROUP_ONE[G.req]}</b> de <b>${esc(t.name)}</b>.`
+          : a.why === 'common'
+            ? `Del plantel de <b>${esc(t.name)}</b>. El puesto que elija lo va a tener que elegir también <b>${esc(nameOf(a.other))}</b>.`
+            : `Del plantel de <b>${esc(t.name)}</b>, cualquier puesto que le falte.`;
+      }
+    } else if (ph === 'full') {
+      setTurn(null);
+      shirtEl.innerHTML = TROPHY;
+      statusEl.textContent = 'Final del armado';
+      bigEl.textContent = '¡Planteles completos!';
+      metaEl.textContent = 'Los dos equipos tienen sus 11. Ahora se revela el puntaje de cada futbolista y gana el que más suma.';
+    } else if (ph === 'reveal') {
+      setTurn(null);
+      shirtEl.innerHTML = TROPHY;
+      statusEl.textContent = 'Puntajes';
+      bigEl.textContent = 'Contando puntos…';
+      metaEl.innerHTML = `<b>${esc(nameOf(0))}</b> ${total(0, revealStep)} · ${total(1, revealStep)} <b>${esc(nameOf(1))}</b>`;
+    } else if (ph === 'done') {
+      const t0 = total(0), t1 = total(1);
+      shirtEl.innerHTML = TROPHY;
+      statusEl.textContent = 'Resultado final';
+      if (t0 === t1) {
+        setTurn(null);
+        bigEl.textContent = '¡Empate!';
+      } else {
+        const w = t0 > t1 ? 0 : 1;
+        setTurn(w);
+        bigEl.innerHTML = `¡Ganó <span class="hl">${esc(nameOf(w))}</span>!`;
+      }
+      metaEl.innerHTML = `<b>${esc(nameOf(0))}</b> ${t0} puntos · ${t1} puntos <b>${esc(nameOf(1))}</b>`;
+    }
+  }
+
+  function renderSquad() {
+    const t = TEAMS[G.team], p = G.pickers[0], list = squad(t.slug);
+    squadView.style.setProperty('--pc', colorOf(p));
+    squadView.style.setProperty('--pc-soft', p === 0 ? 'var(--p1-soft)' : 'var(--p2-soft)');
+    sqShirt.innerHTML = jersey(t);
+    sqTitle.textContent = t.name;
+    const info = DATA.equipos[t.slug];
+    sqMeta.textContent = info && info.fecha ? `Plantel · ${info.fecha}` : 'Plantel';
+
+    const n = needs(p);
+    const a = allowed(p);
+    const ok = new Set(a.groups);
+    const rule = a.why === 'req'
+      ? `Tiene que ser ${GROUP_ONE[G.req]}, el mismo puesto que eligió ${esc(nameOf(1 - p))}.`
+      : a.why === 'common'
+        ? `Elegí el puesto de esta ronda: ${esc(nameOf(a.other))} va a tener que elegir el mismo.`
+        : 'Puede elegir cualquier puesto que le falte.';
+    sqPicker.innerHTML = `<span class="who">Elige ${esc(nameOf(p))}</span>` +
+      GROUPS.map(([g]) => `<span class="need${ok.has(g) ? ' ok' : ''}${n[g] ? '' : ' zero'}">${n[g]} ${GROUP_ABBR[g]}</span>`).join('') +
+      `<p class="sq-rule">${rule}</p>`;
+
+    if (!list || !list.length) {
+      sqList.innerHTML = `<p class="sq-none">Todavía no está cargado el plantel de ${esc(t.name)}. ${esc(nameOf(p))} vuelve a tirar.</p>`;
+      confirmBtn.disabled = false;
+      confirmBtn.dataset.mode = 'respin';
+      confirmBtn.textContent = 'Volver a tirar';
+      return;
+    }
+
+    const eligible = list.some((d) => ok.has(d.p) && owner(d.n) === -1);
+    // Primero los puestos que se pueden elegir; el resto queda abajo, bloqueado.
+    const order = [...GROUPS.filter(([g]) => ok.has(g)), ...GROUPS.filter(([g]) => !ok.has(g))];
+    sqList.innerHTML = order.map(([g, label]) => {
+      const rows = list.filter((d) => d.p === g)
+        .slice().sort((x, y) => (x.num ?? 999) - (y.num ?? 999));
+      if (!rows.length) return '';
+      let tag;
+      if (!n[g]) tag = `Ya completó ${GROUP_FULL[g]}`;
+      else if (!ok.has(g)) tag = a.why === 'req' ? `Esta vuelta va ${GROUP_ONE[G.req]}` : `A ${esc(nameOf(a.other))} ya no le falta`;
+      else tag = `Le falta${n[g] > 1 ? 'n' : ''} ${n[g]}`;
+      return `<div class="sq-group${ok.has(g) ? '' : ' off'}">
+        <div class="sq-group-head"><p class="lbl">${label}</p><span class="tag">${tag}</span></div>
+        ${rows.map((d) => {
+          const o = owner(d.n);
+          const off = o !== -1 || !ok.has(g);
+          const right = o !== -1
+            ? `<span class="own" style="--oc:${colorOf(o)}">${esc(nameOf(o))}</span>`
+            : `<span class="pos">${esc(d.d || GROUP_ABBR[g])}</span>`;
+          return `<button class="row" type="button" data-n="${esc(d.n)}" aria-pressed="${G.sel === d.n}"${off ? ' disabled' : ''}>
+            <span class="num">${d.num ?? '–'}</span>
+            <span class="nm">${esc(d.n)}${d.c ? `<span class="club">${esc(d.c)}</span>` : ''}</span>
+            ${right}
+          </button>`;
+        }).join('')}
+      </div>`;
+    }).join('');
+
+    if (!eligible) {
+      const what = a.why === 'req' ? `ningún ${GROUP_ONE[G.req]} libre` : 'ningún futbolista libre para los puestos que puede elegir';
+      sqList.insertAdjacentHTML('afterbegin', `<p class="sq-none">En este plantel no queda ${what}. ${esc(nameOf(p))} vuelve a tirar la ruleta.</p>`);
+      confirmBtn.disabled = false;
+      confirmBtn.dataset.mode = 'respin';
+      confirmBtn.textContent = 'Volver a tirar';
+      return;
+    }
+    confirmBtn.dataset.mode = 'pick';
+    const sel = G.sel && list.find((d) => d.n === G.sel);
+    confirmBtn.disabled = !sel;
+    confirmBtn.textContent = sel ? `Fichar a ${shortName(sel)}` : 'Elegí un futbolista';
+  }
+
+  function renderCenter() {
+    const ph = G.phase;
+    const picking = ph === 'pick' && !landing;
+    wheelView.hidden = picking;
+    squadView.hidden = !picking;
+    if (picking) renderSquad();
+    if (ph === 'spin' && !spinning) clearWheelMarks();
+
+    ctaBox.hidden = picking || landing;
+    ctaBtn.disabled = false;
+    hintEl.innerHTML = '';
+    if (ph === 'setup') {
+      ctaBtn.textContent = 'Empezar partido';
+      const missing = [0, 1].filter((p) => !G.forms[p]).map(nameOf);
+      ctaBtn.disabled = missing.length > 0;
+      hintEl.textContent = missing.length
+        ? `Falta elegir la formación de ${missing.join(' y ')}.`
+        : 'Los puntajes de los futbolistas quedan ocultos hasta el final.';
+    } else if (ph === 'spin') {
+      ctaBtn.textContent = spinning ? 'Girando…' : 'Girar ruleta';
+      ctaBtn.disabled = spinning;
+      hintEl.innerHTML = '<span class="kbd-hint">o apretá <kbd>espacio</kbd></span>';
+    } else if (ph === 'full') {
+      ctaBtn.textContent = 'Ver puntajes';
+    } else if (ph === 'reveal') {
+      ctaBtn.textContent = 'Contando…';
+      ctaBtn.disabled = true;
+    } else if (ph === 'done') {
+      ctaBtn.textContent = 'Jugar otra vez';
+      hintEl.textContent = 'Se mantienen los nombres y las formaciones; se pueden cambiar antes de empezar.';
+    }
+
+    const inGame = ph === 'spin' || ph === 'pick' || ph === 'full';
+    abortBox.hidden = !inGame || spinning || landing;
+    abortBtn.hidden = askAbort;
+    abortAsk.hidden = abortYes.hidden = abortNo.hidden = !askAbort;
+  }
+
+  function renderFoot() {
+    const fecha = DATA.actualizado ? `Planteles actualizados al ${DATA.actualizado}.` : 'Planteles sin cargar.';
+    $('foot').textContent = `${fecha} Puntajes estilo videojuego (1 a 99): oro 80+, plata 70–79, bronce menos de 70.`;
+  }
+
+  function render() {
+    renderPanels();
+    renderBoard();
+    renderCenter();
+  }
+
+  // ---------- Jugadas ----------
+  function start() {
+    if (!G.forms[0] || !G.forms[1]) return;
+    G.picks = [Array(11).fill(null), Array(11).fill(null)];
+    G.round = 0;
+    G.phase = 'spin';
+    G.last = '';
+    audio();
+    save();
+    render();
+  }
+
+  async function doSpin() {
+    if (G.phase !== 'spin' || spinning) return;
+    audio();
+    if (!G.pickers.length) {   // arranca una ronda nueva
+      G.round += 1;
+      G.pickers = nextPickers(G.round);
+      G.req = null;
+      G.last = '';
+    }
+    const p = G.pickers[0];
+    G.sel = null;
+    spinning = true;
+    renderPanels();
+    renderCenter();
+    setTurn(p);
+    roundEl.textContent = pad(G.round);
+    statusEl.textContent = `Ronda ${G.round} · tira ${nameOf(p)}`;
+    metaEl.textContent = `Cada equipo tiene la misma chance: 1 en ${N}.`;
+    const idx = await spinWheel((i) => {
+      bigEl.classList.add('rolling');
+      bigEl.textContent = TEAMS[i].short;
+      shirtEl.innerHTML = jersey(TEAMS[i]);
+    });
+    G.team = idx;
+    G.phase = 'pick';
+    save();
+    landing = true;
+    render();
+    boardEl.classList.remove('pop'); void boardEl.offsetWidth; boardEl.classList.add('pop');
+    whistle();
+    burst(teamColors(TEAMS[idx]));
+    announceEl.textContent = `Ronda ${G.round}: a ${nameOf(p)} le salió ${TEAMS[idx].name}.` +
+      (G.req ? ` Tiene que elegir un ${GROUP_ONE[G.req]}.` : '');
+    await wait(fast ? 100 : reduce ? 500 : 1700);
+    landing = false;
+    render();
+  }
+
+  function pickSelected() {
+    const t = TEAMS[G.team], p = G.pickers[0];
+    const d = (squad(t.slug) || []).find((x) => x.n === G.sel);
+    if (!d || owner(d.n) !== -1) return;
+    if (!allowed(p).groups.includes(d.p)) return;
+    const i = placeSlot(p, d);
+    if (i === -1) return;
+    G.picks[p][i] = { s: t.slug, n: d.n };
+    justPlaced = { p, i };
+    // Si tira primero, el puesto que eligió es el que le toca al otro en esta ronda
+    if (G.pickers.length > 1) {
+      const f = G.pickers[1];
+      G.req = needs(f)[d.p] > 0 ? d.p : null;
+    }
+    G.last = `<b>${esc(nameOf(p))}</b> fichó a <b>${esc(d.n)}</b> (${GROUP_ONE[d.p]}).`;
+    announceEl.textContent = `${nameOf(p)} fichó a ${d.n}, ${GROUP_ONE[d.p]}.`;
+    popSound();
+    advance();
+  }
+
+  function advance() {
+    G.pickers.shift();
+    G.sel = null;
+    G.team = null;
+    if (!G.pickers.length) {
+      G.req = null;
+      G.phase = complete(0) && complete(1) ? 'full' : 'spin';
+    } else {
+      G.phase = 'spin';   // ahora tira el otro
+    }
+    save();
+    render();
+  }
+
+  async function reveal() {
+    if (G.phase !== 'full') return;
+    audio();
+    G.phase = 'reveal';
+    revealStep = 0;
+    save();
+    render();
+    for (let k = 1; k <= 11; k++) {
+      await wait(fast ? 60 : reduce ? 150 : 700);
+      revealStep = k;
+      const r = Math.max(dataOf(G.picks[0][k - 1]).r, dataOf(G.picks[1][k - 1]).r);
+      revealSound(r);
+      renderPanels();
+      renderBoard();
+    }
+    await wait(reduce ? 200 : 700);
+    G.phase = 'done';
+    save();
+    render();
+    boardEl.classList.remove('pop'); void boardEl.offsetWidth; boardEl.classList.add('pop');
+    whistle();
+    const t0 = total(0), t1 = total(1);
+    burst(t0 === t1 ? [cssVar('--p1'), cssVar('--p2'), cssVar('--led')] : [cssVar(t0 > t1 ? '--p1' : '--p2'), cssVar('--led'), cssVar('--chalk')]);
+    announceEl.textContent = t0 === t1 ? `Empate: ${t0} a ${t1}.` : `Ganó ${nameOf(t0 > t1 ? 0 : 1)}: ${t0} a ${t1}.`;
+  }
+
+  function restart() {
+    G = fresh(G);
+    askAbort = false;
+    revealStep = 0;
+    clearWheelMarks();
+    save();
+    render();
+  }
+
+  // ---------- Papelitos ----------
+  const cv = $('confetti'), cx = cv.getContext('2d');
+  let parts = [], raf = 0;
+  function teamColors(t) {
+    const k = t.kit;
+    return [k.base, t.text, t.trim, ...(k.ring || []), k.stripes && k.stripes[0], k.hoops && k.hoops[0],
+      k.band && k.band[0], k.center && k.center[0], k.sash].filter(Boolean);
+  }
+  function burst(colors) {
+    if (reduce) return;
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    cv.width = innerWidth * dpr; cv.height = innerHeight * dpr;
+    cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const r = (wheelView.hidden ? boardEl : wheelEl).getBoundingClientRect();
+    const ox = r.left + r.width / 2, oy = r.top + Math.min(r.height * .1, 60);
+    parts = Array.from({ length: 150 }, () => ({
+      x: ox, y: oy,
+      vx: (Math.random() - .5) * 16, vy: -Math.random() * 13 - 3,
+      w: 6 + Math.random() * 7, h: 4 + Math.random() * 5,
+      a: Math.random() * 6.28, va: (Math.random() - .5) * .35,
+      c: colors[Math.floor(Math.random() * colors.length)],
+    }));
+    const t0 = performance.now();
+    cancelAnimationFrame(raf);
+    (function loop(now) {
+      cx.clearRect(0, 0, innerWidth, innerHeight);
+      for (const p of parts) {
+        p.vx *= .985; p.vy = p.vy * .985 + .38;
+        p.x += p.vx; p.y += p.vy; p.a += p.va;
+        cx.save();
+        cx.translate(p.x, p.y);
+        cx.rotate(p.a);
+        cx.scale(1, Math.cos(p.a * 2.2));
+        cx.fillStyle = p.c;
+        cx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        cx.restore();
+      }
+      if (now - t0 < 3200) raf = requestAnimationFrame(loop);
+      else cx.clearRect(0, 0, innerWidth, innerHeight);
+    })(t0);
+  }
+
+  // ---------- Controles ----------
+  ctaBtn.addEventListener('click', () => {
+    if (G.phase === 'setup') start();
+    else if (G.phase === 'spin') doSpin();
+    else if (G.phase === 'full') reveal();
+    else if (G.phase === 'done') restart();
+  });
+  confirmBtn.addEventListener('click', () => {
+    const mode = confirmBtn.dataset.mode;
+    if (mode === 'pick') pickSelected();
+    else if (mode === 'respin') {   // el mismo jugador vuelve a tirar, sin perder el turno
+      G.last = `A <b>${esc(nameOf(G.pickers[0]))}</b> no le sirvió ${esc(TEAMS[G.team].name)}.`;
+      G.team = null;
+      G.sel = null;
+      G.phase = 'spin';
+      save();
+      render();
+    }
+  });
+  sqList.addEventListener('click', (e) => {
+    const row = e.target.closest('.row');
+    if (!row || row.disabled) return;
+    G.sel = row.dataset.n;
+    renderSquad();
+    const again = sqList.querySelector(`.row[aria-pressed="true"]`);
+    if (again) again.focus({ preventScroll: true });
+  });
+  for (let p = 0; p < 2; p++) {
+    $('name' + p).addEventListener('input', (e) => {
+      G.names[p] = e.target.value;
+      save();
+      renderCenter();
+    });
+    $('forms' + p).addEventListener('click', (e) => {
+      const b = e.target.closest('button[data-f]');
+      if (!b || G.phase !== 'setup') return;
+      G.forms[p] = b.dataset.f;
+      save();
+      render();
+    });
+  }
+  document.addEventListener('keydown', (e) => {
+    if (e.code !== 'Space' || e.repeat) return;
+    const tag = document.activeElement && document.activeElement.tagName;
+    if (tag === 'BUTTON' || tag === 'INPUT' || tag === 'TEXTAREA') return;
+    if (G.phase !== 'spin') return;
+    e.preventDefault();
+    doSpin();
+  });
+  soundBtn.addEventListener('click', () => {
+    G.sound = !G.sound;
+    soundBtn.setAttribute('aria-pressed', String(G.sound));
+    soundBtn.setAttribute('aria-label', G.sound ? 'Sonido activado' : 'Sonido apagado');
+    save();
+    if (G.sound) tick();
+  });
+  abortBtn.addEventListener('click', () => { askAbort = true; renderCenter(); abortNo.focus(); });
+  abortNo.addEventListener('click', () => { askAbort = false; renderCenter(); });
+  abortYes.addEventListener('click', restart);
+
+  // ---------- Arranque ----------
+  function boot(data) {
+    const saved = (data && data.G) || load();
+    if (saved) {
+      G = Object.assign(fresh(), saved);
+      if (G.phase === 'reveal') G.phase = 'done';
+      if (G.phase === 'pick' && (G.team === null || !G.pickers.length)) { G.phase = 'spin'; G.team = null; }
+      if (G.phase === 'spin' && !G.pickers.length) G.req = null;
+    }
+    soundBtn.setAttribute('aria-pressed', String(G.sound));
+    soundBtn.setAttribute('aria-label', G.sound ? 'Sonido activado' : 'Sonido apagado');
+    if (G.phase === 'pick' && G.team !== null) {
+      rot = -((G.team + .5) * SEG);
+      wheelSvg.classList.add('decided');
+      segEls[G.team].classList.add('won');
+    }
+    paint();
+    renderFoot();
+    render();
+  }
+  try { window.claude?.hot?.snapshot?.(() => ({ G })); } catch (e) { /* fuera del visor */ }
+  if (window.claude?.hot?.ready) window.claude.hot.ready(boot);
+  else boot(window.claude?.hot?.data ?? {});
+})();
+</script>

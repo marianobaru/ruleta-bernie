@@ -1,0 +1,177 @@
+{
+ "slug": "ajax",
+ "pagina": "AFC Ajax",
+ "seccion": "Current squad",
+ "revision": "2026-10-01T12:07:06Z",
+ "url": "https://en.wikipedia.org/wiki/AFC_Ajax",
+ "jugadores": [
+  {
+   "n": "Marc-André ter Stegen",
+   "p": "POR",
+   "num": 1,
+   "c": null
+  },
+  {
+   "n": "Lucas Rosa",
+   "p": "DEF",
+   "num": 2,
+   "c": null
+  },
+  {
+   "n": "Anton Gaaei",
+   "p": "DEF",
+   "num": 3,
+   "c": null
+  },
+  {
+   "n": "Sofyan Amrabat",
+   "p": "MED",
+   "num": 4,
+   "c": null
+  },
+  {
+   "n": "Owen Wijndal",
+   "p": "DEF",
+   "num": 5,
+   "c": null
+  },
+  {
+   "n": "Thilo Kehrer",
+   "p": "DEF",
+   "num": 6,
+   "c": null
+  },
+  {
+   "n": "Simon Adingra",
+   "p": "DEL",
+   "num": 7,
+   "c": null
+  },
+  {
+   "n": "Julian Brandt",
+   "p": "MED",
+   "num": 8,
+   "c": null
+  },
+  {
+   "n": "Kasper Dolberg",
+   "p": "DEL",
+   "num": 9,
+   "c": null
+  },
+  {
+   "n": "Oscar Gloukh",
+   "p": "MED",
+   "num": 10,
+   "c": null
+  },
+  {
+   "n": "Viktor Tsyhankov",
+   "p": "MED",
+   "num": 11,
+   "c": null
+  },
+  {
+   "n": "Caio Henrique",
+   "p": "DEF",
+   "num": 12,
+   "c": null
+  },
+  {
+   "n": "Youri Baas",
+   "p": "DEF",
+   "num": 15,
+   "c": null
+  },
+  {
+   "n": "Daley Blind",
+   "p": "DEF",
+   "num": 17,
+   "c": null
+  },
+  {
+   "n": "Davy Klaassen",
+   "p": "MED",
+   "num": 18,
+   "c": null
+  },
+  {
+   "n": "Oliver Edvardsen",
+   "p": "DEL",
+   "num": 20,
+   "c": null
+  },
+  {
+   "n": "Jofre Torrents",
+   "p": "DEF",
+   "num": 21,
+   "c": null
+  },
+  {
+   "n": "Joeri Heerkens",
+   "p": "POR",
+   "num": 22,
+   "c": null
+  },
+  {
+   "n": "Steven Berghuis",
+   "p": "DEL",
+   "num": 23,
+   "c": null
+  },
+  {
+   "n": "Jorthy Mokio",
+   "p": "MED",
+   "num": 24,
+   "c": null
+  },
+  {
+   "n": "Maarten Paes",
+   "p": "POR",
+   "num": 26,
+   "c": null
+  },
+  {
+   "n": "Yves Bissouma",
+   "p": "MED",
+   "num": 28,
+   "c": null
+  },
+  {
+   "n": "Aaron Bouwman",
+   "p": "DEF",
+   "num": 30,
+   "c": null
+  },
+  {
+   "n": "Dies Janse",
+   "p": "DEF",
+   "num": 36,
+   "c": null
+  },
+  {
+   "n": "Marcos Leonardo",
+   "p": "DEL",
+   "num": 38,
+   "c": null
+  },
+  {
+   "n": "Rayane Bounida",
+   "p": "MED",
+   "num": 43,
+   "c": null
+  },
+  {
+   "n": "Abdellah Ouazane",
+   "p": "MED",
+   "num": 68,
+   "c": null
+  },
+  {
+   "n": "Tolu Arokodare",
+   "p": "DEL",
+   "num": 99,
+   "c": null
+  }
+ ]
+}

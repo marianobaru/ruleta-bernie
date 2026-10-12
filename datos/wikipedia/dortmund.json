@@ -1,0 +1,189 @@
+{
+ "slug": "dortmund",
+ "pagina": "Borussia Dortmund",
+ "seccion": "Current squad",
+ "revision": "2026-10-10T08:37:53Z",
+ "url": "https://en.wikipedia.org/wiki/Borussia_Dortmund",
+ "jugadores": [
+  {
+   "n": "Gregor Kobel",
+   "p": "POR",
+   "num": 1,
+   "c": null
+  },
+  {
+   "n": "Waldemar Anton",
+   "p": "DEF",
+   "num": 3,
+   "c": null
+  },
+  {
+   "n": "Nico Schlotterbeck",
+   "p": "DEF",
+   "num": 4,
+   "c": null
+  },
+  {
+   "n": "Ramy Bensebaini",
+   "p": "DEF",
+   "num": 5,
+   "c": null
+  },
+  {
+   "n": "Jobe Bellingham",
+   "p": "MED",
+   "num": 7,
+   "c": null
+  },
+  {
+   "n": "Felix Nmecha",
+   "p": "MED",
+   "num": 8,
+   "c": null
+  },
+  {
+   "n": "Serhou Guirassy",
+   "p": "DEL",
+   "num": 9,
+   "c": null
+  },
+  {
+   "n": "Maximilian Beier",
+   "p": "MED",
+   "num": 14,
+   "c": null
+  },
+  {
+   "n": "Carney Chukwuemeka",
+   "p": "MED",
+   "num": 17,
+   "c": null
+  },
+  {
+   "n": "Ethan Nwaneri",
+   "p": "MED",
+   "num": 18,
+   "c": null
+  },
+  {
+   "n": "Konstantinos Karetsas",
+   "p": "MED",
+   "num": 19,
+   "c": null
+  },
+  {
+   "n": "Marcel Sabitzer",
+   "p": "MED",
+   "num": 20,
+   "c": null
+  },
+  {
+   "n": "Fábio Silva",
+   "p": "DEL",
+   "num": 21,
+   "c": null
+  },
+  {
+   "n": "Joane Gadou",
+   "p": "DEF",
+   "num": 22,
+   "c": null
+  },
+  {
+   "n": "Emre Can",
+   "p": "MED",
+   "num": 23,
+   "c": null
+  },
+  {
+   "n": "Daniel Svensson",
+   "p": "DEF",
+   "num": 24,
+   "c": null
+  },
+  {
+   "n": "Joey Veerman",
+   "p": "MED",
+   "num": 25,
+   "c": null
+  },
+  {
+   "n": "Julian Ryerson",
+   "p": "DEF",
+   "num": 26,
+   "c": null
+  },
+  {
+   "n": "Justin Lerma",
+   "p": "MED",
+   "num": 28,
+   "c": null
+  },
+  {
+   "n": "Patrick Drewes",
+   "p": "POR",
+   "num": 30,
+   "c": null
+  },
+  {
+   "n": "Silas Ostrzinski",
+   "p": "POR",
+   "num": 31,
+   "c": null
+  },
+  {
+   "n": "Alexander Meyer",
+   "p": "POR",
+   "num": 33,
+   "c": null
+  },
+  {
+   "n": "Kauã Prates",
+   "p": "DEF",
+   "num": 36,
+   "c": null
+  },
+  {
+   "n": "Filippo Mane",
+   "p": "DEF",
+   "num": 39,
+   "c": null
+  },
+  {
+   "n": "Samuele Inácio",
+   "p": "DEL",
+   "num": 40,
+   "c": null
+  },
+  {
+   "n": "Mathis Albert",
+   "p": "DEL",
+   "num": 41,
+   "c": null
+  },
+  {
+   "n": "Enzo dos Santos",
+   "p": "MED",
+   "num": 44,
+   "c": null
+  },
+  {
+   "n": "Giannis Konstantelias",
+   "p": "MED",
+   "num": 45,
+   "c": null
+  },
+  {
+   "n": "Mussa Kaba",
+   "p": "MED",
+   "num": 48,
+   "c": null
+  },
+  {
+   "n": "Luca Reggiani",
+   "p": "DEF",
+   "num": 49,
+   "c": null
+  }
+ ]
+}

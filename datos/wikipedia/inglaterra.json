@@ -1,0 +1,141 @@
+{
+ "slug": "inglaterra",
+ "pagina": "England national football team",
+ "seccion": "Current squad",
+ "revision": "2026-10-10T13:02:24Z",
+ "url": "https://en.wikipedia.org/wiki/England_national_football_team",
+ "jugadores": [
+  {
+   "n": "Jordan Pickford",
+   "p": "POR",
+   "num": 1,
+   "c": "Everton"
+  },
+  {
+   "n": "James Trafford",
+   "p": "POR",
+   "num": 13,
+   "c": "Leeds United"
+  },
+  {
+   "n": "Jason Steele",
+   "p": "POR",
+   "num": 23,
+   "c": "Brighton & Hove Albion"
+  },
+  {
+   "n": "Trent Alexander-Arnold",
+   "p": "DEF",
+   "num": 2,
+   "c": "Real Madrid"
+  },
+  {
+   "n": "Lewis Hall",
+   "p": "DEF",
+   "num": 3,
+   "c": "Newcastle United"
+  },
+  {
+   "n": "Marc Guéhi",
+   "p": "DEF",
+   "num": 6,
+   "c": "Manchester City"
+  },
+  {
+   "n": "Trevoh Chalobah",
+   "p": "DEF",
+   "num": 12,
+   "c": "Como"
+  },
+  {
+   "n": "Jarrad Branthwaite",
+   "p": "DEF",
+   "num": 15,
+   "c": "Everton"
+  },
+  {
+   "n": "Jarell Quansah",
+   "p": "DEF",
+   "num": 22,
+   "c": "Bayer Leverkusen"
+  },
+  {
+   "n": "Rico Lewis",
+   "p": "DEF",
+   "num": null,
+   "c": "Manchester City"
+  },
+  {
+   "n": "Elliot Anderson",
+   "p": "MED",
+   "num": 8,
+   "c": "Manchester City"
+  },
+  {
+   "n": "Jude Bellingham",
+   "p": "MED",
+   "num": 10,
+   "c": "Real Madrid"
+  },
+  {
+   "n": "Myles Lewis-Skelly",
+   "p": "MED",
+   "num": 16,
+   "c": "Arsenal"
+  },
+  {
+   "n": "James Garner",
+   "p": "MED",
+   "num": 18,
+   "c": "Everton"
+  },
+  {
+   "n": "Morgan Gibbs-White",
+   "p": "MED",
+   "num": 20,
+   "c": "Nottingham Forest"
+  },
+  {
+   "n": "Bukayo Saka",
+   "p": "DEL",
+   "num": 7,
+   "c": "Arsenal"
+  },
+  {
+   "n": "Harry Kane",
+   "p": "DEL",
+   "num": 9,
+   "c": "Bayern Munich"
+  },
+  {
+   "n": "Anthony Gordon",
+   "p": "DEL",
+   "num": 11,
+   "c": "Barcelona"
+  },
+  {
+   "n": "Rio Ngumoha",
+   "p": "DEL",
+   "num": 14,
+   "c": "Liverpool"
+  },
+  {
+   "n": "Morgan Rogers",
+   "p": "DEL",
+   "num": 17,
+   "c": "Chelsea"
+  },
+  {
+   "n": "Dominic Calvert-Lewin",
+   "p": "DEL",
+   "num": 19,
+   "c": "Leeds United"
+  },
+  {
+   "n": "Eberechi Eze",
+   "p": "DEL",
+   "num": 21,
+   "c": "Arsenal"
+  }
+ ]
+}

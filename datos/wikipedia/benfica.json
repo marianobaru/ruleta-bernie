@@ -1,0 +1,171 @@
+{
+ "slug": "benfica",
+ "pagina": "S.L. Benfica",
+ "seccion": "Current squad",
+ "revision": "2026-09-17T08:03:43Z",
+ "url": "https://en.wikipedia.org/wiki/S.L._Benfica",
+ "jugadores": [
+  {
+   "n": "Anatoliy Trubin",
+   "p": "POR",
+   "num": 1,
+   "c": null
+  },
+  {
+   "n": "Clément Lenglet",
+   "p": "DEF",
+   "num": 2,
+   "c": null
+  },
+  {
+   "n": "Alessandro Circati",
+   "p": "DEF",
+   "num": 3,
+   "c": null
+  },
+  {
+   "n": "Enzo Barrenechea",
+   "p": "MED",
+   "num": 5,
+   "c": null
+  },
+  {
+   "n": "Alexander Bah",
+   "p": "DEF",
+   "num": 6,
+   "c": null
+  },
+  {
+   "n": "Fredrik Aursnes",
+   "p": "MED",
+   "num": 8,
+   "c": null
+  },
+  {
+   "n": "Heorhiy Sudakov",
+   "p": "MED",
+   "num": 10,
+   "c": null
+  },
+  {
+   "n": "Dodi Lukébakio",
+   "p": "DEL",
+   "num": 11,
+   "c": null
+  },
+  {
+   "n": "Jakub Kamiński",
+   "p": "MED",
+   "num": 13,
+   "c": null
+  },
+  {
+   "n": "Vangelis Pavlidis",
+   "p": "DEL",
+   "num": 14,
+   "c": null
+  },
+  {
+   "n": "Manu Silva",
+   "p": "MED",
+   "num": 16,
+   "c": null
+  },
+  {
+   "n": "Leandro Barreiro",
+   "p": "MED",
+   "num": 18,
+   "c": null
+  },
+  {
+   "n": "Andreas Schjelderup",
+   "p": "DEL",
+   "num": 21,
+   "c": null
+  },
+  {
+   "n": "Jhon Durán",
+   "p": "DEL",
+   "num": 22,
+   "c": null
+  },
+  {
+   "n": "Samuel Soares",
+   "p": "POR",
+   "num": 24,
+   "c": null
+  },
+  {
+   "n": "Gianluca Prestianni",
+   "p": "DEL",
+   "num": 25,
+   "c": null
+  },
+  {
+   "n": "Samuel Dahl",
+   "p": "DEF",
+   "num": 26,
+   "c": null
+  },
+  {
+   "n": "Rafa Silva",
+   "p": "MED",
+   "num": 27,
+   "c": null
+  },
+  {
+   "n": "Claudio Echeverri",
+   "p": "MED",
+   "num": 30,
+   "c": null
+  },
+  {
+   "n": "Gabriel Índio",
+   "p": "DEF",
+   "num": 33,
+   "c": null
+  },
+  {
+   "n": "Souffian El Karouani",
+   "p": "DEF",
+   "num": 34,
+   "c": null
+  },
+  {
+   "n": "João Palhinha",
+   "p": "MED",
+   "num": 36,
+   "c": null
+  },
+  {
+   "n": "Tomás Araújo",
+   "p": "DEF",
+   "num": 44,
+   "c": null
+  },
+  {
+   "n": "Diogo Ferreira",
+   "p": "POR",
+   "num": 50,
+   "c": null
+  },
+  {
+   "n": "Daniel Banjaqui",
+   "p": "DEF",
+   "num": 58,
+   "c": null
+  },
+  {
+   "n": "José Neto",
+   "p": "DEF",
+   "num": 62,
+   "c": null
+  },
+  {
+   "n": "Anísio Cabral",
+   "p": "DEL",
+   "num": 72,
+   "c": null
+  }
+ ]
+}

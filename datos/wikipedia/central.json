@@ -1,0 +1,195 @@
+{
+ "slug": "central",
+ "pagina": "Rosario Central",
+ "seccion": "Current squad",
+ "revision": "2026-10-06T01:09:35Z",
+ "url": "https://en.wikipedia.org/wiki/Rosario_Central",
+ "jugadores": [
+  {
+   "n": "Axel Werner",
+   "p": "POR",
+   "num": 1,
+   "c": null
+  },
+  {
+   "n": "Sebastián Zaracho",
+   "p": "DEF",
+   "num": 2,
+   "c": null
+  },
+  {
+   "n": "Agustín Sández",
+   "p": "DEF",
+   "num": 3,
+   "c": null
+  },
+  {
+   "n": "Ulises Ciccioli",
+   "p": "DEF",
+   "num": 4,
+   "c": null
+  },
+  {
+   "n": "Franco Ibarra",
+   "p": "MED",
+   "num": 5,
+   "c": null
+  },
+  {
+   "n": "Juan Cruz Komar",
+   "p": "DEF",
+   "num": 6,
+   "c": null
+  },
+  {
+   "n": "Jáminton Campaz",
+   "p": "DEL",
+   "num": 8,
+   "c": null
+  },
+  {
+   "n": "Marco Ruben",
+   "p": "DEL",
+   "num": 9,
+   "c": null
+  },
+  {
+   "n": "Franco Cervi",
+   "p": "DEL",
+   "num": 10,
+   "c": null
+  },
+  {
+   "n": "Ángel Di María",
+   "p": "DEL",
+   "num": 11,
+   "c": null
+  },
+  {
+   "n": "Gastón Ávila",
+   "p": "DEF",
+   "num": 13,
+   "c": null
+  },
+  {
+   "n": "Facundo Mallo",
+   "p": "DEF",
+   "num": 15,
+   "c": null
+  },
+  {
+   "n": "Tomás Badaloni",
+   "p": "DEL",
+   "num": 16,
+   "c": null
+  },
+  {
+   "n": "Julián Fernández",
+   "p": "DEL",
+   "num": 18,
+   "c": null
+  },
+  {
+   "n": "Santiago Segovia",
+   "p": "MED",
+   "num": 19,
+   "c": null
+  },
+  {
+   "n": "Vicente Pizarro",
+   "p": "MED",
+   "num": 20,
+   "c": null
+  },
+  {
+   "n": "Enzo Copetti",
+   "p": "DEL",
+   "num": 22,
+   "c": null
+  },
+  {
+   "n": "Conan Ledesma",
+   "p": "POR",
+   "num": 23,
+   "c": null
+  },
+  {
+   "n": "Juan Giménez",
+   "p": "DEF",
+   "num": 24,
+   "c": null
+  },
+  {
+   "n": "Giovanni Cantizano",
+   "p": "DEL",
+   "num": 26,
+   "c": null
+  },
+  {
+   "n": "Gaspar Duarte",
+   "p": "DEL",
+   "num": 27,
+   "c": null
+  },
+  {
+   "n": "Pol Fernández",
+   "p": "MED",
+   "num": 28,
+   "c": null
+  },
+  {
+   "n": "Marco Ruben",
+   "p": "DEL",
+   "num": 29,
+   "c": null
+  },
+  {
+   "n": "Federico Navarro",
+   "p": "MED",
+   "num": 31,
+   "c": null
+  },
+  {
+   "n": "Emanuel Coronel",
+   "p": "DEF",
+   "num": 32,
+   "c": null
+  },
+  {
+   "n": "Alexis Soto",
+   "p": "DEF",
+   "num": 33,
+   "c": null
+  },
+  {
+   "n": "Damián Fernández",
+   "p": "POR",
+   "num": 38,
+   "c": null
+  },
+  {
+   "n": "Fabricio Oviedo",
+   "p": "DEL",
+   "num": 39,
+   "c": null
+  },
+  {
+   "n": "Ignacio Ovando",
+   "p": "DEF",
+   "num": 46,
+   "c": null
+  },
+  {
+   "n": "Luca Raffin",
+   "p": "DEF",
+   "num": 47,
+   "c": null
+  },
+  {
+   "n": "Alan Rodríguez",
+   "p": "MED",
+   "num": 88,
+   "c": null
+  }
+ ]
+}

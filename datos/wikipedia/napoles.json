@@ -1,0 +1,171 @@
+{
+ "slug": "napoles",
+ "pagina": "SSC Napoli",
+ "seccion": "Current squad",
+ "revision": "2026-10-11T03:40:29Z",
+ "url": "https://en.wikipedia.org/wiki/SSC_Napoli",
+ "jugadores": [
+  {
+   "n": "Alex Meret",
+   "p": "POR",
+   "num": 1,
+   "c": null
+  },
+  {
+   "n": "Costantino Favasuli",
+   "p": "DEF",
+   "num": 2,
+   "c": null
+  },
+  {
+   "n": "Alessandro Buongiorno",
+   "p": "DEF",
+   "num": 4,
+   "c": null
+  },
+  {
+   "n": "Benoît Badiashile",
+   "p": "DEF",
+   "num": 5,
+   "c": null
+  },
+  {
+   "n": "Billy Gilmour",
+   "p": "MED",
+   "num": 6,
+   "c": null
+  },
+  {
+   "n": "David Neres",
+   "p": "DEL",
+   "num": 7,
+   "c": null
+  },
+  {
+   "n": "Scott McTominay",
+   "p": "MED",
+   "num": 8,
+   "c": null
+  },
+  {
+   "n": "Kevin De Bruyne",
+   "p": "MED",
+   "num": 11,
+   "c": null
+  },
+  {
+   "n": "Claudio Pugliese",
+   "p": "POR",
+   "num": 12,
+   "c": null
+  },
+  {
+   "n": "Amir Rrahmani",
+   "p": "DEF",
+   "num": 13,
+   "c": null
+  },
+  {
+   "n": "Nikita Contini",
+   "p": "POR",
+   "num": 14,
+   "c": null
+  },
+  {
+   "n": "Rafa Marín",
+   "p": "DEF",
+   "num": 16,
+   "c": null
+  },
+  {
+   "n": "Mathías Olivera",
+   "p": "DEF",
+   "num": 17,
+   "c": null
+  },
+  {
+   "n": "Rasmus Højlund",
+   "p": "DEL",
+   "num": 19,
+   "c": null
+  },
+  {
+   "n": "Lorenzo Lucca",
+   "p": "DEL",
+   "num": 20,
+   "c": null
+  },
+  {
+   "n": "Matteo Politano",
+   "p": "DEL",
+   "num": 21,
+   "c": null
+  },
+  {
+   "n": "Giovanni Di Lorenzo",
+   "p": "DEF",
+   "num": 22,
+   "c": null
+  },
+  {
+   "n": "Giovane",
+   "p": "DEL",
+   "num": 23,
+   "c": null
+  },
+  {
+   "n": "Antonio Vergara",
+   "p": "MED",
+   "num": 26,
+   "c": null
+  },
+  {
+   "n": "Alisson Santos",
+   "p": "DEL",
+   "num": 27,
+   "c": null
+  },
+  {
+   "n": "Sam Beukema",
+   "p": "DEF",
+   "num": 31,
+   "c": null
+  },
+  {
+   "n": "Vanja Milinković-Savić",
+   "p": "POR",
+   "num": 32,
+   "c": null
+  },
+  {
+   "n": "Luca Marianucci",
+   "p": "DEF",
+   "num": 35,
+   "c": null
+  },
+  {
+   "n": "Leonardo Spinazzola",
+   "p": "DEF",
+   "num": 37,
+   "c": null
+  },
+  {
+   "n": "Stanislav Lobotka",
+   "p": "MED",
+   "num": 68,
+   "c": null
+  },
+  {
+   "n": "Noa Lang",
+   "p": "DEL",
+   "num": 70,
+   "c": null
+  },
+  {
+   "n": "Frank Anguissa",
+   "p": "MED",
+   "num": 99,
+   "c": null
+  }
+ ]
+}

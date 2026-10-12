@@ -1,0 +1,171 @@
+{
+ "slug": "river",
+ "pagina": "Club Atlético River Plate",
+ "seccion": "Current squad",
+ "revision": "2026-10-11T03:16:19Z",
+ "url": "https://en.wikipedia.org/wiki/Club_Atl%C3%A9tico_River_Plate",
+ "jugadores": [
+  {
+   "n": "Tobías Ramírez",
+   "p": "DEF",
+   "num": 2,
+   "c": null
+  },
+  {
+   "n": "Francisco Ortega",
+   "p": "DEF",
+   "num": 3,
+   "c": null
+  },
+  {
+   "n": "Juan Carlos Portillo",
+   "p": "DEF",
+   "num": 5,
+   "c": null
+  },
+  {
+   "n": "Aníbal Moreno",
+   "p": "MED",
+   "num": 6,
+   "c": null
+  },
+  {
+   "n": "Mauro Arambarri",
+   "p": "MED",
+   "num": 8,
+   "c": null
+  },
+  {
+   "n": "Sebastián Driussi",
+   "p": "DEL",
+   "num": 9,
+   "c": null
+  },
+  {
+   "n": "Ángel Correa",
+   "p": "DEL",
+   "num": 10,
+   "c": null
+  },
+  {
+   "n": "Lautaro Rivero",
+   "p": "DEF",
+   "num": 13,
+   "c": null
+  },
+  {
+   "n": "Fausto Vera",
+   "p": "MED",
+   "num": 15,
+   "c": null
+  },
+  {
+   "n": "Lucas Beltrán",
+   "p": "DEL",
+   "num": 18,
+   "c": null
+  },
+  {
+   "n": "Rafael Santos Borré",
+   "p": "DEL",
+   "num": 19,
+   "c": null
+  },
+  {
+   "n": "Giovanni González",
+   "p": "DEF",
+   "num": 20,
+   "c": null
+  },
+  {
+   "n": "Marcos Acuña",
+   "p": "DEF",
+   "num": 21,
+   "c": null
+  },
+  {
+   "n": "Thiago Almada",
+   "p": "MED",
+   "num": 23,
+   "c": null
+  },
+  {
+   "n": "Juan Cruz Meza",
+   "p": "MED",
+   "num": 24,
+   "c": null
+  },
+  {
+   "n": "Lautaro Pereyra",
+   "p": "DEL",
+   "num": 25,
+   "c": null
+  },
+  {
+   "n": "Tomás Galván",
+   "p": "MED",
+   "num": 26,
+   "c": null
+  },
+  {
+   "n": "Lucas Martínez Quarta",
+   "p": "DEF",
+   "num": 28,
+   "c": null
+  },
+  {
+   "n": "Gonzalo Montiel",
+   "p": "DEF",
+   "num": 29,
+   "c": null
+  },
+  {
+   "n": "Nicolás Otamendi",
+   "p": "DEF",
+   "num": 30,
+   "c": null
+  },
+  {
+   "n": "Facundo González",
+   "p": "DEF",
+   "num": 31,
+   "c": null
+  },
+  {
+   "n": "Agustín Ruberto",
+   "p": "DEL",
+   "num": 32,
+   "c": null
+  },
+  {
+   "n": "Ezequiel Centurión",
+   "p": "POR",
+   "num": 33,
+   "c": null
+  },
+  {
+   "n": "Santiago Beltrán",
+   "p": "POR",
+   "num": 41,
+   "c": null
+  },
+  {
+   "n": "Lucas Silva",
+   "p": "MED",
+   "num": 44,
+   "c": null
+  },
+  {
+   "n": "Tobías Andrada",
+   "p": "MED",
+   "num": 50,
+   "c": null
+  },
+  {
+   "n": "Jeremías Martinet",
+   "p": "POR",
+   "num": 57,
+   "c": null
+  }
+ ]
+}

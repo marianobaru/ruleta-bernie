@@ -1,0 +1,165 @@
+{
+ "slug": "mancity",
+ "pagina": "Manchester City F.C.",
+ "seccion": "First-team squad",
+ "revision": "2026-10-12T20:59:37Z",
+ "url": "https://en.wikipedia.org/wiki/Manchester_City_F.C.",
+ "jugadores": [
+  {
+   "n": "Gianluigi Donnarumma",
+   "p": "POR",
+   "num": 1,
+   "c": null
+  },
+  {
+   "n": "Rúben Dias",
+   "p": "DEF",
+   "num": 3,
+   "c": null
+  },
+  {
+   "n": "Elliot Anderson",
+   "p": "MED",
+   "num": 5,
+   "c": null
+  },
+  {
+   "n": "Marc Guéhi",
+   "p": "DEF",
+   "num": 6,
+   "c": null
+  },
+  {
+   "n": "Iliman Ndiaye",
+   "p": "DEL",
+   "num": 7,
+   "c": null
+  },
+  {
+   "n": "Mateo Kovačić",
+   "p": "MED",
+   "num": 8,
+   "c": null
+  },
+  {
+   "n": "Erling Haaland",
+   "p": "DEL",
+   "num": 9,
+   "c": null
+  },
+  {
+   "n": "Rayan Cherki",
+   "p": "MED",
+   "num": 10,
+   "c": null
+  },
+  {
+   "n": "Jérémy Doku",
+   "p": "DEL",
+   "num": 11,
+   "c": null
+  },
+  {
+   "n": "Marcus Bettinelli",
+   "p": "POR",
+   "num": 13,
+   "c": null
+  },
+  {
+   "n": "Enzo Fernández",
+   "p": "MED",
+   "num": 17,
+   "c": null
+  },
+  {
+   "n": "Rayan Aït-Nouri",
+   "p": "DEF",
+   "num": 21,
+   "c": null
+  },
+  {
+   "n": "Vitor Reis",
+   "p": "DEF",
+   "num": 22,
+   "c": null
+  },
+  {
+   "n": "Joško Gvardiol",
+   "p": "DEF",
+   "num": 24,
+   "c": null
+  },
+  {
+   "n": "Matheus Nunes",
+   "p": "DEF",
+   "num": 27,
+   "c": null
+  },
+  {
+   "n": "Gerónimo Rulli",
+   "p": "POR",
+   "num": 28,
+   "c": null
+  },
+  {
+   "n": "Ayyoub Bouaddi",
+   "p": "MED",
+   "num": 32,
+   "c": null
+  },
+  {
+   "n": "Nico O'Reilly",
+   "p": "MED",
+   "num": 33,
+   "c": null
+  },
+  {
+   "n": "Allan",
+   "p": "DEL",
+   "num": 37,
+   "c": null
+  },
+  {
+   "n": "Antoine Semenyo",
+   "p": "DEL",
+   "num": 42,
+   "c": null
+  },
+  {
+   "n": "Abdukodir Khusanov",
+   "p": "DEF",
+   "num": 45,
+   "c": null
+  },
+  {
+   "n": "Phil Foden",
+   "p": "MED",
+   "num": 47,
+   "c": null
+  },
+  {
+   "n": "Ryan McAidoo",
+   "p": "DEL",
+   "num": 56,
+   "c": null
+  },
+  {
+   "n": "Kaden Braithwaite",
+   "p": "DEF",
+   "num": 61,
+   "c": null
+  },
+  {
+   "n": "Floyd Samba",
+   "p": "MED",
+   "num": 75,
+   "c": null
+  },
+  {
+   "n": "Rico Lewis",
+   "p": "DEF",
+   "num": 82,
+   "c": null
+  }
+ ]
+}

@@ -1,0 +1,153 @@
+{
+ "slug": "bayern",
+ "pagina": "FC Bayern Munich",
+ "seccion": "Current squad",
+ "revision": "2026-10-11T20:13:17Z",
+ "url": "https://en.wikipedia.org/wiki/FC_Bayern_Munich",
+ "jugadores": [
+  {
+   "n": "Manuel Neuer",
+   "p": "POR",
+   "num": 1,
+   "c": null
+  },
+  {
+   "n": "Dayot Upamecano",
+   "p": "DEF",
+   "num": 2,
+   "c": null
+  },
+  {
+   "n": "Kim Min-jae",
+   "p": "DEF",
+   "num": 3,
+   "c": null
+  },
+  {
+   "n": "Jonathan Tah",
+   "p": "DEF",
+   "num": 4,
+   "c": null
+  },
+  {
+   "n": "Joshua Kimmich",
+   "p": "MED",
+   "num": 6,
+   "c": null
+  },
+  {
+   "n": "Serge Gnabry",
+   "p": "DEL",
+   "num": 7,
+   "c": null
+  },
+  {
+   "n": "Tom Bischof",
+   "p": "MED",
+   "num": 8,
+   "c": null
+  },
+  {
+   "n": "Harry Kane",
+   "p": "DEL",
+   "num": 9,
+   "c": null
+  },
+  {
+   "n": "Jamal Musiala",
+   "p": "MED",
+   "num": 10,
+   "c": null
+  },
+  {
+   "n": "Nathaniel Brown",
+   "p": "DEF",
+   "num": 11,
+   "c": null
+  },
+  {
+   "n": "Luis Díaz",
+   "p": "DEL",
+   "num": 14,
+   "c": null
+  },
+  {
+   "n": "Michael Olise",
+   "p": "DEL",
+   "num": 17,
+   "c": null
+  },
+  {
+   "n": "Alphonso Davies",
+   "p": "DEF",
+   "num": 19,
+   "c": null
+  },
+  {
+   "n": "Hiroki Itō",
+   "p": "DEF",
+   "num": 21,
+   "c": null
+  },
+  {
+   "n": "Sacha Boey",
+   "p": "DEF",
+   "num": 23,
+   "c": null
+  },
+  {
+   "n": "Sven Ulreich",
+   "p": "POR",
+   "num": 26,
+   "c": null
+  },
+  {
+   "n": "Konrad Laimer",
+   "p": "MED",
+   "num": 27,
+   "c": null
+  },
+  {
+   "n": "Ismael Saibari",
+   "p": "MED",
+   "num": 34,
+   "c": null
+  },
+  {
+   "n": "Bara Sapoko Ndiaye",
+   "p": "MED",
+   "num": 39,
+   "c": null
+  },
+  {
+   "n": "Jonas Urbig",
+   "p": "POR",
+   "num": 40,
+   "c": null
+  },
+  {
+   "n": "Lennart Karl",
+   "p": "MED",
+   "num": 42,
+   "c": null
+  },
+  {
+   "n": "Josip Stanišić",
+   "p": "DEF",
+   "num": 44,
+   "c": null
+  },
+  {
+   "n": "Aleksandar Pavlović",
+   "p": "MED",
+   "num": 45,
+   "c": null
+  },
+  {
+   "n": "David Santos Daiber",
+   "p": "MED",
+   "num": 47,
+   "c": null
+  }
+ ]
+}

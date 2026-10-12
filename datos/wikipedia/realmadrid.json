@@ -1,0 +1,165 @@
+{
+ "slug": "realmadrid",
+ "pagina": "Real Madrid CF",
+ "seccion": "Current squad",
+ "revision": "2026-09-08T14:27:49Z",
+ "url": "https://en.wikipedia.org/wiki/Real_Madrid_CF",
+ "jugadores": [
+  {
+   "n": "Thibaut Courtois",
+   "p": "POR",
+   "num": 1,
+   "c": null
+  },
+  {
+   "n": "Raúl Asencio",
+   "p": "DEF",
+   "num": 2,
+   "c": null
+  },
+  {
+   "n": "Éder Militão",
+   "p": "DEF",
+   "num": 3,
+   "c": null
+  },
+  {
+   "n": "Dean Huijsen",
+   "p": "DEF",
+   "num": 4,
+   "c": null
+  },
+  {
+   "n": "Jude Bellingham",
+   "p": "MED",
+   "num": 5,
+   "c": null
+  },
+  {
+   "n": "Eduardo Camavinga",
+   "p": "MED",
+   "num": 6,
+   "c": null
+  },
+  {
+   "n": "Vinícius Júnior",
+   "p": "DEL",
+   "num": 7,
+   "c": null
+  },
+  {
+   "n": "Federico Valverde",
+   "p": "MED",
+   "num": 8,
+   "c": null
+  },
+  {
+   "n": "Endrick",
+   "p": "DEL",
+   "num": 9,
+   "c": null
+  },
+  {
+   "n": "Kylian Mbappé",
+   "p": "DEL",
+   "num": 10,
+   "c": null
+  },
+  {
+   "n": "Rodrygo",
+   "p": "DEL",
+   "num": 11,
+   "c": null
+  },
+  {
+   "n": "Trent Alexander-Arnold",
+   "p": "DEF",
+   "num": 12,
+   "c": null
+  },
+  {
+   "n": "Andriy Lunin",
+   "p": "POR",
+   "num": 13,
+   "c": null
+  },
+  {
+   "n": "Aurélien Tchouaméni",
+   "p": "MED",
+   "num": 14,
+   "c": null
+  },
+  {
+   "n": "Arda Güler",
+   "p": "MED",
+   "num": 15,
+   "c": null
+  },
+  {
+   "n": "Ibrahima Konaté",
+   "p": "DEF",
+   "num": 16,
+   "c": null
+  },
+  {
+   "n": "Marc Cucurella",
+   "p": "DEF",
+   "num": 17,
+   "c": null
+  },
+  {
+   "n": "Álvaro Carreras",
+   "p": "DEF",
+   "num": 18,
+   "c": null
+  },
+  {
+   "n": "Carlos Espí",
+   "p": "DEL",
+   "num": 19,
+   "c": null
+  },
+  {
+   "n": "Bernardo Silva",
+   "p": "MED",
+   "num": 20,
+   "c": null
+  },
+  {
+   "n": "Brahim Díaz",
+   "p": "DEL",
+   "num": 21,
+   "c": null
+  },
+  {
+   "n": "Antonio Rüdiger",
+   "p": "DEF",
+   "num": 22,
+   "c": null
+  },
+  {
+   "n": "Ferland Mendy",
+   "p": "DEF",
+   "num": 23,
+   "c": null
+  },
+  {
+   "n": "Denzel Dumfries",
+   "p": "DEF",
+   "num": 24,
+   "c": null
+  },
+  {
+   "n": "Yan Diomande",
+   "p": "DEL",
+   "num": 25,
+   "c": null
+  },
+  {
+   "n": "Thiago Pitarch",
+   "p": "MED",
+   "num": 27,
+   "c": null
+  }
+ ]
+}

@@ -1,0 +1,189 @@
+{
+ "slug": "italia",
+ "pagina": "Italy national football team",
+ "seccion": "Current squad",
+ "revision": "2026-10-09T20:15:09Z",
+ "url": "https://en.wikipedia.org/wiki/Italy_national_football_team",
+ "jugadores": [
+  {
+   "n": "Gianluigi Donnarumma",
+   "p": "POR",
+   "num": 1,
+   "c": "Manchester City"
+  },
+  {
+   "n": "Marco Carnesecchi",
+   "p": "POR",
+   "num": 12,
+   "c": "Atalanta"
+  },
+  {
+   "n": "Guglielmo Vicario",
+   "p": "POR",
+   "num": 13,
+   "c": "Juventus"
+  },
+  {
+   "n": "Massimo Pessina",
+   "p": "POR",
+   "num": null,
+   "c": "Bologna"
+  },
+  {
+   "n": "Michael Kayode",
+   "p": "DEF",
+   "num": 2,
+   "c": "Brentford"
+  },
+  {
+   "n": "Matteo Ruggeri",
+   "p": "DEF",
+   "num": 3,
+   "c": "Aston Villa"
+  },
+  {
+   "n": "Riccardo Calafiori",
+   "p": "DEF",
+   "num": 5,
+   "c": "Arsenal"
+  },
+  {
+   "n": "Alessandro Bastoni",
+   "p": "DEF",
+   "num": 6,
+   "c": "Inter Milan"
+  },
+  {
+   "n": "Giorgio Scalvini",
+   "p": "DEF",
+   "num": 19,
+   "c": "Atalanta"
+  },
+  {
+   "n": "Giovanni Di Lorenzo",
+   "p": "DEF",
+   "num": 22,
+   "c": "Napoli"
+  },
+  {
+   "n": "Gianluca Mancini",
+   "p": "DEF",
+   "num": 23,
+   "c": "Roma"
+  },
+  {
+   "n": "Diego Coppola",
+   "p": "DEF",
+   "num": null,
+   "c": "Paris FC"
+  },
+  {
+   "n": "Daniele Ghilardi",
+   "p": "DEF",
+   "num": null,
+   "c": "Roma"
+  },
+  {
+   "n": "Eddy Kouadio",
+   "p": "DEF",
+   "num": null,
+   "c": "Monza"
+  },
+  {
+   "n": "Alessandro Romano",
+   "p": "MED",
+   "num": 4,
+   "c": "Cagliari"
+  },
+  {
+   "n": "Sandro Tonali",
+   "p": "MED",
+   "num": 8,
+   "c": "Tottenham Hotspur"
+  },
+  {
+   "n": "Nicolò Fagioli",
+   "p": "MED",
+   "num": 10,
+   "c": "Fiorentina"
+  },
+  {
+   "n": "Issa Doumbia",
+   "p": "MED",
+   "num": 15,
+   "c": "Sporting CP"
+  },
+  {
+   "n": "Davide Frattesi",
+   "p": "MED",
+   "num": 16,
+   "c": "Lazio"
+  },
+  {
+   "n": "Nicolò Barella",
+   "p": "MED",
+   "num": 18,
+   "c": "Inter Milan"
+  },
+  {
+   "n": "Samuele Ricci",
+   "p": "MED",
+   "num": null,
+   "c": "Como"
+  },
+  {
+   "n": "Rolando Mandragora",
+   "p": "MED",
+   "num": null,
+   "c": "Torino"
+  },
+  {
+   "n": "Nicolò Cambiaghi",
+   "p": "DEL",
+   "num": 7,
+   "c": "Bologna"
+  },
+  {
+   "n": "Pio Esposito",
+   "p": "DEL",
+   "num": 9,
+   "c": "Inter Milan"
+  },
+  {
+   "n": "Gianluca Scamacca",
+   "p": "DEL",
+   "num": 11,
+   "c": "Atalanta"
+  },
+  {
+   "n": "Samuele Inácio",
+   "p": "DEL",
+   "num": 14,
+   "c": "Borussia Dortmund"
+  },
+  {
+   "n": "Daniel Maldini",
+   "p": "DEL",
+   "num": 17,
+   "c": "Cagliari"
+  },
+  {
+   "n": "Sebastiano Esposito",
+   "p": "DEL",
+   "num": 20,
+   "c": "Sassuolo"
+  },
+  {
+   "n": "Antonio Vergara",
+   "p": "DEL",
+   "num": 21,
+   "c": "Napoli"
+  },
+  {
+   "n": "Mohamed Alì Zoma",
+   "p": "DEL",
+   "num": null,
+   "c": "1. FC Nürnberg"
+  }
+ ]
+}

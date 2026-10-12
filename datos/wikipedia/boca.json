@@ -1,0 +1,177 @@
+{
+ "slug": "boca",
+ "pagina": "Boca Juniors",
+ "seccion": "Current squad",
+ "revision": "2026-09-16T23:03:52Z",
+ "url": "https://en.wikipedia.org/wiki/Boca_Juniors",
+ "jugadores": [
+  {
+   "n": "Álvaro Montero",
+   "p": "POR",
+   "num": 1,
+   "c": null
+  },
+  {
+   "n": "Lautaro Di Lollo",
+   "p": "DEF",
+   "num": 2,
+   "c": null
+  },
+  {
+   "n": "Lautaro Blanco",
+   "p": "DEF",
+   "num": 3,
+   "c": null
+  },
+  {
+   "n": "Nicolás Figal",
+   "p": "DEF",
+   "num": 4,
+   "c": null
+  },
+  {
+   "n": "Leandro Paredes",
+   "p": "MED",
+   "num": 5,
+   "c": null
+  },
+  {
+   "n": "Rodrigo Battaglia",
+   "p": "MED",
+   "num": 6,
+   "c": null
+  },
+  {
+   "n": "Carlos Palacios",
+   "p": "MED",
+   "num": 7,
+   "c": null
+  },
+  {
+   "n": "Tomás Belmonte",
+   "p": "MED",
+   "num": 8,
+   "c": null
+  },
+  {
+   "n": "Milton Giménez",
+   "p": "DEL",
+   "num": 9,
+   "c": null
+  },
+  {
+   "n": "Tomás Aranda",
+   "p": "MED",
+   "num": 10,
+   "c": null
+  },
+  {
+   "n": "Ángel Romero",
+   "p": "DEL",
+   "num": 11,
+   "c": null
+  },
+  {
+   "n": "Leandro Brey",
+   "p": "POR",
+   "num": 12,
+   "c": null
+  },
+  {
+   "n": "Javier García",
+   "p": "POR",
+   "num": 13,
+   "c": null
+  },
+  {
+   "n": "Williams Alarcón",
+   "p": "MED",
+   "num": 15,
+   "c": null
+  },
+  {
+   "n": "Miguel Merentiel",
+   "p": "DEL",
+   "num": 16,
+   "c": null
+  },
+  {
+   "n": "Leandro Lozano",
+   "p": "DEF",
+   "num": 17,
+   "c": null
+  },
+  {
+   "n": "Milton Delgado",
+   "p": "MED",
+   "num": 18,
+   "c": null
+  },
+  {
+   "n": "Leonel Flores",
+   "p": "DEL",
+   "num": 19,
+   "c": null
+  },
+  {
+   "n": "Alan Velasco",
+   "p": "MED",
+   "num": 20,
+   "c": null
+  },
+  {
+   "n": "Sebastián Villa",
+   "p": "MED",
+   "num": 22,
+   "c": null
+  },
+  {
+   "n": "Camilo Rey Domenech",
+   "p": "MED",
+   "num": 23,
+   "c": null
+  },
+  {
+   "n": "Dylan Gorosito",
+   "p": "DEF",
+   "num": 24,
+   "c": null
+  },
+  {
+   "n": "Santiago Ascacíbar",
+   "p": "MED",
+   "num": 25,
+   "c": null
+  },
+  {
+   "n": "Marco Pellegrino",
+   "p": "DEF",
+   "num": 26,
+   "c": null
+  },
+  {
+   "n": "Malcom Braida",
+   "p": "MED",
+   "num": 27,
+   "c": null
+  },
+  {
+   "n": "Adam Bareiro",
+   "p": "DEL",
+   "num": 28,
+   "c": null
+  },
+  {
+   "n": "Enner Valencia",
+   "p": "DEL",
+   "num": 30,
+   "c": null
+  },
+  {
+   "n": "Ayrton Costa",
+   "p": "DEF",
+   "num": 32,
+   "c": null
+  }
+ ]
+}

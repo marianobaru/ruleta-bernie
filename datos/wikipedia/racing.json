@@ -1,0 +1,171 @@
+{
+ "slug": "racing",
+ "pagina": "Racing Club de Avellaneda",
+ "seccion": "Current squad",
+ "revision": "2026-10-10T22:07:32Z",
+ "url": "https://en.wikipedia.org/wiki/Racing_Club_de_Avellaneda",
+ "jugadores": [
+  {
+   "n": "Francisco Gómez",
+   "p": "POR",
+   "num": 1,
+   "c": null
+  },
+  {
+   "n": "Matías Pérez",
+   "p": "DEF",
+   "num": 2,
+   "c": null
+  },
+  {
+   "n": "Marco Di Césare",
+   "p": "DEF",
+   "num": 3,
+   "c": null
+  },
+  {
+   "n": "Ezequiel Cannavo",
+   "p": "DEF",
+   "num": 4,
+   "c": null
+  },
+  {
+   "n": "Matías Kranevitter",
+   "p": "MED",
+   "num": 5,
+   "c": null
+  },
+  {
+   "n": "Marcos Rojo",
+   "p": "DEF",
+   "num": 6,
+   "c": null
+  },
+  {
+   "n": "Duván Vergara",
+   "p": "DEL",
+   "num": 7,
+   "c": null
+  },
+  {
+   "n": "Alan Forneris",
+   "p": "MED",
+   "num": 8,
+   "c": null
+  },
+  {
+   "n": "Adrián Martínez",
+   "p": "DEL",
+   "num": 9,
+   "c": null
+  },
+  {
+   "n": "Matko Miljević",
+   "p": "MED",
+   "num": 10,
+   "c": null
+  },
+  {
+   "n": "Matías Zaracho",
+   "p": "MED",
+   "num": 11,
+   "c": null
+  },
+  {
+   "n": "Juan Barinaga",
+   "p": "DEF",
+   "num": 14,
+   "c": null
+  },
+  {
+   "n": "Ulises Ortegoza",
+   "p": "MED",
+   "num": 16,
+   "c": null
+  },
+  {
+   "n": "Tomás Conechny",
+   "p": "DEL",
+   "num": 17,
+   "c": null
+  },
+  {
+   "n": "Alfonso Espino",
+   "p": "DEF",
+   "num": 18,
+   "c": null
+  },
+  {
+   "n": "Ignacio Rodríguez",
+   "p": "DEF",
+   "num": 19,
+   "c": null
+  },
+  {
+   "n": "Gastón Lodico",
+   "p": "MED",
+   "num": 20,
+   "c": null
+  },
+  {
+   "n": "Valentín Carboni",
+   "p": "DEL",
+   "num": 21,
+   "c": null
+  },
+  {
+   "n": "Elías Torres",
+   "p": "DEL",
+   "num": 22,
+   "c": null
+  },
+  {
+   "n": "Nazareno Colombo",
+   "p": "DEF",
+   "num": 23,
+   "c": null
+  },
+  {
+   "n": "Adrián Fernández",
+   "p": "MED",
+   "num": 24,
+   "c": null
+  },
+  {
+   "n": "Facundo Cambeses",
+   "p": "POR",
+   "num": 25,
+   "c": null
+  },
+  {
+   "n": "Matías Tagliamonte",
+   "p": "POR",
+   "num": 30,
+   "c": null
+  },
+  {
+   "n": "Lautaro Díaz",
+   "p": "DEL",
+   "num": 32,
+   "c": null
+  },
+  {
+   "n": "Leonel Pérez",
+   "p": "MED",
+   "num": 33,
+   "c": null
+  },
+  {
+   "n": "Gonzalo Escudero",
+   "p": "DEF",
+   "num": 43,
+   "c": null
+  },
+  {
+   "n": "Alejandro Tello",
+   "p": "MED",
+   "num": 46,
+   "c": null
+  }
+ ]
+}

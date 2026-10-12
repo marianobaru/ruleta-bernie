@@ -1,0 +1,243 @@
+{
+ "slug": "alemania",
+ "pagina": "Germany national football team",
+ "seccion": "Current squad",
+ "revision": "2026-10-09T15:05:24Z",
+ "url": "https://en.wikipedia.org/wiki/Germany_national_football_team",
+ "jugadores": [
+  {
+   "n": "Jonas Urbig",
+   "p": "POR",
+   "num": 1,
+   "c": "Bayern Munich"
+  },
+  {
+   "n": "Finn Dahmen",
+   "p": "POR",
+   "num": 12,
+   "c": "FC Augsburg"
+  },
+  {
+   "n": "Noah Atubolu",
+   "p": "POR",
+   "num": 21,
+   "c": "Eintracht Frankfurt"
+  },
+  {
+   "n": "Marc-André ter Stegen",
+   "p": "POR",
+   "num": null,
+   "c": "Ajax"
+  },
+  {
+   "n": "Alexander Nübel",
+   "p": "POR",
+   "num": null,
+   "c": "Beşiktaş"
+  },
+  {
+   "n": "Malick Thiaw",
+   "p": "DEF",
+   "num": 2,
+   "c": "Newcastle United"
+  },
+  {
+   "n": "Waldemar Anton",
+   "p": "DEF",
+   "num": 3,
+   "c": "Borussia Dortmund"
+  },
+  {
+   "n": "Finn Jeltsch",
+   "p": "DEF",
+   "num": 4,
+   "c": "VfB Stuttgart"
+  },
+  {
+   "n": "Philipp Treu",
+   "p": "DEF",
+   "num": 13,
+   "c": "SC Freiburg"
+  },
+  {
+   "n": "Ridle Baku",
+   "p": "DEF",
+   "num": 16,
+   "c": "RB Leipzig"
+  },
+  {
+   "n": "Maximilian Mittelstädt",
+   "p": "DEF",
+   "num": 18,
+   "c": "VfB Stuttgart"
+  },
+  {
+   "n": "David Raum",
+   "p": "DEF",
+   "num": 22,
+   "c": "RB Leipzig"
+  },
+  {
+   "n": "Jonathan Tah",
+   "p": "DEF",
+   "num": null,
+   "c": "Bayern Munich"
+  },
+  {
+   "n": "Nathaniel Brown",
+   "p": "DEF",
+   "num": null,
+   "c": "Bayern Munich"
+  },
+  {
+   "n": "Josha Vagnoman",
+   "p": "DEF",
+   "num": null,
+   "c": "VfB Stuttgart"
+  },
+  {
+   "n": "Yann Aurel Bisseck",
+   "p": "DEF",
+   "num": null,
+   "c": "Inter Milan"
+  },
+  {
+   "n": "Hennes Behrens",
+   "p": "DEF",
+   "num": null,
+   "c": "FC Augsburg"
+  },
+  {
+   "n": "Max Rosenfelder",
+   "p": "DEF",
+   "num": null,
+   "c": "SC Freiburg"
+  },
+  {
+   "n": "Aleksandar Pavlović",
+   "p": "MED",
+   "num": 5,
+   "c": "Bayern Munich"
+  },
+  {
+   "n": "Yannik Engelhardt",
+   "p": "MED",
+   "num": 6,
+   "c": "SC Freiburg"
+  },
+  {
+   "n": "Said El Mala",
+   "p": "MED",
+   "num": 7,
+   "c": "1. FC Köln"
+  },
+  {
+   "n": "Tom Bischof",
+   "p": "MED",
+   "num": 8,
+   "c": "Bayern Munich"
+  },
+  {
+   "n": "Mika Baur",
+   "p": "MED",
+   "num": 14,
+   "c": "Celtic"
+  },
+  {
+   "n": "Lennart Karl",
+   "p": "MED",
+   "num": 15,
+   "c": "Bayern Munich"
+  },
+  {
+   "n": "Florian Wirtz",
+   "p": "MED",
+   "num": 17,
+   "c": "Liverpool"
+  },
+  {
+   "n": "Bambasé Conté",
+   "p": "MED",
+   "num": 19,
+   "c": "TSG Hoffenheim"
+  },
+  {
+   "n": "Felix Keidel",
+   "p": "MED",
+   "num": 20,
+   "c": "SV Elversberg"
+  },
+  {
+   "n": "Vitaly Janelt",
+   "p": "MED",
+   "num": 23,
+   "c": "Brentford"
+  },
+  {
+   "n": "Joshua Kimmich",
+   "p": "MED",
+   "num": null,
+   "c": "Bayern Munich"
+  },
+  {
+   "n": "Felix Nmecha",
+   "p": "MED",
+   "num": null,
+   "c": "Borussia Dortmund"
+  },
+  {
+   "n": "Nadiem Amiri",
+   "p": "MED",
+   "num": null,
+   "c": "Mainz 05"
+  },
+  {
+   "n": "Karim Adeyemi",
+   "p": "MED",
+   "num": null,
+   "c": "Barcelona"
+  },
+  {
+   "n": "Chris Führich",
+   "p": "MED",
+   "num": null,
+   "c": "VfB Stuttgart"
+  },
+  {
+   "n": "Kevin Schade",
+   "p": "MED",
+   "num": null,
+   "c": "Brentford"
+  },
+  {
+   "n": "Anton Stach",
+   "p": "MED",
+   "num": null,
+   "c": "Leeds United"
+  },
+  {
+   "n": "Derry Scherhant",
+   "p": "DEL",
+   "num": 9,
+   "c": "SC Freiburg"
+  },
+  {
+   "n": "Jonathan Burkardt",
+   "p": "DEL",
+   "num": 10,
+   "c": "Eintracht Frankfurt"
+  },
+  {
+   "n": "Nick Woltemade",
+   "p": "DEL",
+   "num": 11,
+   "c": "Juventus"
+  },
+  {
+   "n": "Younes Ebnoutalib",
+   "p": "DEL",
+   "num": null,
+   "c": "Eintracht Frankfurt"
+  }
+ ]
+}

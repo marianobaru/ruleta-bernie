@@ -1,0 +1,153 @@
+{
+ "slug": "psg",
+ "pagina": "Paris Saint-Germain FC",
+ "seccion": "Current squad",
+ "revision": "2026-10-08T12:21:32Z",
+ "url": "https://en.wikipedia.org/wiki/Paris_Saint-Germain_FC",
+ "jugadores": [
+  {
+   "n": "Achraf Hakimi",
+   "p": "DEF",
+   "num": 2,
+   "c": null
+  },
+  {
+   "n": "Lucas Beraldo",
+   "p": "DEF",
+   "num": 4,
+   "c": null
+  },
+  {
+   "n": "Marquinhos",
+   "p": "DEF",
+   "num": 5,
+   "c": null
+  },
+  {
+   "n": "Illia Zabarnyi",
+   "p": "DEF",
+   "num": 6,
+   "c": null
+  },
+  {
+   "n": "Khvicha Kvaratskhelia",
+   "p": "DEL",
+   "num": 7,
+   "c": null
+  },
+  {
+   "n": "Fabián Ruiz",
+   "p": "MED",
+   "num": 8,
+   "c": null
+  },
+  {
+   "n": "Ferran Torres",
+   "p": "DEL",
+   "num": 9,
+   "c": null
+  },
+  {
+   "n": "Ousmane Dembélé",
+   "p": "DEL",
+   "num": 10,
+   "c": null
+  },
+  {
+   "n": "Maghnes Akliouche",
+   "p": "MED",
+   "num": 11,
+   "c": null
+  },
+  {
+   "n": "Lucas Digne",
+   "p": "DEF",
+   "num": 12,
+   "c": null
+  },
+  {
+   "n": "Désiré Doué",
+   "p": "DEL",
+   "num": 14,
+   "c": null
+  },
+  {
+   "n": "Alessandro Longoni",
+   "p": "POR",
+   "num": 16,
+   "c": null
+  },
+  {
+   "n": "Vitinha",
+   "p": "MED",
+   "num": 17,
+   "c": null
+  },
+  {
+   "n": "Lucas Hernandez",
+   "p": "DEF",
+   "num": 21,
+   "c": null
+  },
+  {
+   "n": "Mika Godts",
+   "p": "DEL",
+   "num": 22,
+   "c": null
+  },
+  {
+   "n": "Senny Mayulu",
+   "p": "MED",
+   "num": 24,
+   "c": null
+  },
+  {
+   "n": "Nuno Mendes",
+   "p": "DEF",
+   "num": 25,
+   "c": null
+  },
+  {
+   "n": "Dro Fernández",
+   "p": "MED",
+   "num": 27,
+   "c": null
+  },
+  {
+   "n": "Lucas Chevalier",
+   "p": "POR",
+   "num": 30,
+   "c": null
+  },
+  {
+   "n": "Warren Zaïre-Emery",
+   "p": "MED",
+   "num": 33,
+   "c": null
+  },
+  {
+   "n": "Matvey Safonov",
+   "p": "POR",
+   "num": 39,
+   "c": null
+  },
+  {
+   "n": "Quentin Ndjantou",
+   "p": "DEL",
+   "num": 47,
+   "c": null
+  },
+  {
+   "n": "Willian Pacho",
+   "p": "DEF",
+   "num": 51,
+   "c": null
+  },
+  {
+   "n": "João Neves",
+   "p": "MED",
+   "num": 87,
+   "c": null
+  }
+ ]
+}

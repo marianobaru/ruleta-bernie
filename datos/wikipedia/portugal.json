@@ -1,0 +1,153 @@
+{
+ "slug": "portugal",
+ "pagina": "Portugal national football team",
+ "seccion": "Current squad",
+ "revision": "2026-10-11T07:01:31Z",
+ "url": "https://en.wikipedia.org/wiki/Portugal_national_football_team",
+ "jugadores": [
+  {
+   "n": "Diogo Costa",
+   "p": "POR",
+   "num": 1,
+   "c": "Porto"
+  },
+  {
+   "n": "Rui Silva",
+   "p": "POR",
+   "num": 12,
+   "c": "Sporting CP"
+  },
+  {
+   "n": "Samuel Soares",
+   "p": "POR",
+   "num": 22,
+   "c": "Benfica"
+  },
+  {
+   "n": "Diogo Dalot",
+   "p": "DEF",
+   "num": 2,
+   "c": "Manchester United"
+  },
+  {
+   "n": "Rúben Dias",
+   "p": "DEF",
+   "num": 3,
+   "c": "Manchester City"
+  },
+  {
+   "n": "Tomás Araújo",
+   "p": "DEF",
+   "num": 4,
+   "c": "Benfica"
+  },
+  {
+   "n": "Nuno Tavares",
+   "p": "DEF",
+   "num": 5,
+   "c": "Lazio"
+  },
+  {
+   "n": "Renato Veiga",
+   "p": "DEF",
+   "num": 13,
+   "c": "Villarreal"
+  },
+  {
+   "n": "Gonçalo Inácio",
+   "p": "DEF",
+   "num": null,
+   "c": "Sporting CP"
+  },
+  {
+   "n": "Nuno Mendes",
+   "p": "DEF",
+   "num": 19,
+   "c": "Paris Saint-Germain"
+  },
+  {
+   "n": "João Cancelo",
+   "p": "DEF",
+   "num": 20,
+   "c": "Barcelona"
+  },
+  {
+   "n": "João Palhinha",
+   "p": "MED",
+   "num": 6,
+   "c": "Benfica"
+  },
+  {
+   "n": "Bruno Fernandes",
+   "p": "MED",
+   "num": 8,
+   "c": "Manchester United"
+  },
+  {
+   "n": "Bernardo Silva",
+   "p": "MED",
+   "num": 10,
+   "c": "Real Madrid"
+  },
+  {
+   "n": "João Neves",
+   "p": "MED",
+   "num": 15,
+   "c": "Paris Saint-Germain"
+  },
+  {
+   "n": "Rúben Neves",
+   "p": "MED",
+   "num": 21,
+   "c": "Al-Hilal"
+  },
+  {
+   "n": "Vitinha",
+   "p": "MED",
+   "num": 23,
+   "c": "Paris Saint-Germain"
+  },
+  {
+   "n": "Rafael Leão",
+   "p": "DEL",
+   "num": 7,
+   "c": "Galatasaray"
+  },
+  {
+   "n": "Gonçalo Ramos",
+   "p": "DEL",
+   "num": 9,
+   "c": "AC Milan"
+  },
+  {
+   "n": "João Félix",
+   "p": "DEL",
+   "num": 11,
+   "c": "Al-Nassr"
+  },
+  {
+   "n": "Francisco Conceição",
+   "p": "DEL",
+   "num": 14,
+   "c": "Juventus"
+  },
+  {
+   "n": "Francisco Trincão",
+   "p": "DEL",
+   "num": 16,
+   "c": "Al-Ahli"
+  },
+  {
+   "n": "Pedro Neto",
+   "p": "DEL",
+   "num": 17,
+   "c": "Chelsea"
+  },
+  {
+   "n": "Fábio Silva",
+   "p": "DEL",
+   "num": 18,
+   "c": "Borussia Dortmund"
+  }
+ ]
+}

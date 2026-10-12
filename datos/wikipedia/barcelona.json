@@ -1,0 +1,171 @@
+{
+ "slug": "barcelona",
+ "pagina": "FC Barcelona",
+ "seccion": "Current squad",
+ "revision": "2026-10-04T00:27:07Z",
+ "url": "https://en.wikipedia.org/wiki/FC_Barcelona",
+ "jugadores": [
+  {
+   "n": "Joan Garcia",
+   "p": "POR",
+   "num": 1,
+   "c": null
+  },
+  {
+   "n": "João Cancelo",
+   "p": "DEF",
+   "num": 2,
+   "c": null
+  },
+  {
+   "n": "Alejandro Balde",
+   "p": "DEF",
+   "num": 3,
+   "c": null
+  },
+  {
+   "n": "Brian Fariñas",
+   "p": "MED",
+   "num": 4,
+   "c": null
+  },
+  {
+   "n": "Pau Cubarsí",
+   "p": "DEF",
+   "num": 5,
+   "c": null
+  },
+  {
+   "n": "Gavi",
+   "p": "MED",
+   "num": 6,
+   "c": null
+  },
+  {
+   "n": "Fermín López",
+   "p": "MED",
+   "num": 7,
+   "c": null
+  },
+  {
+   "n": "Pedri",
+   "p": "MED",
+   "num": 8,
+   "c": null
+  },
+  {
+   "n": "Gabriel Jesus",
+   "p": "DEL",
+   "num": 9,
+   "c": null
+  },
+  {
+   "n": "Lamine Yamal",
+   "p": "DEL",
+   "num": 10,
+   "c": null
+  },
+  {
+   "n": "Raphinha",
+   "p": "DEL",
+   "num": 11,
+   "c": null
+  },
+  {
+   "n": "Xavi Espart",
+   "p": "DEF",
+   "num": 12,
+   "c": null
+  },
+  {
+   "n": "Wojciech Szczęsny",
+   "p": "POR",
+   "num": 13,
+   "c": null
+  },
+  {
+   "n": "Karim Adeyemi",
+   "p": "DEL",
+   "num": 14,
+   "c": null
+  },
+  {
+   "n": "Andreas Christensen",
+   "p": "DEF",
+   "num": 15,
+   "c": null
+  },
+  {
+   "n": "Rodri",
+   "p": "MED",
+   "num": 16,
+   "c": null
+  },
+  {
+   "n": "Anthony Gordon",
+   "p": "DEL",
+   "num": 17,
+   "c": null
+  },
+  {
+   "n": "Gerard Martín",
+   "p": "DEF",
+   "num": 18,
+   "c": null
+  },
+  {
+   "n": "Roony Bardghji",
+   "p": "DEL",
+   "num": 19,
+   "c": null
+  },
+  {
+   "n": "Dani Olmo",
+   "p": "MED",
+   "num": 20,
+   "c": null
+  },
+  {
+   "n": "Frenkie de Jong",
+   "p": "MED",
+   "num": 21,
+   "c": null
+  },
+  {
+   "n": "Marc Bernal",
+   "p": "MED",
+   "num": 22,
+   "c": null
+  },
+  {
+   "n": "Jules Koundé",
+   "p": "DEF",
+   "num": 23,
+   "c": null
+  },
+  {
+   "n": "Eric Garcia",
+   "p": "DEF",
+   "num": 24,
+   "c": null
+  },
+  {
+   "n": "Dominik Livaković",
+   "p": "POR",
+   "num": 25,
+   "c": null
+  },
+  {
+   "n": "Jesse Bisiwu",
+   "p": "DEL",
+   "num": 27,
+   "c": null
+  },
+  {
+   "n": "Hamza Abdelkarim",
+   "p": "DEL",
+   "num": 29,
+   "c": null
+  }
+ ]
+}
