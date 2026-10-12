@@ -2860,72 +2860,273 @@ window.PLANTELES = {"actualizado":"12/10/2026","equipos":{"boca":{"fecha":"Wikip
     return { kit, text, halo, trim: c2 };
   }
 
+  function extractWikiTemplates(text) {
+    const templates = [];
+    let i = 0;
+    const n = text.length;
+    while (i < n) {
+      if (text.startsWith('{{', i)) {
+        let depth = 0;
+        let j = i;
+        while (j < n) {
+          if (text.startsWith('{{', j)) {
+            depth++;
+            j += 2;
+          } else if (text.startsWith('}}', j)) {
+            depth--;
+            j += 2;
+            if (depth === 0) break;
+          } else {
+            j++;
+          }
+        }
+        templates.push(text.slice(i + 2, j - 2));
+        i = j;
+      } else {
+        i++;
+      }
+    }
+    return templates;
+  }
+
+  function splitTemplateParams(body) {
+    const parts = [];
+    let depth = 0;
+    let current = '';
+    let i = 0;
+    const n = body.length;
+    while (i < n) {
+      const two = body.slice(i, i + 2);
+      if (two === '{{' || two === '[[') {
+        depth++;
+        current += two;
+        i += 2;
+        continue;
+      }
+      if (two === '}}' || two === ']]') {
+        depth--;
+        current += two;
+        i += 2;
+        continue;
+      }
+      if (body[i] === '|' && depth === 0) {
+        parts.push(current);
+        current = '';
+      } else {
+        current += body[i];
+      }
+      i++;
+    }
+    parts.push(current);
+    return parts;
+  }
+
   function cleanWikiName(valor) {
-    let v = (valor || '').replace(/<!--.*?-->/gs, '').replace(/<ref[^>]*\/>|<ref[^>]*>.*?<\/ref>/gs, '');
+    if (!valor) return '';
+    let v = valor.replace(/<!--[\s\S]*?-->/g, '').replace(/<ref[^>]*\/>|<ref[^>]*>[\s\S]*?<\/ref>/g, '');
     const m = /\{\{\s*sortname\s*\|([^|}]*)\|([^|}]*)(?:\|([^|}]*))?(?:\|[^}]*)?\}\}/i.exec(v);
-    if (m) return `${m[1].trim()} ${m[2].trim()}`.trim();
-    v = v.replace(/\[\[([^|\]]*)\|([^\]]*)\]\]/g, '$2');
-    v = v.replace(/\[\[([^\]]*)\]\]/g, '$1');
-    v = v.replace(/\{\{[^}]*\}\}/g, '');
-    v = v.replace(/<[^>]+>/g, '');
-    v = v.replace(/'''/g, '').replace(/''/g, '');
+    if (m) {
+      v = `${m[1].trim()} ${m[2].trim()}`.trim();
+    } else {
+      v = v.replace(/\[\[(?:[^|\]]*\|)?([^\]]*)\]\]/g, '$1');
+      v = v.replace(/\{\{[^}]*\}\}/g, '');
+      v = v.replace(/<[^>]+>/g, '');
+      v = v.replace(/'''?/g, '');
+    }
+    v = v.replace(/\s*\((?:[^)]*foot[^)]*|[^)]*soccer[^)]*|[^)]*born[^)]*)\)/gi, '');
+    v = v.replace(/(?<=[a-zà-ÿ.])(RET|INJ|WD|SUS|PRE|COV|ALT)+$/i, '');
     return v.replace(/\s+/g, ' ').trim();
+  }
+
+  const SQUAD_TEMPLATES = new Set([
+    'fs player',
+    'football squad player',
+    'football squad player2',
+    'fs player2',
+    'nat fs g player',
+    'nat fs player',
+    'nat fs r player',
+    'player',
+    'mlssquadplayer',
+    'mls player',
+    'equipo de fútbol jugador',
+    'jugador de fútbol',
+    'plantilla de fútbol jugador'
+  ]);
+
+  function normalizePosition(rawPos) {
+    const pos = (cleanWikiName(rawPos) || '').toUpperCase().trim();
+    if (!pos) return '?';
+    if (/^(GK|POR|ARQ|PO|GOALKEEPER|PORTERO|ARQUERO)$/.test(pos)) return 'POR';
+    if (/^(DF|DEF|CB|LB|RB|WB|SW|DFC|LI|LD|DEFENDER|DEFENSA|DEFENSOR)$/.test(pos)) return 'DEF';
+    if (/^(MF|MED|CM|DM|AM|LM|RM|VOL|MC|MCD|MCO|MI|MD|MIDFIELDER|MEDIOCAMPISTA|VOLANTE|CENTROCAMPISTA)$/.test(pos)) return 'MED';
+    if (/^(FW|DEL|ST|CF|LW|RW|SS|DC|EXT|ED|EI|FORWARD|STRIKER|DELANTERO|ATACANTE)$/.test(pos)) return 'DEL';
+    if (pos.includes('GK') || pos.includes('POR') || pos.includes('ARQ')) return 'POR';
+    if (pos.includes('DF') || pos.includes('DEF')) return 'DEF';
+    if (pos.includes('MF') || pos.includes('MED') || pos.includes('MID') || pos.includes('VOL')) return 'MED';
+    if (pos.includes('FW') || pos.includes('DEL') || pos.includes('ST') || pos.includes('ATT')) return 'DEL';
+    return '?';
   }
 
   function parseWikiSquad(wikitext) {
     const lines = wikitext.split('\n');
     let cut = wikitext;
-    for (let k = 1; k < lines.length; k++) {
-      if (/^=+[^=].*=+\s*$/.test(lines[k]) || /^\s*(;|'''|==).*\b(loan|reserves?|academy|youth|under-\d+)\b/i.test(lines[k])) {
-        cut = lines.slice(0, k).join('\n');
+
+    let startLine = 0;
+    for (let k = 0; k < lines.length; k++) {
+      if (/^=+\s*(current squad|first[- ]team squad|current first[- ]team squad|squad|current roster|roster|plantel actual|plantel|plantilla actual|plantilla|primer equipo)\s*=+/i.test(lines[k])) {
+        startLine = k;
         break;
       }
     }
-    const players = [];
-    const pRegex = /\{\{(?:fs player|football squad player|nat fs g player|nat fs player)\s*\|([^}]+)\}\}/gi;
-    let match;
-    const posMap = { GK: 'POR', DF: 'DEF', MF: 'MED', FW: 'DEL' };
-    while ((match = pRegex.exec(cut)) !== null) {
-      const parts = match[1].split('|');
-      const p = {};
-      for (const part of parts) {
-        const eq = part.indexOf('=');
-        if (eq !== -1) {
-          p[part.slice(0, eq).trim().toLowerCase()] = part.slice(eq + 1).trim();
-        }
-      }
-      const name = cleanWikiName(p.name || '');
-      const pos = posMap[(cleanWikiName(p.pos || '')).toUpperCase()] || '?';
-      const num = parseInt((cleanWikiName(p.no || '')).replace(/\D/g, ''), 10) || null;
-      const club = cleanWikiName(p.club || '') || null;
-      if (name && pos !== '?') {
-        players.push({ n: name, p: pos, num, ...(club ? { c: club } : {}) });
+    const relevantLines = lines.slice(startLine);
+
+    for (let k = 1; k < relevantLines.length; k++) {
+      const line = relevantLines[k];
+      if (
+        /^\s*(;|'''|={2,4}).*\b(loan|reserves?|academy|youth|under-\d+|cedidos?|bajas?|filial|femenino|women|staff|coaching)\b/i.test(line) ||
+        (/^={2,3}[^=].*={2,3}\s*$/.test(line) && !/squad|roster|plantel|plantilla/i.test(line))
+      ) {
+        cut = relevantLines.slice(0, k).join('\n');
+        break;
       }
     }
-    return players;
+    if (startLine > 0 && cut === wikitext) {
+      cut = relevantLines.join('\n');
+    }
+
+    function extractFromText(srcText) {
+      const players = [];
+      const tpls = extractWikiTemplates(srcText);
+      for (const tpl of tpls) {
+        const parts = splitTemplateParams(tpl);
+        const tplName = parts[0].trim().toLowerCase();
+        if (!SQUAD_TEMPLATES.has(tplName)) continue;
+
+        const p = {};
+        const unnamed = [];
+        for (let i = 1; i < parts.length; i++) {
+          const eq = parts[i].indexOf('=');
+          if (eq !== -1) {
+            p[parts[i].slice(0, eq).trim().toLowerCase()] = parts[i].slice(eq + 1).trim();
+          } else {
+            unnamed.push(parts[i].trim());
+          }
+        }
+
+        let name = cleanWikiName(p.name || p.nombre || '');
+        let pos = normalizePosition(p.pos || p.posicion || p['posición'] || '');
+        let num = parseInt(cleanWikiName(p.no || p.num || p.numero || p['número'] || '').replace(/\D/g, ''), 10) || null;
+        let club = cleanWikiName(p.club || p.equipo || '') || null;
+
+        if (!name && unnamed.length >= 3) {
+          for (const u of unnamed) {
+            if (!pos || pos === '?') {
+              const maybePos = normalizePosition(u);
+              if (maybePos !== '?') { pos = maybePos; continue; }
+            }
+            if (cleanWikiName(u).length > 2 && !name) {
+              name = cleanWikiName(u);
+            }
+          }
+        }
+
+        if (name && pos !== '?') {
+          players.push({ n: name, p: pos, num, ...(club ? { c: club } : {}) });
+        }
+      }
+      return players;
+    }
+
+    let result = extractFromText(cut);
+    if (!result.length && cut !== wikitext) {
+      result = extractFromText(wikitext);
+    }
+    return result;
+  }
+
+  function findBestSection(sections) {
+    const clean = (s) => s.line.replace(/<[^>]+>/g, '').trim();
+
+    const p1 = /^(current squad|first[- ]team squad|current first[- ]team squad|first team squad|squad|current roster|active roster|roster|plantel actual|plantilla actual|primer equipo)$/i;
+    let sec = sections.find(s => p1.test(clean(s)));
+    if (sec) return sec;
+
+    const p2 = /\b(current squad|first[- ]team squad|current roster|plantel actual|plantilla actual|plantel \d{4})\b/i;
+    sec = sections.find(s => p2.test(clean(s)));
+    if (sec) return sec;
+
+    const p3 = /^(players|first team|jugadores|plantel|plantilla)$/i;
+    sec = sections.find(s => p3.test(clean(s)));
+    if (sec) return sec;
+
+    const p4 = /\b(squad|roster|players|jugadores|plantel|plantilla)\b/i;
+    return sections.find(s => p4.test(clean(s)));
+  }
+
+  function isLikelyFootballClub(title) {
+    return /\b(F\.?C\.?|C\.?F\.?|Club|Atl[eé]tico|Deportivo|Sporting|Real|United|City|Inter|AC|AS|FK|Wanderers|Balompi[eé]|National football team|fútbol|futbol|football)\b/i.test(title);
+  }
+
+  function findFootballHatnote(wikitext) {
+    if (!wikitext) return null;
+    const m1 = /\{\{about\|[^}]*?\b(?:football|soccer|club|primer equipo)\b[^}]*?\|([^|}]+)/i.exec(wikitext);
+    if (m1) return m1[1].trim();
+    const m2 = /\[\[([^\]|]+(?:F\.?C\.?|C\.?F\.?|football team|football club))\]\]/i.exec(wikitext);
+    if (m2) return m2[1].trim();
+    const m3 = /\[\[([^\]|]+)\]\][^\n]*?\b(?:football club|soccer club|association football|premier league)\b/i.exec(wikitext);
+    if (m3) return m3[1].trim();
+    return null;
+  }
+
+  async function fetchSquadFromApi(apiBase, pageTitle, depth = 0) {
+    const secUrl = `${apiBase}&action=parse&page=${encodeURIComponent(pageTitle)}&prop=sections&format=json&redirects=1`;
+    const secRes = await fetch(secUrl).then((r) => r.json());
+    if (!secRes.parse || !secRes.parse.sections) return null;
+
+    const sec = findBestSection(secRes.parse.sections);
+    let wikitext = '';
+    if (sec) {
+      const textUrl = `${apiBase}&action=parse&page=${encodeURIComponent(pageTitle)}&section=${sec.index}&prop=wikitext&format=json&redirects=1`;
+      const textRes = await fetch(textUrl).then((r) => r.json());
+      wikitext = textRes.parse?.wikitext?.['*'] || '';
+    }
+    let players = wikitext ? parseWikiSquad(wikitext) : [];
+
+    if (!players.length) {
+      const fullUrl = `${apiBase}&action=parse&page=${encodeURIComponent(pageTitle)}&prop=wikitext&format=json&redirects=1`;
+      const fullRes = await fetch(fullUrl).then((r) => r.json());
+      const fullWikitext = fullRes.parse?.wikitext?.['*'];
+      if (fullWikitext) {
+        players = parseWikiSquad(fullWikitext);
+      }
+      if (!players.length && depth === 0 && fullWikitext) {
+        const redirect = findFootballHatnote(fullWikitext);
+        if (redirect && redirect.toLowerCase() !== pageTitle.toLowerCase()) {
+          const resolved = await fetchSquadFromApi(apiBase, redirect, depth + 1);
+          if (resolved) return resolved;
+        }
+      }
+    }
+
+    if (players.length > 0) {
+      return { players, pageTitle: secRes.parse.title || pageTitle };
+    }
+    return null;
   }
 
   async function fetchWikipediaSquad(pageTitle) {
-    const api = 'https://en.wikipedia.org/w/api.php?origin=*';
-    const secUrl = `${api}&action=parse&page=${encodeURIComponent(pageTitle)}&prop=sections&format=json&redirects=1`;
-    const secRes = await fetch(secUrl).then((r) => r.json());
-    if (!secRes.parse || !secRes.parse.sections) {
-      throw new Error('No se pudo encontrar la página en Wikipedia.');
+    const enApi = 'https://en.wikipedia.org/w/api.php?origin=*';
+    const esApi = 'https://es.wikipedia.org/w/api.php?origin=*';
+
+    let result = await fetchSquadFromApi(enApi, pageTitle).catch(() => null);
+    if (!result) {
+      result = await fetchSquadFromApi(esApi, pageTitle).catch(() => null);
     }
-    const sections = secRes.parse.sections;
-    const sec = sections.find((s) =>
-      /^(current squad|first[- ]team squad|current first[- ]team squad|squad|players|current roster|roster)$/i.test(s.line.trim())
-    ) || sections.find((s) => s.line.trim().toLowerCase() === 'players');
-    if (!sec) {
-      throw new Error('No se encontró la sección del plantel actual en esta página.');
+    if (!result || !result.players || !result.players.length) {
+      throw new Error('No se encontraron jugadores en la sección del plantel.');
     }
-    const textUrl = `${api}&action=parse&page=${encodeURIComponent(pageTitle)}&section=${sec.index}&prop=wikitext&format=json&redirects=1`;
-    const textRes = await fetch(textUrl).then((r) => r.json());
-    const wikitext = textRes.parse?.wikitext?.['*'];
-    if (!wikitext) throw new Error('No se pudo leer el texto del plantel.');
-    const players = parseWikiSquad(wikitext);
-    if (!players.length) throw new Error('No se encontraron jugadores en la sección del plantel.');
-    return { players, pageTitle: secRes.parse.title || pageTitle };
+    return result;
   }
 
   function assignRatingsToSquad(players, baseRating = 74) {
@@ -2989,6 +3190,7 @@ window.PLANTELES = {"actualizado":"12/10/2026","equipos":{"boca":{"fecha":"Wikip
 
   async function handleSearch(query) {
     if (!query || !query.trim()) return;
+    const q = query.trim();
     hideStatus();
     addSearchResults.hidden = true;
     addPreview.hidden = true;
@@ -2996,21 +3198,44 @@ window.PLANTELES = {"actualizado":"12/10/2026","equipos":{"boca":{"fecha":"Wikip
     addSearchBtn.disabled = true;
 
     try {
-      const searchUrl = `https://en.wikipedia.org/w/api.php?origin=*&action=opensearch&search=${encodeURIComponent(query.trim())}&limit=6&namespace=0&format=json`;
-      const res = await fetch(searchUrl).then((r) => r.json());
-      const titles = res[1] || [];
-      if (!titles.length) {
+      const [openEn, openEs, queryEs, queryEn] = await Promise.all([
+        fetch(`https://en.wikipedia.org/w/api.php?origin=*&action=opensearch&search=${encodeURIComponent(q)}&limit=6&namespace=0&format=json`).then((r) => r.json()).catch(() => []),
+        fetch(`https://es.wikipedia.org/w/api.php?origin=*&action=opensearch&search=${encodeURIComponent(q)}&limit=6&namespace=0&format=json`).then((r) => r.json()).catch(() => []),
+        fetch(`https://es.wikipedia.org/w/api.php?origin=*&action=query&list=search&srsearch=${encodeURIComponent(q + ' club')}&srlimit=5&format=json`).then((r) => r.json()).catch(() => []),
+        fetch(`https://en.wikipedia.org/w/api.php?origin=*&action=query&list=search&srsearch=${encodeURIComponent(q + ' club')}&srlimit=5&format=json`).then((r) => r.json()).catch(() => [])
+      ]);
+
+      const allTitles = [
+        ...(openEn[1] || []),
+        ...(openEs[1] || []),
+        ...(queryEs.query?.search?.map((s) => s.title) || []),
+        ...(queryEn.query?.search?.map((s) => s.title) || [])
+      ];
+
+      const seen = new Set();
+      const combined = [];
+      for (const t of allTitles) {
+        const k = t.toLowerCase();
+        if (!seen.has(k)) {
+          seen.add(k);
+          combined.push(t);
+        }
+      }
+
+      combined.sort((a, b) => (isLikelyFootballClub(b) ? 1 : 0) - (isLikelyFootballClub(a) ? 1 : 0));
+
+      if (!combined.length) {
         showStatus('No se encontraron artículos en Wikipedia con ese nombre.', 'error');
         addSearchBtn.disabled = false;
         return;
       }
 
-      if (titles.length === 1 || titles[0].toLowerCase() === query.trim().toLowerCase()) {
-        await selectWikipediaArticle(titles[0]);
+      if (combined.length === 1) {
+        await selectWikipediaArticle(combined[0]);
       } else {
         hideStatus();
         addSearchResults.hidden = false;
-        addSearchResults.innerHTML = titles.map((t) =>
+        addSearchResults.innerHTML = combined.map((t) =>
           `<button type="button" class="search-res-item" data-title="${esc(t)}">${esc(t)} <span>Descargar</span></button>`
         ).join('');
       }
@@ -3037,7 +3262,7 @@ window.PLANTELES = {"actualizado":"12/10/2026","equipos":{"boca":{"fecha":"Wikip
         showStatus(`¡Plantel encontrado! ${players.length} futbolistas (${counts.POR} ARQ, ${counts.DEF} DEF, ${counts.MED} MED, ${counts.DEL} DEL).`, 'success');
       }
 
-      const cleanShort = presetConfig?.short || pageTitle.replace(/\s*(F\.?C\.?|C\.?F\.?|Club|national football team)\s*/gi, '').trim().slice(0, 12);
+      const cleanShort = presetConfig?.short || pageTitle.replace(/^(Club Atlético|Club Atletico|Club de Fútbol|Club|FC|CF|AC|CR|SE|AFC)\s+/i, '').replace(/\s+(F\.?C\.?|C\.?F\.?|Club|national football team)$/gi, '').trim().slice(0, 12);
       previewShortName.value = cleanShort;
       previewSquadSummary.innerHTML = `<b>${esc(pageTitle)}</b><br>${players.length} jugadores · ${counts.POR} ARQ, ${counts.DEF} DEF, ${counts.MED} MED, ${counts.DEL} DEL`;
 
