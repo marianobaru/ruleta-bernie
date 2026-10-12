@@ -621,10 +621,295 @@ h1 {
 #confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-@media (prefers-reduced-motion: reduce) {
-  .spinning .bulb, .flash .bulb, .board.pop, .tok.new, .tok-rate { animation: none; }
-  .pointer, .dim, .team-panel { transition: none; }
+/* ---------- Botón y Modal Agregar Equipo ---------- */
+.head-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
 }
+.btn-add-team {
+  appearance: none;
+  border: 1.5px solid var(--led);
+  border-radius: 999px;
+  padding: 6px 14px;
+  background: var(--board-inner);
+  color: var(--led);
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: .95rem;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 0 14px var(--dot);
+  transition: transform .1s, background .15s, color .15s, box-shadow .15s;
+}
+.btn-add-team:hover {
+  background: var(--led);
+  color: var(--ink);
+  transform: translateY(-1px);
+  box-shadow: 0 0 20px var(--led-glow);
+}
+.btn-add-team:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+  transform: none;
+}
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--shade);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  z-index: 100;
+  overflow-y: auto;
+}
+.modal-overlay[hidden] { display: none !important; }
+.modal-card {
+  position: relative;
+  width: min(100%, 640px);
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 22px;
+  background: var(--board);
+  border: 2px solid var(--board-edge);
+  border-radius: 18px;
+  box-shadow: 0 24px 60px var(--shadow), 0 0 0 1px var(--line-soft);
+  display: grid;
+  gap: 16px;
+}
+.modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  border-bottom: 1px dashed var(--board-edge);
+  padding-bottom: 12px;
+}
+.modal-title {
+  margin: 0;
+  font-family: var(--f-display);
+  font-style: italic;
+  font-weight: 800;
+  font-size: 1.8rem;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--chalk);
+}
+.modal-sub {
+  margin: 4px 0 0;
+  font-size: .88rem;
+  color: var(--muted);
+}
+.modal-close {
+  background: var(--board-inner);
+  border: 1.5px solid var(--board-edge);
+  color: var(--chalk);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  font-size: 1.1rem;
+  cursor: pointer;
+  flex: none;
+  transition: border-color .15s, color .15s;
+}
+.modal-close:hover { border-color: var(--chalk); color: var(--led); }
+
+.search-box {
+  display: flex;
+  gap: 8px;
+}
+.team-input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 14px;
+  border: 1.5px solid var(--board-edge);
+  border-radius: 10px;
+  background: var(--board-inner);
+  color: var(--chalk);
+  font-family: var(--f-body);
+  font-size: 1rem;
+}
+.team-input:focus-visible { outline: 2px solid var(--led); outline-offset: 1px; }
+.btn-search {
+  appearance: none;
+  padding: 10px 18px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--led);
+  color: var(--ink);
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: filter .15s;
+}
+.btn-search:hover { filter: brightness(1.1); }
+.btn-search:disabled { opacity: .6; cursor: wait; }
+
+.quick-chips { display: grid; gap: 6px; }
+.chips-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip-btn {
+  padding: 4px 10px;
+  border: 1px solid var(--board-edge);
+  border-radius: 999px;
+  background: var(--board-inner);
+  color: var(--muted);
+  font-size: .82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .15s;
+}
+.chip-btn:hover { border-color: var(--led); color: var(--chalk); background: var(--chip); }
+
+.add-status {
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: var(--board-inner);
+  border: 1px solid var(--board-edge);
+  font-size: .9rem;
+  color: var(--chalk);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.add-status.error { border-color: #d6182d; color: #ff8585; }
+.add-status.success { border-color: #2e8b57; color: #7cfc00; }
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--led-dim);
+  border-top-color: var(--led);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.search-results {
+  display: grid;
+  gap: 6px;
+  max-height: 150px;
+  overflow-y: auto;
+  border: 1px solid var(--board-edge);
+  border-radius: 8px;
+  padding: 6px;
+  background: var(--board-inner);
+}
+.search-res-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: transparent;
+  border: 0;
+  color: var(--chalk);
+  font: inherit;
+  font-size: .88rem;
+  text-align: left;
+  cursor: pointer;
+}
+.search-res-item:hover { background: var(--sel); }
+.search-res-item span { color: var(--led); font-weight: 700; font-size: .8rem; }
+
+.add-preview {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 1.5px solid var(--line-soft);
+  border-radius: 12px;
+  background: var(--board-inner);
+}
+.preview-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.preview-kit {
+  width: 58px;
+  height: 58px;
+  flex: none;
+}
+.preview-kit svg { width: 100%; height: 100%; }
+.preview-info { flex: 1; min-width: 0; display: grid; gap: 4px; }
+.preview-input {
+  padding: 6px 10px;
+  border: 1px solid var(--board-edge);
+  border-radius: 6px;
+  background: var(--board);
+  color: var(--chalk);
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+}
+.color-pickers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 10px;
+}
+.cp-group { display: grid; gap: 4px; }
+.cp-group input[type="color"] {
+  width: 100%;
+  height: 36px;
+  padding: 2px;
+  border: 1px solid var(--board-edge);
+  border-radius: 6px;
+  background: var(--board);
+  cursor: pointer;
+}
+.cp-group select {
+  padding: 6px 10px;
+  border: 1px solid var(--board-edge);
+  border-radius: 6px;
+  background: var(--board);
+  color: var(--chalk);
+  font-family: var(--f-body);
+  font-size: .9rem;
+  height: 36px;
+}
+
+.custom-teams-box {
+  border-top: 1px dashed var(--board-edge);
+  padding-top: 12px;
+  display: grid;
+  gap: 8px;
+}
+.custom-teams-list {
+  display: grid;
+  gap: 6px;
+  max-height: 140px;
+  overflow-y: auto;
+}
+.custom-team-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--board-inner);
+  font-size: .9rem;
+}
+.ct-left { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+.ct-mini-kit { width: 24px; height: 24px; }
+.ct-mini-kit svg { width: 100%; height: 100%; }
+.btn-del-team {
+  padding: 3px 8px;
+  border: 1px solid #7a0a12;
+  border-radius: 6px;
+  background: transparent;
+  color: #ff6b6b;
+  font-size: .78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.btn-del-team:hover { background: #d6182d; color: #fff; }
 </style>
 
 <main class="app">
@@ -633,12 +918,15 @@ h1 {
       <p class="eyebrow">Draft de fútbol · 2 jugadores</p>
       <h1>La Ruleta de Bernie</h1>
     </div>
-    <ul class="facts" aria-label="Reglas">
-      <li>11 puestos por cancha</li>
-      <li>Cada uno tira su ruleta</li>
-      <li>Mismo puesto para los dos</li>
-      <li>Los puntajes se ven al final</li>
-    </ul>
+    <div class="head-actions">
+      <button type="button" class="btn-add-team" id="openAddModal" title="Agregar nuevo equipo a la ruleta">＋ Agregar equipo</button>
+      <ul class="facts" aria-label="Reglas">
+        <li>11 puestos por cancha</li>
+        <li>Cada uno tira su ruleta</li>
+        <li>Mismo puesto para los dos</li>
+        <li>Los puntajes se ven al final</li>
+      </ul>
+    </div>
   </header>
 
   <section class="team-panel" id="panel0" aria-label="Cancha del jugador 1">
@@ -739,6 +1027,68 @@ h1 {
 <p class="sr-only" aria-live="polite" id="announce"></p>
 <canvas id="confetti" aria-hidden="true"></canvas>
 
+<!-- Modal: Agregar equipo -->
+<section class="modal-overlay" id="modalAddTeam" hidden aria-modal="true" role="dialog" aria-labelledby="modalAddTitle">
+  <div class="modal-card">
+    <header class="modal-head">
+      <div>
+        <h2 class="modal-title" id="modalAddTitle">Agregar equipo a la ruleta</h2>
+        <p class="modal-sub">Descarga el plantel actual directo desde Wikipedia y lo suma inmediatamente al juego.</p>
+      </div>
+      <button type="button" class="modal-close" id="modalCloseBtn" aria-label="Cerrar modal">✕</button>
+    </header>
+
+    <div class="search-box">
+      <input type="text" id="addSearchInput" class="team-input" placeholder="Escribí un equipo (ej. Arsenal, Inter, Chelsea, Peñarol...)" autocomplete="off">
+      <button type="button" class="btn-search" id="addSearchBtn">Buscar</button>
+    </div>
+
+    <div class="quick-chips">
+      <span class="lbl">Sugerencias rápidas:</span>
+      <div class="chips-list" id="quickChipsList"></div>
+    </div>
+
+    <div id="addStatusMsg" class="add-status" hidden></div>
+    <div id="addSearchResults" class="search-results" hidden></div>
+
+    <div id="addPreview" class="add-preview" hidden>
+      <div class="preview-header">
+        <div id="previewKitShirt" class="preview-kit"></div>
+        <div class="preview-info">
+          <label class="lbl" for="previewShortName">Nombre en la ruleta</label>
+          <input type="text" id="previewShortName" class="preview-input" maxlength="12">
+          <p id="previewSquadSummary" class="meta"></p>
+        </div>
+      </div>
+      <div class="color-pickers">
+        <div class="cp-group">
+          <label class="lbl" for="previewColor1">Color principal</label>
+          <input type="color" id="previewColor1" value="#dc052d">
+        </div>
+        <div class="cp-group">
+          <label class="lbl" for="previewColor2">Color secundario</label>
+          <input type="color" id="previewColor2" value="#ffffff">
+        </div>
+        <div class="cp-group">
+          <label class="lbl" for="previewKitPattern">Diseño</label>
+          <select id="previewKitPattern">
+            <option value="solid">Liso / Vivos</option>
+            <option value="stripes">Bastones</option>
+            <option value="hoops">Rayas</option>
+            <option value="band">Franja</option>
+          </select>
+        </div>
+      </div>
+      <button type="button" class="spin small" id="btnAddConfirm">✓ ¡Sumar a la ruleta!</button>
+    </div>
+
+    <div id="customTeamsSection" class="custom-teams-box" hidden>
+      <p class="lbl">Equipos agregados por vos (<span id="customTeamsCount">0</span>)</p>
+      <div class="custom-teams-list" id="customTeamsList"></div>
+    </div>
+  </div>
+</section>
+
 <script src="planteles.js"></script>
 <script>
 (() => {
@@ -774,7 +1124,7 @@ h1 {
     { slug: 'alemania', short: 'Alemania', name: 'Alemania', meta: 'Selección nacional', kit: { base: '#ffffff', ring: ['#000000', '#dd0000', '#ffce00'] }, text: '#111111', halo: '#ffffff', trim: '#111111' },
     { slug: 'italia', short: 'Italia', name: 'Italia', meta: 'Selección nacional', kit: { base: '#1f6fc5', ring: ['#009246', '#ffffff', '#ce2b37'] }, text: '#ffffff', halo: '#0c3466', trim: '#ffffff' },
   ];
-  const TEAM_BY_SLUG = Object.fromEntries(TEAMS.map((t) => [t.slug, t]));
+  let TEAM_BY_SLUG = Object.fromEntries(TEAMS.map((t) => [t.slug, t]));
 
   // Puestos de cada formación: [grupo, etiqueta, x %, y %]. El arco propio está abajo.
   const POR = ['POR', 'ARQ', 50, 89];
@@ -799,11 +1149,11 @@ h1 {
   const DATA = window.PLANTELES || { equipos: {} };
   const squad = (slug) => (DATA.equipos[slug] ? DATA.equipos[slug].jugadores : null);
 
-  const N = TEAMS.length;
-  const SEG = 360 / N;
+  let N = TEAMS.length;
+  let SEG = 360 / N;
   const R = 270;
   const RIM = 292;
-  const HALF = SEG / 2 * Math.PI / 180;
+  let HALF = SEG / 2 * Math.PI / 180;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const fast = location.hash === '#rapido';   // giros cortos para probar una partida entera
 
@@ -901,10 +1251,14 @@ h1 {
     }).join(' ');
   }
 
+  let wheelSvg;
+  let segEls = [];
+
   function buildWheel() {
     const x1 = R * Math.sin(HALF), y1 = -R * Math.cos(HALF);
     const WEDGE = `M0 0 L${f(-x1)} ${f(y1)} A${R} ${R} 0 0 1 ${f(x1)} ${f(y1)} Z`;
     const box = { x: -x1, y: -R, w: 2 * x1, h: R };
+    const fontSize = N > 34 ? 16 : N > 26 ? 19 : 22;
 
     let segs = '';
     TEAMS.forEach((t, i) => {
@@ -912,7 +1266,7 @@ h1 {
         `<circle r="${R - 3 - j * 6}" fill="none" stroke="${c}" stroke-width="6"/>`).join('');
       segs += `<g class="seg" transform="rotate(${f((i + .5) * SEG)})">
         <g clip-path="url(#wedgeClip)">${kitLayers(t.kit, box)}${rings}</g>
-        <text class="lab" x="244" y="0" dy=".34em" transform="rotate(-90)" text-anchor="end" fill="${t.text}" stroke="${t.halo}">${t.short.toUpperCase()}</text>
+        <text class="lab" style="font-size:${fontSize}px" x="244" y="0" dy=".34em" transform="rotate(-90)" text-anchor="end" fill="${t.text}" stroke="${t.halo}">${t.short.toUpperCase()}</text>
         <path class="dim" d="${WEDGE}"/>
         <path class="edge" d="${WEDGE}"/>
       </g>`;
@@ -947,10 +1301,19 @@ h1 {
       <circle class="rim-line" r="${R}"/>
       ${bulbs}${ball}
     </svg>`;
+    wheelSvg = $('wheelSvg');
+    segEls = [...wheelSvg.querySelectorAll('.seg')];
+  }
+
+  function updateWheelGeometry() {
+    N = TEAMS.length;
+    SEG = 360 / N;
+    HALF = SEG / 2 * Math.PI / 180;
+    buildWheel();
+    rot = -SEG / 2;
+    paint();
   }
   buildWheel();
-  const wheelSvg = $('wheelSvg');
-  const segEls = [...wheelSvg.querySelectorAll('.seg')];
 
   let rot = -SEG / 2;
   let spinning = false;
@@ -1631,8 +1994,418 @@ h1 {
   abortNo.addEventListener('click', () => { askAbort = false; renderCenter(); });
   abortYes.addEventListener('click', restart);
 
+  // ---------- Gestión de equipos personalizados y Wikipedia ----------
+  const CUSTOM_KEY = 'ruleta-bernie-custom-v1';
+  const openAddModal = $('openAddModal');
+  const modalAddTeam = $('modalAddTeam');
+  const modalCloseBtn = $('modalCloseBtn');
+  const addSearchInput = $('addSearchInput');
+  const addSearchBtn = $('addSearchBtn');
+  const quickChipsList = $('quickChipsList');
+  const addStatusMsg = $('addStatusMsg');
+  const addSearchResults = $('addSearchResults');
+  const addPreview = $('addPreview');
+  const previewKitShirt = $('previewKitShirt');
+  const previewShortName = $('previewShortName');
+  const previewSquadSummary = $('previewSquadSummary');
+  const previewColor1 = $('previewColor1');
+  const previewColor2 = $('previewColor2');
+  const previewKitPattern = $('previewKitPattern');
+  const btnAddConfirm = $('btnAddConfirm');
+  const customTeamsSection = $('customTeamsSection');
+  const customTeamsCount = $('customTeamsCount');
+  const customTeamsList = $('customTeamsList');
+
+  let currentParsedTeam = null;
+
+  const QUICK_PRESETS = [
+    { title: "Arsenal F.C.", short: "Arsenal", c1: "#dc052d", c2: "#ffffff", pat: "solid" },
+    { title: "Chelsea F.C.", short: "Chelsea", c1: "#034694", c2: "#ffffff", pat: "solid" },
+    { title: "Inter Milan", short: "Inter", c1: "#001489", c2: "#000000", pat: "stripes" },
+    { title: "AC Milan", short: "Milan", c1: "#c8102e", c2: "#000000", pat: "stripes" },
+    { title: "Juventus FC", short: "Juventus", c1: "#ffffff", c2: "#000000", pat: "stripes" },
+    { title: "Atlético Madrid", short: "Atlético", c1: "#cb3524", c2: "#ffffff", pat: "stripes" },
+    { title: "Inter Miami CF", short: "Inter Miami", c1: "#f7b5cd", c2: "#231f20", pat: "solid" },
+    { title: "CR Flamengo", short: "Flamengo", c1: "#c8102e", c2: "#000000", pat: "hoops" },
+    { title: "SE Palmeiras", short: "Palmeiras", c1: "#006437", c2: "#ffffff", pat: "solid" },
+    { title: "Peñarol", short: "Peñarol", c1: "#f7c21a", c2: "#000000", pat: "stripes" },
+    { title: "Club Nacional de Football", short: "Nacional", c1: "#ffffff", c2: "#002b7f", pat: "solid" },
+    { title: "Uruguay national football team", short: "Uruguay", c1: "#5ba4d8", c2: "#000000", pat: "solid" },
+    { title: "Colombia national football team", short: "Colombia", c1: "#fcd116", c2: "#003893", pat: "solid" },
+  ];
+
+  function getCustomTeams() {
+    try {
+      const data = JSON.parse(localStorage.getItem(CUSTOM_KEY) || '[]');
+      return Array.isArray(data) ? data : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveCustomTeams(list) {
+    try {
+      localStorage.setItem(CUSTOM_KEY, JSON.stringify(list));
+    } catch (e) {}
+  }
+
+  function contrastColor(hex) {
+    const c = (hex || '#000').replace('#', '');
+    const r = parseInt(c.substr(0, 2), 16) || 0;
+    const g = parseInt(c.substr(2, 2), 16) || 0;
+    const b = parseInt(c.substr(4, 2), 16) || 0;
+    return (r * 299 + g * 587 + b * 114) / 1000 >= 128 ? '#111813' : '#ffffff';
+  }
+
+  function slugify(text) {
+    return (text || '').toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]/g, '')
+      .slice(0, 15) || ('eq' + Date.now().toString(36));
+  }
+
+  function makeKit(c1, c2, pattern) {
+    const kit = { base: c1 };
+    if (pattern === 'stripes') kit.stripes = [c2, 5];
+    else if (pattern === 'hoops') kit.hoops = [c2, 5];
+    else if (pattern === 'band') kit.band = [c2, 0.42, 0.58];
+    else kit.ring = [c2];
+    const text = contrastColor(c1);
+    const halo = text === '#ffffff' ? '#000000' : '#ffffff';
+    return { kit, text, halo, trim: c2 };
+  }
+
+  function cleanWikiName(valor) {
+    let v = (valor || '').replace(/<!--.*?-->/gs, '').replace(/<ref[^>]*\/>|<ref[^>]*>.*?<\/ref>/gs, '');
+    const m = /\{\{\s*sortname\s*\|([^|}]*)\|([^|}]*)(?:\|([^|}]*))?(?:\|[^}]*)?\}\}/i.exec(v);
+    if (m) return `${m[1].trim()} ${m[2].trim()}`.trim();
+    v = v.replace(/\[\[([^|\]]*)\|([^\]]*)\]\]/g, '$2');
+    v = v.replace(/\[\[([^\]]*)\]\]/g, '$1');
+    v = v.replace(/\{\{[^}]*\}\}/g, '');
+    v = v.replace(/<[^>]+>/g, '');
+    v = v.replace(/'''/g, '').replace(/''/g, '');
+    return v.replace(/\s+/g, ' ').trim();
+  }
+
+  function parseWikiSquad(wikitext) {
+    const lines = wikitext.split('\n');
+    let cut = wikitext;
+    for (let k = 1; k < lines.length; k++) {
+      if (/^=+[^=].*=+\s*$/.test(lines[k]) || /^\s*(;|'''|==).*\b(loan|reserves?|academy|youth|under-\d+)\b/i.test(lines[k])) {
+        cut = lines.slice(0, k).join('\n');
+        break;
+      }
+    }
+    const players = [];
+    const pRegex = /\{\{(?:fs player|football squad player|nat fs g player|nat fs player)\s*\|([^}]+)\}\}/gi;
+    let match;
+    const posMap = { GK: 'POR', DF: 'DEF', MF: 'MED', FW: 'DEL' };
+    while ((match = pRegex.exec(cut)) !== null) {
+      const parts = match[1].split('|');
+      const p = {};
+      for (const part of parts) {
+        const eq = part.indexOf('=');
+        if (eq !== -1) {
+          p[part.slice(0, eq).trim().toLowerCase()] = part.slice(eq + 1).trim();
+        }
+      }
+      const name = cleanWikiName(p.name || '');
+      const pos = posMap[(cleanWikiName(p.pos || '')).toUpperCase()] || '?';
+      const num = parseInt((cleanWikiName(p.no || '')).replace(/\D/g, ''), 10) || null;
+      const club = cleanWikiName(p.club || '') || null;
+      if (name && pos !== '?') {
+        players.push({ n: name, p: pos, num, ...(club ? { c: club } : {}) });
+      }
+    }
+    return players;
+  }
+
+  async function fetchWikipediaSquad(pageTitle) {
+    const api = 'https://en.wikipedia.org/w/api.php?origin=*';
+    const secUrl = `${api}&action=parse&page=${encodeURIComponent(pageTitle)}&prop=sections&format=json&redirects=1`;
+    const secRes = await fetch(secUrl).then((r) => r.json());
+    if (!secRes.parse || !secRes.parse.sections) {
+      throw new Error('No se pudo encontrar la página en Wikipedia.');
+    }
+    const sections = secRes.parse.sections;
+    const sec = sections.find((s) =>
+      /^(current squad|first[- ]team squad|current first[- ]team squad|squad|players|current roster|roster)$/i.test(s.line.trim())
+    ) || sections.find((s) => s.line.trim().toLowerCase() === 'players');
+    if (!sec) {
+      throw new Error('No se encontró la sección del plantel actual en esta página.');
+    }
+    const textUrl = `${api}&action=parse&page=${encodeURIComponent(pageTitle)}&section=${sec.index}&prop=wikitext&format=json&redirects=1`;
+    const textRes = await fetch(textUrl).then((r) => r.json());
+    const wikitext = textRes.parse?.wikitext?.['*'];
+    if (!wikitext) throw new Error('No se pudo leer el texto del plantel.');
+    const players = parseWikiSquad(wikitext);
+    if (!players.length) throw new Error('No se encontraron jugadores en la sección del plantel.');
+    return { players, pageTitle: secRes.parse.title || pageTitle };
+  }
+
+  function assignRatingsToSquad(players, baseRating = 74) {
+    return players.map((j) => {
+      let r = 0;
+      for (const eq of Object.values(DATA.equipos)) {
+        if (eq && eq.jugadores) {
+          const match = eq.jugadores.find((x) => x.n.toLowerCase() === j.n.toLowerCase());
+          if (match && match.r) { r = match.r; break; }
+        }
+      }
+      if (!r) {
+        let hash = 0;
+        for (let i = 0; i < j.n.length; i++) hash = (hash * 31 + j.n.charCodeAt(i)) & 0xffff;
+        const delta = (hash % 9) - 4;
+        r = Math.max(64, Math.min(92, baseRating + delta));
+      }
+      return { ...j, r };
+    });
+  }
+
+  function showStatus(text, type = 'info') {
+    addStatusMsg.hidden = false;
+    addStatusMsg.className = `add-status ${type}`;
+    if (type === 'loading') {
+      addStatusMsg.innerHTML = `<span class="spinner" aria-hidden="true"></span><span>${esc(text)}</span>`;
+    } else {
+      addStatusMsg.textContent = text;
+    }
+  }
+
+  function hideStatus() {
+    addStatusMsg.hidden = true;
+    addStatusMsg.textContent = '';
+  }
+
+  function updatePreviewKit() {
+    if (!currentParsedTeam) return;
+    const c1 = previewColor1.value;
+    const c2 = previewColor2.value;
+    const pat = previewKitPattern.value;
+    const kitData = makeKit(c1, c2, pat);
+    const dummy = { ...kitData, name: previewShortName.value };
+    previewKitShirt.innerHTML = jersey(dummy);
+  }
+
+  function renderCustomTeamsList() {
+    const list = getCustomTeams();
+    customTeamsCount.textContent = String(list.length);
+    customTeamsSection.hidden = list.length === 0;
+    customTeamsList.innerHTML = list.map((t) => {
+      return `<div class="custom-team-row">
+        <div class="ct-left">
+          <div class="ct-mini-kit">${jersey(t)}</div>
+          <span>${esc(t.name)} (${esc(t.short)}) · ${DATA.equipos[t.slug]?.jugadores?.length || 0} jug.</span>
+        </div>
+        <button type="button" class="btn-del-team" data-del="${esc(t.slug)}">Eliminar</button>
+      </div>`;
+    }).join('');
+  }
+
+  async function handleSearch(query) {
+    if (!query || !query.trim()) return;
+    hideStatus();
+    addSearchResults.hidden = true;
+    addPreview.hidden = true;
+    showStatus('Buscando en Wikipedia...', 'loading');
+    addSearchBtn.disabled = true;
+
+    try {
+      const searchUrl = `https://en.wikipedia.org/w/api.php?origin=*&action=opensearch&search=${encodeURIComponent(query.trim())}&limit=6&namespace=0&format=json`;
+      const res = await fetch(searchUrl).then((r) => r.json());
+      const titles = res[1] || [];
+      if (!titles.length) {
+        showStatus('No se encontraron artículos en Wikipedia con ese nombre.', 'error');
+        addSearchBtn.disabled = false;
+        return;
+      }
+
+      if (titles.length === 1 || titles[0].toLowerCase() === query.trim().toLowerCase()) {
+        await selectWikipediaArticle(titles[0]);
+      } else {
+        hideStatus();
+        addSearchResults.hidden = false;
+        addSearchResults.innerHTML = titles.map((t) =>
+          `<button type="button" class="search-res-item" data-title="${esc(t)}">${esc(t)} <span>Descargar</span></button>`
+        ).join('');
+      }
+    } catch (err) {
+      showStatus('Error de conexión con Wikipedia: ' + err.message, 'error');
+    } finally {
+      addSearchBtn.disabled = false;
+    }
+  }
+
+  async function selectWikipediaArticle(title, presetConfig = null) {
+    addSearchResults.hidden = true;
+    showStatus(`Descargando plantel de "${title}" desde Wikipedia...`, 'loading');
+    addSearchBtn.disabled = true;
+
+    try {
+      const { players, pageTitle } = await fetchWikipediaSquad(title);
+      const counts = { POR: 0, DEF: 0, MED: 0, DEL: 0 };
+      players.forEach((j) => { if (counts[j.p] !== undefined) counts[j.p]++; });
+
+      if (counts.POR < 1 || counts.DEF < 3 || counts.MED < 3 || counts.DEL < 1) {
+        showStatus(`Aviso: Plantel corto detectado (${players.length} jugadores: ${counts.POR} ARQ, ${counts.DEF} DEF, ${counts.MED} MED, ${counts.DEL} DEL). Se puede sumar igual.`, 'info');
+      } else {
+        showStatus(`¡Plantel encontrado! ${players.length} futbolistas (${counts.POR} ARQ, ${counts.DEF} DEF, ${counts.MED} MED, ${counts.DEL} DEL).`, 'success');
+      }
+
+      const cleanShort = presetConfig?.short || pageTitle.replace(/\s*(F\.?C\.?|C\.?F\.?|Club|national football team)\s*/gi, '').trim().slice(0, 12);
+      previewShortName.value = cleanShort;
+      previewSquadSummary.innerHTML = `<b>${esc(pageTitle)}</b><br>${players.length} jugadores · ${counts.POR} ARQ, ${counts.DEF} DEF, ${counts.MED} MED, ${counts.DEL} DEL`;
+
+      if (presetConfig) {
+        previewColor1.value = presetConfig.c1;
+        previewColor2.value = presetConfig.c2;
+        previewKitPattern.value = presetConfig.pat || 'solid';
+      }
+
+      currentParsedTeam = {
+        title: pageTitle,
+        short: cleanShort,
+        players,
+      };
+
+      addPreview.hidden = false;
+      updatePreviewKit();
+    } catch (err) {
+      showStatus('Error al extraer el plantel: ' + err.message, 'error');
+      addPreview.hidden = true;
+    } finally {
+      addSearchBtn.disabled = false;
+    }
+  }
+
+  function applyCustomTeamsToGame() {
+    const customList = getCustomTeams();
+    customList.forEach((t) => {
+      if (!TEAM_BY_SLUG[t.slug]) {
+        TEAMS.push(t);
+        TEAM_BY_SLUG[t.slug] = t;
+      }
+      if (!DATA.equipos[t.slug]) {
+        DATA.equipos[t.slug] = {
+          fecha: 'Wikipedia (Agregado)',
+          jugadores: t.jugadores || [],
+        };
+      }
+    });
+    updateWheelGeometry();
+  }
+
+  openAddModal.addEventListener('click', () => {
+    if (G.phase !== 'setup' && G.phase !== 'done') {
+      alert('Terminá o reiniciá el partido actual antes de modificar los equipos de la ruleta.');
+      return;
+    }
+    modalAddTeam.hidden = false;
+    renderCustomTeamsList();
+    addSearchInput.focus();
+  });
+  modalCloseBtn.addEventListener('click', () => { modalAddTeam.hidden = true; });
+  modalAddTeam.addEventListener('click', (e) => {
+    if (e.target === modalAddTeam) modalAddTeam.hidden = true;
+  });
+
+  quickChipsList.innerHTML = QUICK_PRESETS.map((p) =>
+    `<button type="button" class="chip-btn" data-preset="${esc(p.title)}">${esc(p.short)}</button>`
+  ).join('');
+
+  quickChipsList.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-preset]');
+    if (!btn) return;
+    const preset = QUICK_PRESETS.find((x) => x.title === btn.dataset.preset);
+    if (!preset) return;
+    addSearchInput.value = preset.short;
+    selectWikipediaArticle(preset.title, preset);
+  });
+
+  addSearchBtn.addEventListener('click', () => handleSearch(addSearchInput.value));
+  addSearchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); handleSearch(addSearchInput.value); }
+  });
+
+  addSearchResults.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-title]');
+    if (!btn) return;
+    selectWikipediaArticle(btn.dataset.title);
+  });
+
+  previewColor1.addEventListener('input', updatePreviewKit);
+  previewColor2.addEventListener('input', updatePreviewKit);
+  previewKitPattern.addEventListener('change', updatePreviewKit);
+  previewShortName.addEventListener('input', updatePreviewKit);
+
+  btnAddConfirm.addEventListener('click', () => {
+    if (!currentParsedTeam) return;
+    const shortNameVal = (previewShortName.value || currentParsedTeam.short).trim().slice(0, 12);
+    const slug = slugify(shortNameVal);
+
+    if (TEAM_BY_SLUG[slug]) {
+      alert(`El equipo "${shortNameVal}" ya está en la ruleta.`);
+      return;
+    }
+
+    const c1 = previewColor1.value;
+    const c2 = previewColor2.value;
+    const pat = previewKitPattern.value;
+    const kitData = makeKit(c1, c2, pat);
+
+    const ratedPlayers = assignRatingsToSquad(currentParsedTeam.players);
+
+    const newTeam = {
+      slug,
+      short: shortNameVal,
+      name: currentParsedTeam.title,
+      meta: 'Agregado de Wikipedia',
+      ...kitData,
+      jugadores: ratedPlayers,
+    };
+
+    const existing = getCustomTeams();
+    existing.push(newTeam);
+    saveCustomTeams(existing);
+
+    TEAMS.push(newTeam);
+    TEAM_BY_SLUG[slug] = newTeam;
+    DATA.equipos[slug] = {
+      fecha: 'Wikipedia (Agregado)',
+      jugadores: ratedPlayers,
+    };
+
+    updateWheelGeometry();
+    renderCustomTeamsList();
+    addPreview.hidden = true;
+    showStatus(`¡"${shortNameVal}" se sumó con éxito a la ruleta! Ahora son ${TEAMS.length} equipos.`, 'success');
+    burst(teamColors(newTeam));
+    whistle();
+    renderFoot();
+  });
+
+  customTeamsList.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-del]');
+    if (!btn) return;
+    const slugToDel = btn.dataset.del;
+    if (!confirm('¿Eliminar este equipo de la ruleta?')) return;
+
+    let list = getCustomTeams().filter((x) => x.slug !== slugToDel);
+    saveCustomTeams(list);
+
+    const idx = TEAMS.findIndex((x) => x.slug === slugToDel);
+    if (idx !== -1) TEAMS.splice(idx, 1);
+    delete TEAM_BY_SLUG[slugToDel];
+    delete DATA.equipos[slugToDel];
+
+    updateWheelGeometry();
+    renderCustomTeamsList();
+    renderFoot();
+  });
+
   // ---------- Arranque ----------
   function boot(data) {
+    applyCustomTeamsToGame();
     const saved = (data && data.G) || load();
     if (saved) {
       G = Object.assign(fresh(), saved);
