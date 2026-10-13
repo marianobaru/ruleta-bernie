@@ -927,21 +927,550 @@ h1 {
   cursor: pointer;
 }
 .btn-del-team:hover { background: #d6182d; color: #fff; }
+
+/* ==================== TACTICAL SHOWDOWN: ECONOMÍA & Bo3 ==================== */
+
+/* Panel Budget & Stats */
+.tp-budget {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-left: auto;
+}
+.budget-led {
+  font-family: var(--f-led);
+  font-weight: 800;
+  font-size: 1.4rem;
+  line-height: 1;
+  color: var(--led);
+  text-shadow: 0 0 10px var(--led-glow);
+}
+.tp-tactical {
+  display: grid;
+  gap: 8px;
+  padding: 8px 10px;
+  background: var(--board-inner);
+  border: 1px solid var(--board-edge);
+  border-radius: 10px;
+}
+.budget-meter {
+  position: relative;
+  width: 100%;
+  height: 6px;
+  background: var(--board);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.budget-meter-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #e4002b 0%, var(--led) 50%, #2bd980 100%);
+  border-radius: 999px;
+  transition: width .35s ease;
+}
+.tactical-pills {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.tac-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 7px;
+  background: var(--board);
+  border: 1px solid var(--line-soft);
+  border-radius: 6px;
+  font-family: var(--f-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--chalk);
+  letter-spacing: .02em;
+}
+.tac-pill b { color: var(--led); font-family: var(--f-led); font-size: 0.95rem; }
+.tac-wins { margin-left: auto; border-color: var(--gold); background: rgba(232, 196, 90, 0.12); }
+.tac-wins b { color: var(--gold); }
+.tactical-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+}
+.btn-block-spin {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: var(--board);
+  border: 1.5px solid #d3121f;
+  border-radius: 8px;
+  color: #ff6b6b;
+  font-family: var(--f-display);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all .15s ease;
+}
+.btn-block-spin:hover:not(:disabled) {
+  background: #d3121f;
+  color: #fff;
+  box-shadow: 0 0 12px rgba(211, 18, 31, .5);
+}
+.btn-block-spin:disabled {
+  opacity: .35;
+  cursor: not-allowed;
+  border-color: var(--line-soft);
+  color: var(--muted);
+}
+.badge-uses {
+  padding: 1px 5px;
+  background: #d3121f;
+  color: #fff;
+  border-radius: 999px;
+  font-size: 0.72rem;
+}
+.block-banner {
+  padding: 6px 10px;
+  background: rgba(211, 18, 31, 0.2);
+  border: 1px solid #d3121f;
+  border-radius: 6px;
+  color: #ff9999;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-align: center;
+  animation: pulse-block 1.2s infinite ease-in-out;
+}
+@keyframes pulse-block {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .65; }
+}
+
+/* Squad List Cost Tags */
+.row .cost-badge {
+  padding: 2px 6px;
+  background: rgba(255, 201, 74, 0.15);
+  border: 1px solid var(--led-dim);
+  border-radius: 5px;
+  font-family: var(--f-led);
+  font-weight: 800;
+  font-size: 0.8rem;
+  color: var(--led);
+  letter-spacing: .02em;
+}
+.row .cost-badge.unaffordable {
+  background: rgba(255, 107, 107, 0.15);
+  border-color: #7a0a12;
+  color: #ff8585;
+}
+.row .cost-badge.blocked {
+  background: rgba(211, 18, 31, 0.25);
+  border-color: #d3121f;
+  color: #ffb3b3;
+}
+.sq-blocked-alert {
+  flex-basis: 100%;
+  padding: 8px 12px;
+  background: rgba(211, 18, 31, 0.25);
+  border: 1.5px solid #d3121f;
+  border-radius: 8px;
+  color: #ffb3b3;
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* Bo3 View & Chalkboard */
+.bo3-view {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  background: var(--board);
+  border: 2px solid var(--board-edge);
+  border-radius: 16px;
+  box-shadow: 0 18px 40px var(--shadow);
+}
+.bo3-header {
+  display: grid;
+  gap: 8px;
+  text-align: center;
+  border-bottom: 1px dashed var(--board-edge);
+  padding-bottom: 12px;
+}
+.bo3-badge {
+  display: inline-block;
+  margin-inline: auto;
+  padding: 2px 10px;
+  background: var(--led);
+  color: var(--ink);
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: 0.75rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  border-radius: 999px;
+}
+.bo3-title {
+  margin: 0;
+  font-family: var(--f-display);
+  font-style: italic;
+  font-weight: 800;
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  text-transform: uppercase;
+  color: var(--chalk);
+  letter-spacing: .02em;
+}
+.bo3-tracker {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+.tracker-match {
+  padding: 4px 12px;
+  border: 1.5px solid var(--line-soft);
+  border-radius: 999px;
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--muted);
+  background: var(--board-inner);
+}
+.tracker-match.active {
+  border-color: var(--led);
+  color: var(--ink);
+  background: var(--led);
+  box-shadow: 0 0 12px var(--led-glow);
+}
+.tracker-match.won {
+  border-color: #2bd980;
+  color: #2bd980;
+}
+.bo3-score-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+.bo3-team-name {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: 1.15rem;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.bo3-team-name.p1 { color: var(--p1); }
+.bo3-team-name.p2 { color: var(--p2); }
+.bo3-score-nums {
+  font-family: var(--f-led);
+  font-weight: 800;
+  font-size: 2.2rem;
+  color: var(--led);
+  text-shadow: 0 0 14px var(--led-glow);
+}
+
+/* Chalkboard Arena */
+.chalkboard {
+  display: grid;
+  gap: 14px;
+  background: #0f1c14;
+  border: 2px solid #23432f;
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
+  position: relative;
+}
+.chalk-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: start;
+  gap: 10px;
+}
+@media (max-width: 580px) {
+  .chalk-grid {
+    grid-template-columns: 1fr;
+  }
+  .dt-vs { margin-block: 6px; }
+}
+.dt-column {
+  display: grid;
+  gap: 8px;
+  background: rgba(11, 22, 16, 0.7);
+  border: 1.5px solid var(--board-edge);
+  border-radius: 10px;
+  padding: 10px;
+}
+.dt-p1 { border-top: 3px solid var(--p1); }
+.dt-p2 { border-top: 3px solid var(--p2); }
+.dt-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.dt-tag {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--board-inner);
+  color: var(--chalk);
+}
+.dt-p1 .dt-tag { color: var(--p1); }
+.dt-p2 .dt-tag { color: var(--p2); }
+.dt-name {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: 1.15rem;
+  text-transform: uppercase;
+  color: var(--chalk);
+}
+.dt-stats-summary {
+  display: flex;
+  gap: 8px;
+  font-family: var(--f-display);
+  font-size: 0.85rem;
+  color: var(--muted);
+  background: var(--board-inner);
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+.dt-stats-summary b { color: var(--led); font-family: var(--f-led); }
+.dt-tactics-group {
+  display: grid;
+  gap: 6px;
+}
+.tactic-cards {
+  display: grid;
+  gap: 5px;
+}
+.tactic-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  background: var(--board-inner);
+  border: 1.5px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+  transition: all .15s ease;
+  color: var(--chalk);
+}
+.tactic-card:hover { border-color: var(--line-soft); }
+.tactic-card.active {
+  border-color: var(--led);
+  background: rgba(255, 201, 74, 0.12);
+  box-shadow: inset 0 0 0 1px var(--led);
+}
+.tc-icon { font-size: 1.15rem; flex: none; }
+.tc-text { display: grid; }
+.tc-title {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: 0.92rem;
+  text-transform: uppercase;
+}
+.tc-mod {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+.tactic-card.active .tc-title { color: var(--led); }
+
+.dt-vs {
+  display: grid;
+  place-items: center;
+  align-self: center;
+  padding: 8px;
+}
+.dt-vs span {
+  font-family: var(--f-display);
+  font-style: italic;
+  font-weight: 800;
+  font-size: 1.4rem;
+  color: var(--muted);
+}
+
+/* Simulation Live Arena */
+.sim-live-box {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  background: #08120b;
+  border: 1.5px solid var(--board-edge);
+  border-radius: 10px;
+}
+.sim-scoreboard-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  background: var(--board-inner);
+  border-radius: 8px;
+}
+.sim-name {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+}
+.sim-name.p1 { color: var(--p1); }
+.sim-name.p2 { color: var(--p2); }
+.sim-score-led {
+  font-family: var(--f-led);
+  font-weight: 800;
+  font-size: 1.8rem;
+  color: var(--led);
+  text-shadow: 0 0 10px var(--led-glow);
+}
+.sim-clock {
+  font-family: var(--f-led);
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: var(--muted);
+}
+.sim-field-arena {
+  position: relative;
+  height: 90px;
+  background: repeating-linear-gradient(90deg, #1b592c 0 30px, #174f26 30px 60px);
+  border: 2px solid var(--chalk-faint);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.sim-field-line.half {
+  position: absolute;
+  top: 0; bottom: 0; left: 50%;
+  width: 2px;
+  background: var(--chalk-faint);
+}
+.sim-field-line.circle {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 44px; height: 44px;
+  border: 2px solid var(--chalk-faint);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+.sim-ball {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.3rem;
+  transition: all .5s cubic-bezier(0.2, 0.8, 0.3, 1);
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
+  z-index: 3;
+}
+.sim-chip {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: 0.8rem;
+  color: var(--ink);
+  transition: all .4s ease;
+  z-index: 2;
+}
+.chip-p1 { left: 16%; background: var(--p1); }
+.chip-p2 { right: 16%; background: var(--p2); }
+
+.sim-commentary {
+  min-height: 44px;
+  padding: 8px 12px;
+  background: var(--board);
+  border: 1px solid var(--board-edge);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.sim-msg {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.35;
+  color: var(--chalk);
+}
+.sim-msg b { color: var(--led); }
+
+.bo3-btn-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* Champion Overlay */
+.champ-overlay {
+  text-align: center;
+  padding: 24px 16px;
+  background: linear-gradient(180deg, rgba(232, 196, 90, 0.12) 0%, rgba(11, 18, 14, 0.9) 100%);
+  border: 2px solid var(--gold);
+  border-radius: 14px;
+  box-shadow: 0 0 30px rgba(232, 196, 90, 0.25);
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+}
+.champ-trophy-anim {
+  font-size: 4rem;
+  animation: bounce-trophy 1.2s infinite ease-in-out;
+}
+@keyframes bounce-trophy {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-8px) scale(1.08); }
+}
+.champ-headline {
+  margin: 0;
+  font-family: var(--f-display);
+  font-style: italic;
+  font-weight: 800;
+  font-size: 2.2rem;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: .02em;
+}
+.champ-lead {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--chalk);
+}
+.champ-summary-table {
+  width: 100%;
+  max-width: 480px;
+  display: grid;
+  gap: 6px;
+  background: var(--board-inner);
+  border: 1px solid var(--board-edge);
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 0.9rem;
+}
+.champ-recap-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--board);
+}
+.champ-recap-match { font-family: var(--f-display); font-weight: 700; color: var(--muted); }
+.champ-recap-score { font-family: var(--f-led); font-weight: 800; color: var(--led); }
+.champ-recap-winner { font-weight: 700; }
 </style>
 
 <main class="app">
   <header class="head">
     <div>
-      <p class="eyebrow">Draft de fútbol · 2 jugadores</p>
+      <p class="eyebrow">Tactical Showdown · Presupuesto $120M &amp; Motor Bo3</p>
       <h1>La Ruleta de Bernie</h1>
     </div>
     <div class="head-actions">
       <button type="button" class="btn-add-team" id="openAddModal" title="Agregar nuevo equipo a la ruleta">＋ Agregar equipo</button>
       <ul class="facts" aria-label="Reglas">
+        <li>💰 $120M Presupuesto</li>
+        <li>🚫 Bloqueo Táctico</li>
+        <li>⚔️ Serie Bo3 Pizarras</li>
         <li>11 puestos por cancha</li>
-        <li>Cada uno tira su ruleta</li>
-        <li>Mismo puesto para los dos</li>
-        <li>Los puntajes se ven al final</li>
       </ul>
     </div>
   </header>
@@ -951,10 +1480,31 @@ h1 {
       <span class="tp-badge" aria-hidden="true">J1</span>
       <label class="sr-only" for="name0">Nombre del jugador 1</label>
       <input class="tp-name" id="name0" maxlength="14" placeholder="Jugador 1" autocomplete="off" spellcheck="false">
+      <div class="tp-budget" id="budgetWrap0" title="Presupuesto disponible ($120M inicial)">
+        <span class="lbl">Presupuesto</span>
+        <span class="budget-led" id="budget0">$120M</span>
+      </div>
       <div class="tp-score"><span class="lbl">Puntos</span><span class="led" id="total0">--</span></div>
     </header>
     <div class="forms" id="forms0" role="radiogroup" aria-label="Formación del jugador 1"></div>
     <p class="tp-sub" id="sub0"></p>
+    <div class="tp-tactical" id="tactical0">
+      <div class="budget-meter" title="Presupuesto restante ($120M)">
+        <div class="budget-meter-fill" id="budgetBar0" style="width: 100%;"></div>
+      </div>
+      <div class="tactical-pills">
+        <span class="tac-pill" title="Promedio Defensa (ARQ + DEF)"><span class="tac-icon">🛡️</span> DEF <b id="statDef0">--</b></span>
+        <span class="tac-pill" title="Promedio Mediocampo (MED)"><span class="tac-icon">⚙️</span> MED <b id="statMed0">--</b></span>
+        <span class="tac-pill" title="Promedio Delanteros (DEL)"><span class="tac-icon">⚡</span> ATA <b id="statAta0">--</b></span>
+        <span class="tac-pill tac-wins" title="Partidos ganados en la serie Bo3"><span class="tac-icon">🏆</span> Bo3 <b id="seriesWins0">0</b>/2</span>
+      </div>
+      <div class="tactical-actions">
+        <button type="button" class="btn-block-spin" id="btnBlock0" title="Bloquea el próximo giro del rival para impedirle fichar jugadores Oro (80+ OVR)">
+          🚫 Bloquear rival <span class="badge-uses" id="blockBadge0">1</span>
+        </button>
+      </div>
+      <div class="block-banner" id="blockBanner0" hidden>⚠️ ¡Giro bloqueado por rival! En esta vuelta no podés fichar jugadores Oro (80+ OVR)</div>
+    </div>
     <div class="pitch">
       <div class="mk mk-out"></div><div class="mk mk-half"></div><div class="mk mk-circle"></div>
       <div class="mk mk-box-t"></div><div class="mk mk-box-b"></div><div class="mk mk-goal-t"></div><div class="mk mk-goal-b"></div>
@@ -1009,6 +1559,161 @@ h1 {
       <button class="spin small" id="confirm" type="button" disabled>Elegí un futbolista</button>
     </section>
 
+    <!-- SECCIÓN BO3: DUELO DE PIZARRAS -->
+    <section class="bo3-view" id="bo3View" hidden aria-label="Serie Bo3 Duelo de Pizarras">
+      <div class="bo3-header">
+        <div class="bo3-badge">⚔️ TACTICAL SHOWDOWN</div>
+        <h2 class="bo3-title" id="bo3Title">DUELO DE PIZARRAS (Bo3)</h2>
+        <div class="bo3-tracker">
+          <div class="tracker-match active" id="pillMatch1">Partido 1</div>
+          <div class="tracker-match" id="pillMatch2">Partido 2</div>
+          <div class="tracker-match" id="pillMatch3">Partido 3</div>
+        </div>
+        <div class="bo3-score-display">
+          <span class="bo3-team-name p1" id="bo3Name0">JUGADOR 1</span>
+          <span class="bo3-score-nums" id="bo3ScoreNums">0 - 0</span>
+          <span class="bo3-team-name p2" id="bo3Name1">JUGADOR 2</span>
+        </div>
+      </div>
+
+      <!-- Pizarra Táctica (Pizarra de Tácticas) -->
+      <div class="chalkboard" id="chalkboard">
+        <div class="chalk-grid">
+          <!-- Columna DT 1 -->
+          <div class="dt-column dt-p1" id="dtCol0">
+            <div class="dt-head">
+              <span class="dt-tag">DT 1</span>
+              <span class="dt-name" id="dtName0">Jugador 1</span>
+            </div>
+            <div class="dt-stats-summary">
+              <span>DEF <b id="dtDef0">0</b></span>
+              <span>MED <b id="dtMed0">0</b></span>
+              <span>ATA <b id="dtAta0">0</b></span>
+            </div>
+            <div class="dt-tactics-group">
+              <span class="lbl">Estrategia Táctica:</span>
+              <div class="tactic-cards" id="tacticCards0">
+                <button type="button" class="tactic-card" data-p="0" data-tactic="defensive">
+                  <span class="tc-icon">🛡️</span>
+                  <div class="tc-text">
+                    <span class="tc-title">Cerrojo</span>
+                    <span class="tc-mod">+10 DEF · -5 ATA</span>
+                  </div>
+                </button>
+                <button type="button" class="tactic-card active" data-p="0" data-tactic="balanced">
+                  <span class="tc-icon">⚖️</span>
+                  <div class="tc-text">
+                    <span class="tc-title">Equilibrio</span>
+                    <span class="tc-mod">+4 DEF · +4 MED · +4 ATA</span>
+                  </div>
+                </button>
+                <button type="button" class="tactic-card" data-p="0" data-tactic="possession">
+                  <span class="tc-icon">🎯</span>
+                  <div class="tc-text">
+                    <span class="tc-title">Tiki-Taka</span>
+                    <span class="tc-mod">+10 MED · +2 ATA · -4 DEF</span>
+                  </div>
+                </button>
+                <button type="button" class="tactic-card" data-p="0" data-tactic="attacking">
+                  <span class="tc-icon">⚡</span>
+                  <div class="tc-text">
+                    <span class="tc-title">Ataque Total</span>
+                    <span class="tc-mod">+10 ATA · -6 DEF</span>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Separador VS -->
+          <div class="dt-vs">
+            <span>VS</span>
+          </div>
+
+          <!-- Columna DT 2 -->
+          <div class="dt-column dt-p2" id="dtCol1">
+            <div class="dt-head">
+              <span class="dt-tag">DT 2</span>
+              <span class="dt-name" id="dtName1">Jugador 2</span>
+            </div>
+            <div class="dt-stats-summary">
+              <span>DEF <b id="dtDef1">0</b></span>
+              <span>MED <b id="dtMed1">0</b></span>
+              <span>ATA <b id="dtAta1">0</b></span>
+            </div>
+            <div class="dt-tactics-group">
+              <span class="lbl">Estrategia Táctica:</span>
+              <div class="tactic-cards" id="tacticCards1">
+                <button type="button" class="tactic-card" data-p="1" data-tactic="defensive">
+                  <span class="tc-icon">🛡️</span>
+                  <div class="tc-text">
+                    <span class="tc-title">Cerrojo</span>
+                    <span class="tc-mod">+10 DEF · -5 ATA</span>
+                  </div>
+                </button>
+                <button type="button" class="tactic-card active" data-p="1" data-tactic="balanced">
+                  <span class="tc-icon">⚖️</span>
+                  <div class="tc-text">
+                    <span class="tc-title">Equilibrio</span>
+                    <span class="tc-mod">+4 DEF · +4 MED · +4 ATA</span>
+                  </div>
+                </button>
+                <button type="button" class="tactic-card" data-p="1" data-tactic="possession">
+                  <span class="tc-icon">🎯</span>
+                  <div class="tc-text">
+                    <span class="tc-title">Tiki-Taka</span>
+                    <span class="tc-mod">+10 MED · +2 ATA · -4 DEF</span>
+                  </div>
+                </button>
+                <button type="button" class="tactic-card" data-p="1" data-tactic="attacking">
+                  <span class="tc-icon">⚡</span>
+                  <div class="tc-text">
+                    <span class="tc-title">Ataque Total</span>
+                    <span class="tc-mod">+10 ATA · -6 DEF</span>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Zona de Simulación en Vivo -->
+        <div class="sim-live-box" id="simLiveBox" hidden>
+          <div class="sim-scoreboard-bar">
+            <span class="sim-name p1" id="simName0">J1</span>
+            <span class="sim-score-led" id="simScoreLed">0 - 0</span>
+            <span class="sim-name p2" id="simName1">J2</span>
+            <span class="sim-clock" id="simClock">00'</span>
+          </div>
+          <div class="sim-field-arena" id="simFieldArena">
+            <div class="sim-field-line half"></div>
+            <div class="sim-field-line circle"></div>
+            <div class="sim-ball" id="simBall">⚽</div>
+            <div class="sim-chip chip-p1" id="simChipP1">P1</div>
+            <div class="sim-chip chip-p2" id="simChipP2">P2</div>
+          </div>
+          <div class="sim-commentary" id="simCommentary">
+            <p class="sim-msg" id="simMsg">Pizarra táctica lista. Configuren estrategias y comiencen la simulación.</p>
+          </div>
+        </div>
+
+        <div class="bo3-btn-row">
+          <button type="button" class="spin small" id="btnPlayMatch">⚽ Simular Partido</button>
+          <button type="button" class="spin small" id="btnNextMatch" hidden>Siguiente Partido ➔</button>
+          <button type="button" class="spin small" id="btnSeriesRecap" hidden>🏆 Ver Campeón</button>
+        </div>
+      </div>
+
+      <!-- Resumen de Campeón Bo3 -->
+      <div class="champ-overlay" id="champOverlay" hidden>
+        <div class="champ-trophy-anim">🏆</div>
+        <h3 class="champ-headline" id="champHeadline">¡CAMPEÓN DE LA SERIE!</h3>
+        <p class="champ-lead" id="champLead"></p>
+        <div class="champ-summary-table" id="champSummaryTable"></div>
+        <button type="button" class="spin" id="btnNewDraft">🎮 Jugar Nuevo Draft</button>
+      </div>
+    </section>
+
     <div class="cta" id="ctaBox">
       <button class="spin" id="cta" type="button">Empezar partido</button>
       <p class="hint" id="hint"></p>
@@ -1027,10 +1732,31 @@ h1 {
       <span class="tp-badge" aria-hidden="true">J2</span>
       <label class="sr-only" for="name1">Nombre del jugador 2</label>
       <input class="tp-name" id="name1" maxlength="14" placeholder="Jugador 2" autocomplete="off" spellcheck="false">
+      <div class="tp-budget" id="budgetWrap1" title="Presupuesto disponible ($120M inicial)">
+        <span class="lbl">Presupuesto</span>
+        <span class="budget-led" id="budget1">$120M</span>
+      </div>
       <div class="tp-score"><span class="lbl">Puntos</span><span class="led" id="total1">--</span></div>
     </header>
     <div class="forms" id="forms1" role="radiogroup" aria-label="Formación del jugador 2"></div>
     <p class="tp-sub" id="sub1"></p>
+    <div class="tp-tactical" id="tactical1">
+      <div class="budget-meter" title="Presupuesto restante ($120M)">
+        <div class="budget-meter-fill" id="budgetBar1" style="width: 100%;"></div>
+      </div>
+      <div class="tactical-pills">
+        <span class="tac-pill" title="Promedio Defensa (ARQ + DEF)"><span class="tac-icon">🛡️</span> DEF <b id="statDef1">--</b></span>
+        <span class="tac-pill" title="Promedio Mediocampo (MED)"><span class="tac-icon">⚙️</span> MED <b id="statMed1">--</b></span>
+        <span class="tac-pill" title="Promedio Delanteros (DEL)"><span class="tac-icon">⚡</span> ATA <b id="statAta1">--</b></span>
+        <span class="tac-pill tac-wins" title="Partidos ganados en la serie Bo3"><span class="tac-icon">🏆</span> Bo3 <b id="seriesWins1">0</b>/2</span>
+      </div>
+      <div class="tactical-actions">
+        <button type="button" class="btn-block-spin" id="btnBlock1" title="Bloquea el próximo giro del rival para impedirle fichar jugadores Oro (80+ OVR)">
+          🚫 Bloquear rival <span class="badge-uses" id="blockBadge1">1</span>
+        </button>
+      </div>
+      <div class="block-banner" id="blockBanner1" hidden>⚠️ ¡Giro bloqueado por rival! En esta vuelta no podés fichar jugadores Oro (80+ OVR)</div>
+    </div>
     <div class="pitch">
       <div class="mk mk-out"></div><div class="mk mk-half"></div><div class="mk mk-circle"></div>
       <div class="mk mk-box-t"></div><div class="mk mk-box-b"></div><div class="mk mk-goal-t"></div><div class="mk mk-goal-b"></div>
@@ -1891,8 +2617,7 @@ window.PLANTELES = {"actualizado":"12/10/2026","equipos":{"boca":{"fecha":"Wikip
 {"n":"Antonio Vergara","p":"DEL","num":21,"r":70,"c":"Napoli"},
 {"n":"Mohamed Alì Zoma","p":"DEL","num":null,"r":64,"c":"1. FC Nürnberg"}]}}};
 
-</script>
-<script>
+
 (() => {
   // Colores de cada camiseta. stripes = bastones verticales, hoops = rayas horizontales,
   // band = franja horizontal, center = franja vertical central, sash = banda cruzada, ring = vivos del borde.
@@ -2229,16 +2954,80 @@ window.PLANTELES = {"actualizado":"12/10/2026","equipos":{"boca":{"fecha":"Wikip
     blast(t + .28, .5);
   }
 
-  // ---------- Estado del partido ----------
-  // phase: setup → spin ⇄ pick → full → reveal → done
-  // Cada ronda: tira el primero y elige un puesto; después tira el otro y elige ese mismo puesto (req).
-  const KEY = 'ruleta-bernie-partido-v3';
+  // ---------- Estado del partido & Tactical Showdown ----------
+  // phase: setup → spin ⇄ pick → full → reveal → draft_done → bo3 ⇄ bo3_sim → done
+  const KEY = 'ruleta-bernie-tactical-v1';
+
+  function createPlayer(id, name) {
+    return {
+      id: id + 1, // 1 o 2
+      name: name || `Jugador ${id + 1}`,
+      budget: 120, // Presupuesto inicial en Millones ($120M)
+      roster: [], // Jugadores seleccionados (con { name, position, ovr, line: 'DEF' | 'MED' | 'ATA', cost, teamSlug, num })
+      stats: {
+        def: 0, // Promedio o suma de ARQ + DEF
+        med: 0, // Promedio o suma de MED
+        ata: 0, // Promedio o suma de DEL
+        totalOvr: 0
+      },
+      isBlocked: false, // Flag por si el rival le bloqueó el giro
+      hasBlockCard: true, // 1 uso de bloqueo disponible por draft
+      seriesWins: 0 // Partidos ganados en el Bo3 (0 a 2)
+    };
+  }
+
+  function lineOf(pos) {
+    if (pos === 'POR' || pos === 'DEF') return 'DEF';
+    if (pos === 'MED') return 'MED';
+    return 'ATA';
+  }
+
+  function playerCost(r) {
+    if (!r || r < 60) return 2;
+    if (r >= 92) return 22;
+    if (r >= 89) return 18;
+    if (r >= 86) return 15;
+    if (r >= 83) return 12;
+    if (r >= 80) return 9;
+    if (r >= 76) return 7;
+    if (r >= 72) return 5;
+    if (r >= 68) return 4;
+    return 3;
+  }
+
+  function updatePlayerStats(player) {
+    const defs = player.roster.filter((p) => p.line === 'DEF');
+    const meds = player.roster.filter((p) => p.line === 'MED');
+    const atas = player.roster.filter((p) => p.line === 'ATA');
+    player.stats.def = defs.length ? Math.round(defs.reduce((s, x) => s + x.ovr, 0) / defs.length) : 0;
+    player.stats.med = meds.length ? Math.round(meds.reduce((s, x) => s + x.ovr, 0) / meds.length) : 0;
+    player.stats.ata = atas.length ? Math.round(atas.reduce((s, x) => s + x.ovr, 0) / atas.length) : 0;
+    player.stats.totalOvr = player.roster.reduce((s, x) => s + x.ovr, 0);
+  }
+
+  function freshBo3() {
+    return {
+      currentMatch: 1,
+      matchEnded: false,
+      matchHistory: [],
+      p1Tactic: 'balanced',
+      p2Tactic: 'balanced',
+      simulating: false
+    };
+  }
+
   function fresh(prev) {
+    const p1Name = prev?.players?.[0]?.name || prev?.names?.[0] || 'Bernie';
+    const p2Name = prev?.players?.[1]?.name || prev?.names?.[1] || '';
     return {
       phase: 'setup',
-      names: prev ? prev.names : ['Bernie', ''],
+      names: [p1Name, p2Name],
       forms: prev ? prev.forms : [null, null],
       picks: [[], []],
+      players: [
+        createPlayer(0, p1Name),
+        createPlayer(1, p2Name)
+      ],
       round: 0,
       team: null,
       pickers: [],   // quiénes faltan tirar en esta ronda, en orden
@@ -2246,16 +3035,46 @@ window.PLANTELES = {"actualizado":"12/10/2026","equipos":{"boca":{"fecha":"Wikip
       sel: null,
       last: '',
       sound: prev ? prev.sound : true,
+      bo3: freshBo3()
     };
   }
+
   let G = fresh();
   function save() {
     try { localStorage.setItem(KEY, JSON.stringify(G)); } catch (e) { /* sin almacenamiento */ }
   }
   function load() {
     try {
-      const s = JSON.parse(localStorage.getItem(KEY) || 'null');
-      if (s && s.phase && Array.isArray(s.picks)) return s;
+      const s = JSON.parse(localStorage.getItem(KEY) || 'null') ||
+                JSON.parse(localStorage.getItem('ruleta-bernie-partido-v3') || 'null');
+      if (s && s.phase && Array.isArray(s.picks)) {
+        if (!s.players || !Array.isArray(s.players) || s.players.length < 2) {
+          s.players = [
+            createPlayer(0, s.names?.[0] || 'Bernie'),
+            createPlayer(1, s.names?.[1] || '')
+          ];
+          for (let p = 0; p < 2; p++) {
+            s.picks[p]?.forEach((pk) => {
+              if (!pk) return;
+              const d = dataOf(pk);
+              const cost = playerCost(d.r);
+              s.players[p].budget -= cost;
+              s.players[p].roster.push({
+                name: d.n,
+                position: d.p,
+                ovr: d.r,
+                line: lineOf(d.p),
+                cost: cost,
+                teamSlug: pk.s,
+                num: d.num ?? 0
+              });
+            });
+            updatePlayerStats(s.players[p]);
+          }
+        }
+        if (!s.bo3) s.bo3 = freshBo3();
+        return s;
+      }
     } catch (e) { /* ignorar */ }
     return null;
   }
@@ -2265,7 +3084,7 @@ window.PLANTELES = {"actualizado":"12/10/2026","equipos":{"boca":{"fecha":"Wikip
   let justPlaced = null;     // para animar la camiseta recién fichada
   let askAbort = false;
 
-  const nameOf = (p) => (G.names[p] || '').trim() || `Jugador ${p + 1}`;
+  const nameOf = (p) => (G.players?.[p]?.name || G.names[p] || '').trim() || `Jugador ${p + 1}`;
   const slotsOf = (p) => FORMATIONS[G.forms[p]] || [];
   const filled = (p) => G.picks[p].filter(Boolean).length;
   const complete = (p) => filled(p) >= 11;
@@ -2323,6 +3142,7 @@ window.PLANTELES = {"actualizado":"12/10/2026","equipos":{"boca":{"fecha":"Wikip
   function renderPanels() {
     for (let p = 0; p < 2; p++) {
       const panel = $('panel' + p), input = $('name' + p), forms = $('forms' + p), sub = $('sub' + p), toks = $('toks' + p), tot = $('total' + p);
+      const player = G.players[p];
       const setup = G.phase === 'setup';
       if (document.activeElement !== input) input.value = G.names[p] || '';
       input.disabled = !setup;
@@ -2337,24 +3157,54 @@ window.PLANTELES = {"actualizado":"12/10/2026","equipos":{"boca":{"fecha":"Wikip
                      (G.phase === 'spin' && !spinning && spinner() === p);
       panel.classList.toggle('active', active);
 
-      const showRates = G.phase === 'done' || G.phase === 'reveal';
-      const upto = G.phase === 'done' ? 11 : revealStep;
+      const showRates = G.phase === 'done' || G.phase === 'reveal' || G.phase === 'draft_done' || G.phase === 'bo3' || G.phase === 'bo3_sim';
+      const upto = (G.phase === 'reveal') ? revealStep : 11;
       tot.textContent = showRates ? String(total(p, upto)).padStart(3, '0') : '--';
 
       const t0 = total(0), t1 = total(1);
-      panel.classList.toggle('winner', G.phase === 'done' && (p === 0 ? t0 > t1 : t1 > t0));
+      const draftDone = G.phase === 'done' || G.phase === 'draft_done' || G.phase === 'bo3' || G.phase === 'bo3_sim';
+      panel.classList.toggle('winner', draftDone && (p === 0 ? t0 > t1 : t1 > t0));
 
       if (setup) {
         sub.innerHTML = G.forms[p]
           ? `Formación <b>${G.forms[p]}</b>. Se puede cambiar hasta que empiece el partido.`
           : 'Elegí la formación de tu equipo.';
-      } else if (G.phase === 'done') {
+      } else if (draftDone) {
         const best = G.picks[p].filter(Boolean).map(dataOf).sort((a, b) => b.r - a.r)[0];
-        sub.innerHTML = `<b>${G.forms[p]}</b> · promedio <b>${(total(p) / 11).toFixed(1).replace('.', ',')}</b>` +
+        sub.innerHTML = `<b>${G.forms[p]}</b> · prom <b>${(total(p) / 11).toFixed(1).replace('.', ',')}</b>` +
           (best ? ` · figura: <b>${esc(best.n)}</b> (${best.r})` : '');
       } else {
         const left = needsText(p);
         sub.innerHTML = `<b>${G.forms[p]}</b> · ${filled(p)}/11 fichados` + (left ? ` · le faltan ${left}` : ' · ¡completo!');
+      }
+
+      // Render Tactical Showdown Economy & Stats
+      const bgtEl = $('budget' + p);
+      if (bgtEl) bgtEl.textContent = `$${player.budget}M`;
+      const bgtBar = $('budgetBar' + p);
+      if (bgtBar) bgtBar.style.width = `${Math.max(0, Math.min(100, (player.budget / 120) * 100))}%`;
+
+      const stDef = $('statDef' + p);
+      if (stDef) stDef.textContent = player.stats.def ? player.stats.def : '--';
+      const stMed = $('statMed' + p);
+      if (stMed) stMed.textContent = player.stats.med ? player.stats.med : '--';
+      const stAta = $('statAta' + p);
+      if (stAta) stAta.textContent = player.stats.ata ? player.stats.ata : '--';
+
+      const sWins = $('seriesWins' + p);
+      if (sWins) sWins.textContent = String(player.seriesWins);
+
+      // Bloquear Rival action button
+      const btnBlk = $('btnBlock' + p);
+      const blkBadge = $('blockBadge' + p);
+      if (blkBadge) blkBadge.textContent = player.hasBlockCard ? '1' : '0';
+      if (btnBlk) {
+        const canBlock = player.hasBlockCard && (G.phase === 'spin' || G.phase === 'pick') && !spinning;
+        btnBlk.disabled = !canBlock;
+      }
+      const blkBanner = $('blockBanner' + p);
+      if (blkBanner) {
+        blkBanner.hidden = !player.isBlocked;
       }
 
       if (!G.forms[p]) {
@@ -2393,7 +3243,7 @@ window.PLANTELES = {"actualizado":"12/10/2026","equipos":{"boca":{"fecha":"Wikip
       shirtEl.innerHTML = BLANK_JERSEY;
       statusEl.textContent = 'Previa del partido';
       bigEl.textContent = 'Armen los equipos';
-      metaEl.textContent = 'Cada jugador escribe su nombre y elige la formación. En cada ronda tira uno, ficha un futbolista del equipo que salga y elige el puesto; después tira el otro y elige el mismo puesto de su equipo.';
+      metaEl.textContent = 'Cada jugador escribe su nombre y formación. Presupuesto $120M: ficha con estrategia y prepara tu equipo para el Bo3.';
     } else if (ph === 'spin') {
       const inRound = G.pickers.length > 0;
       const order = inRound ? G.pickers : nextPickers(G.round + 1);
@@ -2432,13 +3282,24 @@ window.PLANTELES = {"actualizado":"12/10/2026","equipos":{"boca":{"fecha":"Wikip
       shirtEl.innerHTML = TROPHY;
       statusEl.textContent = 'Final del armado';
       bigEl.textContent = '¡Planteles completos!';
-      metaEl.textContent = 'Los dos equipos tienen sus 11. Ahora se revela el puntaje de cada futbolista y gana el que más suma.';
+      metaEl.textContent = 'Los dos equipos tienen sus 11 futbolistas. Ahora se revelan los puntajes y se da paso a la Serie Bo3.';
     } else if (ph === 'reveal') {
       setTurn(null);
       shirtEl.innerHTML = TROPHY;
       statusEl.textContent = 'Puntajes';
       bigEl.textContent = 'Contando puntos…';
       metaEl.innerHTML = `<b>${esc(nameOf(0))}</b> ${total(0, revealStep)} · ${total(1, revealStep)} <b>${esc(nameOf(1))}</b>`;
+    } else if (ph === 'draft_done') {
+      setTurn(null);
+      shirtEl.innerHTML = TROPHY;
+      statusEl.textContent = 'Planteles Listos';
+      bigEl.innerHTML = '¡Comienza el Showdown!';
+      metaEl.innerHTML = `Draft cerrado. <b>${esc(nameOf(0))}</b> ($${G.players[0].budget}M rest.) vs <b>${esc(nameOf(1))}</b> ($${G.players[1].budget}M rest.). ¡Al Duelo de Pizarras Bo3!`;
+    } else if (ph === 'bo3' || ph === 'bo3_sim') {
+      shirtEl.innerHTML = TROPHY;
+      statusEl.textContent = `Serie Bo3 · Partido ${G.bo3.currentMatch} de 3`;
+      bigEl.innerHTML = `Serie: <span class="hl">${G.players[0].seriesWins} - ${G.players[1].seriesWins}</span>`;
+      metaEl.innerHTML = `Duelo de Pizarras en curso. Definición al Mejor de 3 Partidos.`;
     } else if (ph === 'done') {
       const t0 = total(0), t1 = total(1);
       shirtEl.innerHTML = TROPHY;
@@ -2457,6 +3318,7 @@ window.PLANTELES = {"actualizado":"12/10/2026","equipos":{"boca":{"fecha":"Wikip
 
   function renderSquad() {
     const t = TEAMS[G.team], p = G.pickers[0], list = squad(t.slug);
+    const player = G.players[p];
     squadView.style.setProperty('--pc', colorOf(p));
     squadView.style.setProperty('--pc-soft', p === 0 ? 'var(--p1-soft)' : 'var(--p2-soft)');
     sqShirt.innerHTML = jersey(t);
@@ -2472,9 +3334,20 @@ window.PLANTELES = {"actualizado":"12/10/2026","equipos":{"boca":{"fecha":"Wikip
       : a.why === 'common'
         ? `Elegí el puesto de esta ronda: ${esc(nameOf(a.other))} va a tener que elegir el mismo.`
         : 'Puede elegir cualquier puesto que le falte.';
+
+    let blockNotice = '';
+    if (player.isBlocked) {
+      blockNotice = `<div class="sq-blocked-alert">⚠️ ¡GIRO BLOQUEADO POR RIVAL! En esta vuelta no podés fichar futbolistas Oro (80+ OVR).</div>`;
+    }
+
+    const slotsLeft = 11 - player.roster.length;
+    const minReserve = Math.max(0, slotsLeft - 1) * 2;
+    const maxAffordable = player.budget - minReserve;
+
     sqPicker.innerHTML = `<span class="who">Elige ${esc(nameOf(p))}</span>` +
+      `<span class="need ok" style="background:var(--led);color:var(--ink);" title="Presupuesto disponible">💰 $${player.budget}M disp.</span>` +
       GROUPS.map(([g]) => `<span class="need${ok.has(g) ? ' ok' : ''}${n[g] ? '' : ' zero'}">${n[g]} ${GROUP_ABBR[g]}</span>`).join('') +
-      `<p class="sq-rule">${rule}</p>`;
+      `<p class="sq-rule">${rule}</p>` + blockNotice;
 
     if (!list || !list.length) {
       sqList.innerHTML = `<p class="sq-none">Todavía no está cargado el plantel de ${esc(t.name)}. ${esc(nameOf(p))} vuelve a tirar.</p>`;
@@ -2484,8 +3357,14 @@ window.PLANTELES = {"actualizado":"12/10/2026","equipos":{"boca":{"fecha":"Wikip
       return;
     }
 
-    const eligible = list.some((d) => ok.has(d.p) && owner(d.n) === -1);
-    // Primero los puestos que se pueden elegir; el resto queda abajo, bloqueado.
+    const eligible = list.some((d) => {
+      if (!ok.has(d.p) || owner(d.n) !== -1) return false;
+      if (player.isBlocked && d.r >= 80) return false;
+      const c = playerCost(d.r);
+      if (c > maxAffordable) return false;
+      return true;
+    });
+
     const order = [...GROUPS.filter(([g]) => ok.has(g)), ...GROUPS.filter(([g]) => !ok.has(g))];
     sqList.innerHTML = order.map(([g, label]) => {
       const rows = list.filter((d) => d.p === g)
@@ -2499,10 +3378,22 @@ window.PLANTELES = {"actualizado":"12/10/2026","equipos":{"boca":{"fecha":"Wikip
         <div class="sq-group-head"><p class="lbl">${label}</p><span class="tag">${tag}</span></div>
         ${rows.map((d) => {
           const o = owner(d.n);
-          const off = o !== -1 || !ok.has(g);
-          const right = o !== -1
-            ? `<span class="own" style="--oc:${colorOf(o)}">${esc(nameOf(o))}</span>`
-            : `<span class="pos">${esc(d.d || GROUP_ABBR[g])}</span>`;
+          const c = playerCost(d.r);
+          const isGoldBlocked = player.isBlocked && d.r >= 80;
+          const isTooExpensive = c > maxAffordable;
+          const off = o !== -1 || !ok.has(g) || isGoldBlocked || isTooExpensive;
+
+          let right;
+          if (o !== -1) {
+            right = `<span class="own" style="--oc:${colorOf(o)}">${esc(nameOf(o))}</span>`;
+          } else if (isGoldBlocked) {
+            right = `<span class="cost-badge blocked">🚫 Bloqueado ($${c}M)</span>`;
+          } else if (isTooExpensive) {
+            right = `<span class="cost-badge unaffordable">💵 $${c}M (Sin fondos)</span>`;
+          } else {
+            right = `<span class="cost-badge">💵 $${c}M</span><span class="pos">${esc(d.d || GROUP_ABBR[g])}</span>`;
+          }
+
           return `<button class="row" type="button" data-n="${esc(d.n)}" aria-pressed="${G.sel === d.n}"${off ? ' disabled' : ''}>
             <span class="num">${d.num ?? '–'}</span>
             <span class="nm">${esc(d.n)}${d.c ? `<span class="club">${esc(d.c)}</span>` : ''}</span>
@@ -2513,7 +3404,14 @@ window.PLANTELES = {"actualizado":"12/10/2026","equipos":{"boca":{"fecha":"Wikip
     }).join('');
 
     if (!eligible) {
-      const what = a.why === 'req' ? `ningún ${GROUP_ONE[G.req]} libre` : 'ningún futbolista libre para los puestos que puede elegir';
+      let what;
+      if (player.isBlocked) {
+        what = 'ningún futbolista disponible sin bloqueo y dentro de tu presupuesto';
+      } else if (a.why === 'req') {
+        what = `ningún ${GROUP_ONE[G.req]} accesible con tu presupuesto de $${player.budget}M`;
+      } else {
+        what = 'ningún futbolista accesible para tu presupuesto';
+      }
       sqList.insertAdjacentHTML('afterbegin', `<p class="sq-none">En este plantel no queda ${what}. ${esc(nameOf(p))} vuelve a tirar la ruleta.</p>`);
       confirmBtn.disabled = false;
       confirmBtn.dataset.mode = 'respin';
@@ -2523,18 +3421,85 @@ window.PLANTELES = {"actualizado":"12/10/2026","equipos":{"boca":{"fecha":"Wikip
     confirmBtn.dataset.mode = 'pick';
     const sel = G.sel && list.find((d) => d.n === G.sel);
     confirmBtn.disabled = !sel;
-    confirmBtn.textContent = sel ? `Fichar a ${shortName(sel)}` : 'Elegí un futbolista';
+    confirmBtn.textContent = sel ? `Fichar a ${shortName(sel)} ($${playerCost(sel.r)}M)` : 'Elegí un futbolista';
+  }
+
+  function renderBo3Chalkboard() {
+    const bo3 = G.bo3;
+    if (!bo3) return;
+
+    const titleEl = $('bo3Title');
+    if (titleEl) titleEl.textContent = `DUELO DE PIZARRAS · PARTIDO ${bo3.currentMatch} DE 3`;
+    const scoreNums = $('bo3ScoreNums');
+    if (scoreNums) scoreNums.textContent = `${G.players[0].seriesWins} - ${G.players[1].seriesWins}`;
+    const name0El = $('bo3Name0');
+    if (name0El) name0El.textContent = nameOf(0);
+    const name1El = $('bo3Name1');
+    if (name1El) name1El.textContent = nameOf(1);
+
+    [1, 2, 3].forEach((num) => {
+      const pill = $('pillMatch' + num);
+      if (!pill) return;
+      pill.classList.toggle('active', bo3.currentMatch === num);
+      const matchRec = bo3.matchHistory.find((m) => m.match === num);
+      if (matchRec) {
+        pill.classList.add('won');
+        pill.textContent = `P${num}: ${matchRec.p1Score}-${matchRec.p2Score}`;
+      } else {
+        pill.classList.remove('won');
+        pill.textContent = `Partido ${num}`;
+      }
+    });
+
+    for (let p = 0; p < 2; p++) {
+      const dtName = $('dtName' + p);
+      if (dtName) dtName.textContent = nameOf(p);
+      const defEl = $('dtDef' + p);
+      if (defEl) defEl.textContent = G.players[p].stats.def;
+      const medEl = $('dtMed' + p);
+      if (medEl) medEl.textContent = G.players[p].stats.med;
+      const ataEl = $('dtAta' + p);
+      if (ataEl) ataEl.textContent = G.players[p].stats.ata;
+
+      const curTac = p === 0 ? bo3.p1Tactic : bo3.p2Tactic;
+      const cards = $(`tacticCards${p}`)?.querySelectorAll('.tactic-card') || [];
+      cards.forEach((btn) => {
+        btn.classList.toggle('active', btn.dataset.tactic === curTac);
+        btn.disabled = bo3.simulating;
+      });
+    }
+
+    const btnPlay = $('btnPlayMatch');
+    const btnNext = $('btnNextMatch');
+    const btnRecap = $('btnSeriesRecap');
+
+    if (btnPlay) {
+      btnPlay.hidden = bo3.simulating || bo3.matchEnded;
+      btnPlay.textContent = `⚽ Simular Partido ${bo3.currentMatch}`;
+    }
+    if (btnNext) {
+      btnNext.hidden = !bo3.matchEnded || G.players[0].seriesWins >= 2 || G.players[1].seriesWins >= 2;
+      btnNext.textContent = `Siguiente Partido (P${bo3.currentMatch + 1}) ➔`;
+    }
+    if (btnRecap) {
+      btnRecap.hidden = !bo3.matchEnded || (G.players[0].seriesWins < 2 && G.players[1].seriesWins < 2);
+    }
   }
 
   function renderCenter() {
     const ph = G.phase;
     const picking = ph === 'pick' && !landing;
-    wheelView.hidden = picking;
-    squadView.hidden = !picking;
+    const isBo3 = ph === 'bo3' || ph === 'bo3_sim';
+    wheelView.hidden = picking || isBo3;
+    squadView.hidden = !picking || isBo3;
+    const bo3View = $('bo3View');
+    if (bo3View) bo3View.hidden = !isBo3;
+
     if (picking) renderSquad();
+    if (isBo3) renderBo3Chalkboard();
     if (ph === 'spin' && !spinning) clearWheelMarks();
 
-    ctaBox.hidden = picking || landing;
+    ctaBox.hidden = picking || landing || isBo3;
     ctaBtn.disabled = false;
     hintEl.innerHTML = '';
     if (ph === 'setup') {
@@ -2543,7 +3508,7 @@ window.PLANTELES = {"actualizado":"12/10/2026","equipos":{"boca":{"fecha":"Wikip
       ctaBtn.disabled = missing.length > 0;
       hintEl.textContent = missing.length
         ? `Falta elegir la formación de ${missing.join(' y ')}.`
-        : 'Los puntajes de los futbolistas quedan ocultos hasta el final.';
+        : 'Presupuesto: $120M cada uno. Los puntajes quedan ocultos hasta el final.';
     } else if (ph === 'spin') {
       ctaBtn.textContent = spinning ? 'Girando…' : 'Girar ruleta';
       ctaBtn.disabled = spinning;
@@ -2553,20 +3518,23 @@ window.PLANTELES = {"actualizado":"12/10/2026","equipos":{"boca":{"fecha":"Wikip
     } else if (ph === 'reveal') {
       ctaBtn.textContent = 'Contando…';
       ctaBtn.disabled = true;
+    } else if (ph === 'draft_done') {
+      ctaBtn.textContent = '⚔️ Iniciar Serie Bo3 (Pizarras)';
+      hintEl.textContent = 'Serie al Mejor de 3 partidos. Duelo táctico con selecciones de pizarra.';
     } else if (ph === 'done') {
       ctaBtn.textContent = 'Jugar otra vez';
       hintEl.textContent = 'Se mantienen los nombres y las formaciones; se pueden cambiar antes de empezar.';
     }
 
-    const inGame = ph === 'spin' || ph === 'pick' || ph === 'full';
-    abortBox.hidden = !inGame || spinning || landing;
+    const inGame = ph === 'spin' || ph === 'pick' || ph === 'full' || isBo3;
+    abortBox.hidden = !inGame || spinning || landing || G.bo3?.simulating;
     abortBtn.hidden = askAbort;
     abortAsk.hidden = abortYes.hidden = abortNo.hidden = !askAbort;
   }
 
   function renderFoot() {
     const fecha = DATA.actualizado ? `Planteles actualizados al ${DATA.actualizado}.` : 'Planteles sin cargar.';
-    $('foot').textContent = `${fecha} Puntajes estilo videojuego (1 a 99): oro 80+, plata 70–79, bronce menos de 70.`;
+    $('foot').textContent = `${fecha} Tactical Showdown: Presupuesto $120M · Bo3 Duelo de Pizarras · Oro 80+, Plata 70–79, Bronce <70.`;
   }
 
   function render() {
@@ -2579,6 +3547,11 @@ window.PLANTELES = {"actualizado":"12/10/2026","equipos":{"boca":{"fecha":"Wikip
   function start() {
     if (!G.forms[0] || !G.forms[1]) return;
     G.picks = [Array(11).fill(null), Array(11).fill(null)];
+    G.players = [
+      createPlayer(0, G.names[0]),
+      createPlayer(1, G.names[1])
+    ];
+    G.bo3 = freshBo3();
     G.round = 0;
     G.phase = 'spin';
     G.last = '';
@@ -2627,20 +3600,42 @@ window.PLANTELES = {"actualizado":"12/10/2026","equipos":{"boca":{"fecha":"Wikip
 
   function pickSelected() {
     const t = TEAMS[G.team], p = G.pickers[0];
+    const player = G.players[p];
     const d = (squad(t.slug) || []).find((x) => x.n === G.sel);
     if (!d || owner(d.n) !== -1) return;
     if (!allowed(p).groups.includes(d.p)) return;
+
+    if (player.isBlocked && d.r >= 80) return;
+
+    const cost = playerCost(d.r);
+    const slotsLeft = 11 - player.roster.length;
+    const minReserve = Math.max(0, slotsLeft - 1) * 2;
+    if (player.budget - cost < minReserve) return;
+
     const i = placeSlot(p, d);
     if (i === -1) return;
     G.picks[p][i] = { s: t.slug, n: d.n };
+
+    player.budget -= cost;
+    player.roster.push({
+      name: d.n,
+      position: d.p,
+      ovr: d.r,
+      line: lineOf(d.p),
+      cost: cost,
+      teamSlug: t.slug,
+      num: d.num ?? 0
+    });
+    updatePlayerStats(player);
+    player.isBlocked = false;
+
     justPlaced = { p, i };
-    // Si tira primero, el puesto que eligió es el que le toca al otro en esta ronda
     if (G.pickers.length > 1) {
       const f = G.pickers[1];
       G.req = needs(f)[d.p] > 0 ? d.p : null;
     }
-    G.last = `<b>${esc(nameOf(p))}</b> fichó a <b>${esc(d.n)}</b> (${GROUP_ONE[d.p]}).`;
-    announceEl.textContent = `${nameOf(p)} fichó a ${d.n}, ${GROUP_ONE[d.p]}.`;
+    G.last = `<b>${esc(nameOf(p))}</b> fichó a <b>${esc(d.n)}</b> por <b>$${cost}M</b> (${GROUP_ONE[d.p]}).`;
+    announceEl.textContent = `${nameOf(p)} fichó a ${d.n} por $${cost}M, ${GROUP_ONE[d.p]}.`;
     popSound();
     advance();
   }
@@ -2653,7 +3648,7 @@ window.PLANTELES = {"actualizado":"12/10/2026","equipos":{"boca":{"fecha":"Wikip
       G.req = null;
       G.phase = complete(0) && complete(1) ? 'full' : 'spin';
     } else {
-      G.phase = 'spin';   // ahora tira el otro
+      G.phase = 'spin';
     }
     save();
     render();
@@ -2675,14 +3670,261 @@ window.PLANTELES = {"actualizado":"12/10/2026","equipos":{"boca":{"fecha":"Wikip
       renderBoard();
     }
     await wait(reduce ? 200 : 700);
-    G.phase = 'done';
+    G.phase = 'draft_done';
     save();
     render();
     boardEl.classList.remove('pop'); void boardEl.offsetWidth; boardEl.classList.add('pop');
     whistle();
     const t0 = total(0), t1 = total(1);
     burst(t0 === t1 ? [cssVar('--p1'), cssVar('--p2'), cssVar('--led')] : [cssVar(t0 > t1 ? '--p1' : '--p2'), cssVar('--led'), cssVar('--chalk')]);
-    announceEl.textContent = t0 === t1 ? `Empate: ${t0} a ${t1}.` : `Ganó ${nameOf(t0 > t1 ? 0 : 1)}: ${t0} a ${t1}.`;
+    announceEl.textContent = `Draft completado. Total: ${nameOf(0)} ${t0} vs ${t1} ${nameOf(1)}. Listos para el Duelo de Pizarras Bo3.`;
+  }
+
+  // ---------- Motor Bo3 & Pizarras Tácticas ----------
+  const TACTIC_MODS = {
+    defensive:  { def: 10, med: 0,  ata: -5 },
+    balanced:   { def: 4,  med: 4,  ata: 4 },
+    possession: { def: -4, med: 10, ata: 2 },
+    attacking:  { def: -6, med: 1,  ata: 10 },
+  };
+
+  function getTacticBonus(t1, t2) {
+    if (t1 === 'attacking' && t2 === 'possession') return 4;
+    if (t1 === 'possession' && t2 === 'defensive') return 4;
+    if (t1 === 'defensive' && t2 === 'attacking') return 5;
+    return 0;
+  }
+
+  function startBo3Series() {
+    G.phase = 'bo3';
+    G.bo3 = G.bo3 || freshBo3();
+    G.players[0].seriesWins = 0;
+    G.players[1].seriesWins = 0;
+    setTurn(null);
+    boardEl.style.setProperty('--pc', 'var(--gold)');
+    roundEl.textContent = `P${G.bo3.currentMatch}`;
+    statusEl.textContent = `Serie Bo3 · Partido ${G.bo3.currentMatch} de 3`;
+    bigEl.textContent = 'Duelo de Pizarras';
+    metaEl.innerHTML = `Configurá la instrucción táctica de tu equipo para el Partido ${G.bo3.currentMatch}.`;
+    save();
+    render();
+  }
+
+  async function runBo3Simulation() {
+    const bo3 = G.bo3;
+    if (bo3.simulating) return;
+    bo3.simulating = true;
+    bo3.matchEnded = false;
+    audio();
+
+    const simLiveBox = $('simLiveBox');
+    if (simLiveBox) simLiveBox.hidden = false;
+    const simName0 = $('simName0');
+    if (simName0) simName0.textContent = nameOf(0);
+    const simName1 = $('simName1');
+    if (simName1) simName1.textContent = nameOf(1);
+    const simScoreLed = $('simScoreLed');
+    const simClock = $('simClock');
+    const simMsg = $('simMsg');
+    const simBall = $('simBall');
+
+    renderBo3Chalkboard();
+
+    let p1Goals = 0, p2Goals = 0;
+    const t1 = bo3.p1Tactic, t2 = bo3.p2Tactic;
+    const mod1 = TACTIC_MODS[t1] || TACTIC_MODS.balanced;
+    const mod2 = TACTIC_MODS[t2] || TACTIC_MODS.balanced;
+    const b1 = getTacticBonus(t1, t2), b2 = getTacticBonus(t2, t1);
+
+    const effMed1 = (G.players[0].stats.med || 70) + mod1.med + b1;
+    const effMed2 = (G.players[1].stats.med || 70) + mod2.med + b2;
+    const effAta1 = (G.players[0].stats.ata || 70) + mod1.ata;
+    const effAta2 = (G.players[1].stats.ata || 70) + mod2.ata;
+    const effDef1 = (G.players[0].stats.def || 70) + mod1.def;
+    const effDef2 = (G.players[1].stats.def || 70) + mod2.def;
+
+    const roster1 = G.players[0].roster;
+    const roster2 = G.players[1].roster;
+    const starAta1 = roster1.filter((x) => x.line === 'ATA').sort((a,b)=>b.ovr-a.ovr)[0]?.name || nameOf(0);
+    const starAta2 = roster2.filter((x) => x.line === 'ATA').sort((a,b)=>b.ovr-a.ovr)[0]?.name || nameOf(1);
+    const starMed1 = roster1.filter((x) => x.line === 'MED').sort((a,b)=>b.ovr-a.ovr)[0]?.name || nameOf(0);
+    const starMed2 = roster2.filter((x) => x.line === 'MED').sort((a,b)=>b.ovr-a.ovr)[0]?.name || nameOf(1);
+
+    const stepDelay = fast ? 120 : 1100;
+
+    // 01' Kick-off
+    whistle();
+    simClock.textContent = "01'";
+    simScoreLed.textContent = "0 - 0";
+    simMsg.innerHTML = "¡Pitazo inicial! Rueda la pelota en la Pizarra Táctica.";
+    simBall.style.left = "50%";
+    await wait(stepDelay);
+
+    // 25' Midfield Duel
+    simClock.textContent = "25'";
+    tick();
+    const midDiff = effMed1 - effMed2 + (rand01() * 12 - 6);
+    if (midDiff > 0) {
+      simBall.style.left = "68%";
+      simMsg.innerHTML = `<b>${esc(nameOf(0))}</b> gana el medio con la conducción de <b>${esc(starMed1)}</b>.`;
+    } else {
+      simBall.style.left = "32%";
+      simMsg.innerHTML = `<b>${esc(nameOf(1))}</b> se adueña de la posesión liderado por <b>${esc(starMed2)}</b>.`;
+    }
+    await wait(stepDelay);
+
+    // 48' P1 Attack Chance
+    simClock.textContent = "48'";
+    const chance1 = (effAta1 - effDef2) + (rand01() * 22 - 7);
+    if (chance1 > 4) {
+      p1Goals++;
+      simBall.style.left = "88%";
+      simScoreLed.textContent = `${p1Goals} - ${p2Goals}`;
+      popSound();
+      burst(teamColors(TEAMS[0] || TEAMS[2]));
+      simMsg.innerHTML = `⚽ ¡GOOOOOOL de <b>${esc(nameOf(0))}</b>! Definición letal de <b>${esc(starAta1)}</b>.`;
+    } else {
+      simBall.style.left = "75%";
+      tick();
+      simMsg.innerHTML = `¡Remate peligroso de <b>${esc(nameOf(0))}</b> pero la defensa rival despeja!`;
+    }
+    await wait(stepDelay);
+
+    // 70' P2 Attack Chance
+    simClock.textContent = "70'";
+    const chance2 = (effAta2 - effDef1) + (rand01() * 22 - 7);
+    if (chance2 > 4) {
+      p2Goals++;
+      simBall.style.left = "12%";
+      simScoreLed.textContent = `${p1Goals} - ${p2Goals}`;
+      popSound();
+      burst(teamColors(TEAMS[1] || TEAMS[3]));
+      simMsg.innerHTML = `⚽ ¡GOOOOOOL de <b>${esc(nameOf(1))}</b>! Zapatazo de <b>${esc(starAta2)}</b> al rincón.`;
+    } else {
+      simBall.style.left = "25%";
+      tick();
+      simMsg.innerHTML = `¡Presión de <b>${esc(nameOf(1))}</b> que salva el arquero rival con lo justo!`;
+    }
+    await wait(stepDelay);
+
+    // 88' Climax Chance
+    simClock.textContent = "88'";
+    const lateRoll = rand01();
+    if (lateRoll < 0.28 && effAta1 > effDef2 - 5) {
+      p1Goals++;
+      simBall.style.left = "92%";
+      simScoreLed.textContent = `${p1Goals} - ${p2Goals}`;
+      popSound();
+      burst(teamColors(TEAMS[0] || TEAMS[2]));
+      simMsg.innerHTML = `⚽ ¡GOL AGÓNICO de <b>${esc(nameOf(0))}</b>! <b>${esc(starAta1)}</b> sentencia sobre la hora.`;
+    } else if (lateRoll > 0.72 && effAta2 > effDef1 - 5) {
+      p2Goals++;
+      simBall.style.left = "8%";
+      simScoreLed.textContent = `${p1Goals} - ${p2Goals}`;
+      popSound();
+      burst(teamColors(TEAMS[1] || TEAMS[3]));
+      simMsg.innerHTML = `⚽ ¡GOL AGÓNICO de <b>${esc(nameOf(1))}</b>! <b>${esc(starAta2)}</b> clava un bombazo al ángulo.`;
+    } else {
+      simBall.style.left = "50%";
+      simMsg.innerHTML = "¡Últimos minutos de máxima intensidad táctica en toda la cancha!";
+    }
+    await wait(stepDelay);
+
+    // 90' Full Time
+    simClock.textContent = "90'";
+    whistle();
+
+    let matchWinner = -1;
+    let penaltyInfo = null;
+
+    if (p1Goals > p2Goals) {
+      matchWinner = 0;
+      simMsg.innerHTML = `¡FINAL! <b>${esc(nameOf(0))}</b> gana el Partido ${bo3.currentMatch} por <b>${p1Goals} - ${p2Goals}</b>.`;
+    } else if (p2Goals > p1Goals) {
+      matchWinner = 1;
+      simMsg.innerHTML = `¡FINAL! <b>${esc(nameOf(1))}</b> gana el Partido ${bo3.currentMatch} por <b>${p2Goals} - ${p1Goals}</b>.`;
+    } else {
+      simMsg.innerHTML = `¡EMPATE ${p1Goals}-${p2Goals}! La serie exige un ganador: <b>¡DEFINICIÓN POR PENALES!</b>`;
+      await wait(stepDelay);
+
+      let pen1 = 0, pen2 = 0;
+      for (let k = 1; k <= 3; k++) {
+        if (rand01() < 0.75) pen1++;
+        if (rand01() < 0.75) pen2++;
+      }
+      if (pen1 === pen2) {
+        if (rand01() > 0.5) pen1++; else pen2++;
+      }
+      matchWinner = pen1 > pen2 ? 0 : 1;
+      penaltyInfo = `${pen1} - ${pen2}`;
+      simMsg.innerHTML = `🎯 ¡Definición por penales! <b>${esc(nameOf(matchWinner))}</b> se impone <b>${penaltyInfo}</b> en la tanda.`;
+      popSound();
+    }
+
+    G.players[matchWinner].seriesWins += 1;
+    bo3.matchHistory.push({
+      match: bo3.currentMatch,
+      p1Score: p1Goals,
+      p2Score: p2Goals,
+      winner: matchWinner,
+      penalties: penaltyInfo,
+      p1Tactic: t1,
+      p2Tactic: t2
+    });
+
+    bo3.simulating = false;
+    bo3.matchEnded = true;
+
+    save();
+    renderPanels();
+    renderBo3Chalkboard();
+
+    if (G.players[matchWinner].seriesWins >= 2) {
+      whistle();
+      burst([colorOf(matchWinner), 'var(--gold)', 'var(--chalk)']);
+      announceEl.textContent = `¡${nameOf(matchWinner)} ganó la Serie Bo3!`;
+    }
+  }
+
+  function nextBo3Match() {
+    if (G.bo3.currentMatch < 3) {
+      G.bo3.currentMatch += 1;
+      G.bo3.matchEnded = false;
+      const simLiveBox = $('simLiveBox');
+      if (simLiveBox) simLiveBox.hidden = true;
+      roundEl.textContent = `P${G.bo3.currentMatch}`;
+      statusEl.textContent = `Serie Bo3 · Partido ${G.bo3.currentMatch} de 3`;
+      save();
+      render();
+    }
+  }
+
+  function showChampionOverlay() {
+    const champ = G.players[0].seriesWins >= 2 ? 0 : 1;
+    const overlay = $('champOverlay');
+    if (!overlay) return;
+    overlay.hidden = false;
+    const chalkboard = $('chalkboard');
+    if (chalkboard) chalkboard.hidden = true;
+
+    $('champHeadline').innerHTML = `¡${esc(nameOf(champ))} ES EL CAMPEÓN!`;
+    $('champLead').innerHTML = `Se consagra ganador del <b>Tactical Showdown Bo3</b> por <b>${G.players[champ].seriesWins} - ${G.players[1 - champ].seriesWins}</b>.`;
+
+    const summaryTable = $('champSummaryTable');
+    if (summaryTable) {
+      summaryTable.innerHTML = G.bo3.matchHistory.map((m) => {
+        const wName = nameOf(m.winner);
+        const penStr = m.penalties ? ` (Pen: ${m.penalties})` : '';
+        return `<div class="champ-recap-row">
+          <span class="champ-recap-match">Partido ${m.match}</span>
+          <span class="champ-recap-score">${m.p1Score} - ${m.p2Score}${penStr}</span>
+          <span class="champ-recap-winner" style="color:${colorOf(m.winner)}">Ganó ${esc(wName)}</span>
+        </div>`;
+      }).join('');
+    }
+
+    whistle();
+    burst([colorOf(champ), 'var(--gold)', 'var(--chalk)']);
   }
 
   function restart() {
@@ -2690,6 +3932,12 @@ window.PLANTELES = {"actualizado":"12/10/2026","equipos":{"boca":{"fecha":"Wikip
     askAbort = false;
     revealStep = 0;
     clearWheelMarks();
+    const overlay = $('champOverlay');
+    if (overlay) overlay.hidden = true;
+    const chalkboard = $('chalkboard');
+    if (chalkboard) chalkboard.hidden = false;
+    const simLiveBox = $('simLiveBox');
+    if (simLiveBox) simLiveBox.hidden = true;
     save();
     render();
   }
@@ -2741,6 +3989,7 @@ window.PLANTELES = {"actualizado":"12/10/2026","equipos":{"boca":{"fecha":"Wikip
     if (G.phase === 'setup') start();
     else if (G.phase === 'spin') doSpin();
     else if (G.phase === 'full') reveal();
+    else if (G.phase === 'draft_done') startBo3Series();
     else if (G.phase === 'done') restart();
   });
   confirmBtn.addEventListener('click', () => {
@@ -2763,9 +4012,33 @@ window.PLANTELES = {"actualizado":"12/10/2026","equipos":{"boca":{"fecha":"Wikip
     const again = sqList.querySelector(`.row[aria-pressed="true"]`);
     if (again) again.focus({ preventScroll: true });
   });
+
+  // Tactic Cards Selection & Bo3 buttons
+  $('tacticCards0')?.addEventListener('click', (e) => {
+    const btn = e.target.closest('.tactic-card');
+    if (!btn || G.bo3?.simulating) return;
+    G.bo3.p1Tactic = btn.dataset.tactic;
+    renderBo3Chalkboard();
+    save();
+  });
+  $('tacticCards1')?.addEventListener('click', (e) => {
+    const btn = e.target.closest('.tactic-card');
+    if (!btn || G.bo3?.simulating) return;
+    G.bo3.p2Tactic = btn.dataset.tactic;
+    renderBo3Chalkboard();
+    save();
+  });
+
+  $('btnPlayMatch')?.addEventListener('click', runBo3Simulation);
+  $('btnNextMatch')?.addEventListener('click', nextBo3Match);
+  $('btnSeriesRecap')?.addEventListener('click', showChampionOverlay);
+  $('btnNewDraft')?.addEventListener('click', restart);
+
+  // Player Names & Forms & Tactical Block
   for (let p = 0; p < 2; p++) {
     $('name' + p).addEventListener('input', (e) => {
       G.names[p] = e.target.value;
+      if (G.players && G.players[p]) G.players[p].name = e.target.value;
       save();
       renderCenter();
     });
@@ -2776,7 +4049,26 @@ window.PLANTELES = {"actualizado":"12/10/2026","equipos":{"boca":{"fecha":"Wikip
       save();
       render();
     });
+
+    const btnBlk = $('btnBlock' + p);
+    if (btnBlk) {
+      btnBlk.addEventListener('click', () => {
+        const rival = 1 - p;
+        if (!G.players[p].hasBlockCard) return;
+        G.players[p].hasBlockCard = false;
+        G.players[rival].isBlocked = true;
+        audio();
+        popSound();
+        whistle();
+        burst(['#ff3333', colorOf(p)]);
+        announceEl.textContent = `¡${nameOf(p)} bloqueó el próximo giro de ${nameOf(rival)}!`;
+        G.last = `🚫 <b>${esc(nameOf(p))}</b> usó su Bloqueo Táctico sobre <b>${esc(nameOf(rival))}</b>.`;
+        save();
+        render();
+      });
+    }
   }
+
   document.addEventListener('keydown', (e) => {
     if (e.code !== 'Space' || e.repeat) return;
     const tag = document.activeElement && document.activeElement.tagName;
@@ -3520,9 +4812,14 @@ window.PLANTELES = {"actualizado":"12/10/2026","equipos":{"boca":{"fecha":"Wikip
     const saved = (data && data.G) || load();
     if (saved) {
       G = Object.assign(fresh(), saved);
-      if (G.phase === 'reveal') G.phase = 'done';
+      if (G.phase === 'reveal') G.phase = 'draft_done';
+      if (G.phase === 'done') G.phase = 'draft_done';
       if (G.phase === 'pick' && (G.team === null || !G.pickers.length)) { G.phase = 'spin'; G.team = null; }
       if (G.phase === 'spin' && !G.pickers.length) G.req = null;
+      if (!G.players || !G.players[0] || !G.players[1]) {
+        G.players = [createPlayer(0, G.names[0]), createPlayer(1, G.names[1])];
+      }
+      if (!G.bo3) G.bo3 = freshBo3();
     }
     soundBtn.setAttribute('aria-pressed', String(G.sound));
     soundBtn.setAttribute('aria-label', G.sound ? 'Sonido activado' : 'Sonido apagado');
