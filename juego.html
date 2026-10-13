@@ -1,6 +1,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>La Ruleta de Bernie</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>La Ruleta de Bernie (v2.1)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;1,800&family=Barlow:wght@400;500;600;700&family=Doto:wght@800&display=swap">
@@ -699,6 +702,20 @@ h1 {
   text-transform: uppercase;
   color: var(--chalk);
 }
+.version-badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-family: var(--f-display);
+  font-style: normal;
+  font-weight: 800;
+  letter-spacing: .05em;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: var(--led);
+  color: var(--ink);
+  vertical-align: middle;
+  margin-left: 6px;
+}
 .modal-sub {
   margin: 4px 0 0;
   font-size: .88rem;
@@ -1032,14 +1049,14 @@ h1 {
   <div class="modal-card">
     <header class="modal-head">
       <div>
-        <h2 class="modal-title" id="modalAddTitle">Agregar equipo a la ruleta</h2>
+        <h2 class="modal-title" id="modalAddTitle">Agregar equipo a la ruleta <span class="version-badge">v2.1</span></h2>
         <p class="modal-sub">Descarga el plantel actual directo desde Wikipedia y lo suma inmediatamente al juego.</p>
       </div>
       <button type="button" class="modal-close" id="modalCloseBtn" aria-label="Cerrar modal">✕</button>
     </header>
 
     <div class="search-box">
-      <input type="text" id="addSearchInput" class="team-input" placeholder="Escribí un equipo (ej. Arsenal, Inter, Chelsea, Peñarol...)" autocomplete="off">
+      <input type="text" id="addSearchInput" class="team-input" placeholder="Escribí un equipo (ej. Huracán, Vélez, Chelsea, Peñarol...)" autocomplete="off">
       <button type="button" class="btn-search" id="addSearchBtn">Buscar</button>
     </div>
 
@@ -2804,6 +2821,8 @@ window.PLANTELES = {"actualizado":"12/10/2026","equipos":{"boca":{"fecha":"Wikip
   let currentParsedTeam = null;
 
   const QUICK_PRESETS = [
+    { title: "Club Atlético Huracán", short: "Huracán", c1: "#ffffff", c2: "#e4002b", pat: "solid" },
+    { title: "Club Atlético Vélez Sarsfield", short: "Vélez", c1: "#ffffff", c2: "#002f6c", pat: "solid" },
     { title: "Arsenal F.C.", short: "Arsenal", c1: "#dc052d", c2: "#ffffff", pat: "solid" },
     { title: "Chelsea F.C.", short: "Chelsea", c1: "#034694", c2: "#ffffff", pat: "solid" },
     { title: "Inter Milan", short: "Inter", c1: "#001489", c2: "#000000", pat: "stripes" },
@@ -2954,6 +2973,16 @@ window.PLANTELES = {"actualizado":"12/10/2026","equipos":{"boca":{"fecha":"Wikip
     'plantilla de fútbol jugador'
   ]);
 
+  function isSquadTemplate(tplName) {
+    if (!tplName) return false;
+    if (SQUAD_TEMPLATES.has(tplName)) return true;
+    if (/^jugador de f[uú]tbol/i.test(tplName)) return true;
+    if (/^plantilla de f[uú]tbol jugador/i.test(tplName)) return true;
+    if (/^equipo de f[uú]tbol jugador/i.test(tplName)) return true;
+    if (/^(fs player|football squad player|nat fs)/i.test(tplName)) return true;
+    return false;
+  }
+
   function normalizePosition(rawPos) {
     const pos = (cleanWikiName(rawPos) || '').toUpperCase().trim();
     if (!pos) return '?';
@@ -3001,7 +3030,7 @@ window.PLANTELES = {"actualizado":"12/10/2026","equipos":{"boca":{"fecha":"Wikip
       for (const tpl of tpls) {
         const parts = splitTemplateParams(tpl);
         const tplName = parts[0].trim().toLowerCase();
-        if (!SQUAD_TEMPLATES.has(tplName)) continue;
+        if (!isSquadTemplate(tplName)) continue;
 
         const p = {};
         const unnamed = [];
@@ -3064,8 +3093,43 @@ window.PLANTELES = {"actualizado":"12/10/2026","equipos":{"boca":{"fecha":"Wikip
     return sections.find(s => p4.test(clean(s)));
   }
 
-  function isLikelyFootballClub(title) {
-    return /\b(F\.?C\.?|C\.?F\.?|Club|Atl[eé]tico|Deportivo|Sporting|Real|United|City|Inter|AC|AS|FK|Wanderers|Balompi[eé]|National football team|fútbol|futbol|football)\b/i.test(title);
+  async function safeFetchJson(url) {
+    try {
+      const res = await fetch(url, {
+        headers: { 'Api-User-Agent': 'RuletaBernieGame/2.1 (admin@ruletabernie.com)' }
+      });
+      if (!res.ok) return null;
+      const text = await res.text();
+      if (!text || !text.trim().startsWith('{')) return null;
+      return JSON.parse(text);
+    } catch {
+      return null;
+    }
+  }
+
+  function normText(str) {
+    return (str || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+  }
+
+  function scoreClubMatch(title, query) {
+    const t = normText(title);
+    const q = normText(query);
+    if (!t || !q) return 0;
+    if (/\(desambiguaci[oó]n\)|\(disambiguation\)/.test(t)) return -100;
+    if (/^cicl[oó]n tropical$/.test(t)) return -100;
+    if (/season|temporada|femenino|women|basquet|básquet|rugby/.test(t)) return -50;
+
+    let score = 0;
+    const isClub = /\b(f\.?c\.?|c\.?f\.?|club|atletico|atlético|deportivo|sporting|real|united|city|inter|ac|as|balompie|balompié|futbol|fútbol|football)\b/i.test(t);
+    if (isClub) score += 60;
+
+    const clean = t.replace(/\b(club|atletico|atlético|deportivo|sporting|real|f\.?c\.?|c\.?f\.?|futbol|fútbol|football)\b/gi, '').replace(/\s+/g, ' ').trim();
+    if (clean === q) score += 120;
+    else if (clean.startsWith(q)) score += 80;
+    else if (clean.includes(q)) score += 40;
+
+    if (/\([^)]+\)/.test(t)) score -= 25;
+    return score;
   }
 
   function findFootballHatnote(wikitext) {
@@ -3081,22 +3145,22 @@ window.PLANTELES = {"actualizado":"12/10/2026","equipos":{"boca":{"fecha":"Wikip
 
   async function fetchSquadFromApi(apiBase, pageTitle, depth = 0) {
     const secUrl = `${apiBase}&action=parse&page=${encodeURIComponent(pageTitle)}&prop=sections&format=json&redirects=1`;
-    const secRes = await fetch(secUrl).then((r) => r.json());
-    if (!secRes.parse || !secRes.parse.sections) return null;
+    const secRes = await safeFetchJson(secUrl);
+    if (!secRes || !secRes.parse || !secRes.parse.sections) return null;
 
     const sec = findBestSection(secRes.parse.sections);
     let wikitext = '';
     if (sec) {
       const textUrl = `${apiBase}&action=parse&page=${encodeURIComponent(pageTitle)}&section=${sec.index}&prop=wikitext&format=json&redirects=1`;
-      const textRes = await fetch(textUrl).then((r) => r.json());
-      wikitext = textRes.parse?.wikitext?.['*'] || '';
+      const textRes = await safeFetchJson(textUrl);
+      wikitext = textRes?.parse?.wikitext?.['*'] || '';
     }
     let players = wikitext ? parseWikiSquad(wikitext) : [];
 
     if (!players.length) {
       const fullUrl = `${apiBase}&action=parse&page=${encodeURIComponent(pageTitle)}&prop=wikitext&format=json&redirects=1`;
-      const fullRes = await fetch(fullUrl).then((r) => r.json());
-      const fullWikitext = fullRes.parse?.wikitext?.['*'];
+      const fullRes = await safeFetchJson(fullUrl);
+      const fullWikitext = fullRes?.parse?.wikitext?.['*'];
       if (fullWikitext) {
         players = parseWikiSquad(fullWikitext);
       }
@@ -3115,13 +3179,37 @@ window.PLANTELES = {"actualizado":"12/10/2026","equipos":{"boca":{"fecha":"Wikip
     return null;
   }
 
-  async function fetchWikipediaSquad(pageTitle) {
-    const enApi = 'https://en.wikipedia.org/w/api.php?origin=*';
-    const esApi = 'https://es.wikipedia.org/w/api.php?origin=*';
+  async function findClubFallback(term) {
+    const searchUrls = [
+      `https://es.wikipedia.org/w/api.php?origin=*&action=query&list=search&srsearch=${encodeURIComponent(term + ' club')}&srlimit=5&format=json`,
+      `https://en.wikipedia.org/w/api.php?origin=*&action=query&list=search&srsearch=${encodeURIComponent(term + ' football club')}&srlimit=5&format=json`
+    ];
+    let allHits = [];
+    for (const u of searchUrls) {
+      const data = await safeFetchJson(u);
+      if (data?.query?.search) allHits.push(...data.query.search);
+    }
+    allHits = allHits.filter((h) => scoreClubMatch(h.title, term) > 0);
+    allHits.sort((a, b) => scoreClubMatch(b.title, term) - scoreClubMatch(a.title, term));
+    return allHits[0]?.title || null;
+  }
 
-    let result = await fetchSquadFromApi(enApi, pageTitle).catch(() => null);
+  async function fetchWikipediaSquad(pageTitle) {
+    const esApi = 'https://es.wikipedia.org/w/api.php?origin=*';
+    const enApi = 'https://en.wikipedia.org/w/api.php?origin=*';
+
+    let result = await fetchSquadFromApi(esApi, pageTitle).catch(() => null);
     if (!result) {
-      result = await fetchSquadFromApi(esApi, pageTitle).catch(() => null);
+      result = await fetchSquadFromApi(enApi, pageTitle).catch(() => null);
+    }
+    if (!result) {
+      const fallback = await findClubFallback(pageTitle);
+      if (fallback && fallback.toLowerCase() !== pageTitle.toLowerCase()) {
+        result = await fetchSquadFromApi(esApi, fallback).catch(() => null);
+        if (!result) {
+          result = await fetchSquadFromApi(enApi, fallback).catch(() => null);
+        }
+      }
     }
     if (!result || !result.players || !result.players.length) {
       throw new Error('No se encontraron jugadores en la sección del plantel.');
@@ -3198,23 +3286,24 @@ window.PLANTELES = {"actualizado":"12/10/2026","equipos":{"boca":{"fecha":"Wikip
     addSearchBtn.disabled = true;
 
     try {
-      const [openEn, openEs, queryEs, queryEn] = await Promise.all([
-        fetch(`https://en.wikipedia.org/w/api.php?origin=*&action=opensearch&search=${encodeURIComponent(q)}&limit=6&namespace=0&format=json`).then((r) => r.json()).catch(() => []),
-        fetch(`https://es.wikipedia.org/w/api.php?origin=*&action=opensearch&search=${encodeURIComponent(q)}&limit=6&namespace=0&format=json`).then((r) => r.json()).catch(() => []),
-        fetch(`https://es.wikipedia.org/w/api.php?origin=*&action=query&list=search&srsearch=${encodeURIComponent(q + ' club')}&srlimit=5&format=json`).then((r) => r.json()).catch(() => []),
-        fetch(`https://en.wikipedia.org/w/api.php?origin=*&action=query&list=search&srsearch=${encodeURIComponent(q + ' club')}&srlimit=5&format=json`).then((r) => r.json()).catch(() => [])
+      const [openEs, openEn, queryEs, queryEn] = await Promise.all([
+        safeFetchJson(`https://es.wikipedia.org/w/api.php?origin=*&action=opensearch&search=${encodeURIComponent(q)}&limit=6&namespace=0&format=json`),
+        safeFetchJson(`https://en.wikipedia.org/w/api.php?origin=*&action=opensearch&search=${encodeURIComponent(q)}&limit=6&namespace=0&format=json`),
+        safeFetchJson(`https://es.wikipedia.org/w/api.php?origin=*&action=query&list=search&srsearch=${encodeURIComponent(q + ' club')}&srlimit=5&format=json`),
+        safeFetchJson(`https://en.wikipedia.org/w/api.php?origin=*&action=query&list=search&srsearch=${encodeURIComponent(q + ' club')}&srlimit=5&format=json`)
       ]);
 
       const allTitles = [
-        ...(openEn[1] || []),
-        ...(openEs[1] || []),
-        ...(queryEs.query?.search?.map((s) => s.title) || []),
-        ...(queryEn.query?.search?.map((s) => s.title) || [])
+        ...(openEs?.[1] || []),
+        ...(openEn?.[1] || []),
+        ...(queryEs?.query?.search?.map((s) => s.title) || []),
+        ...(queryEn?.query?.search?.map((s) => s.title) || [])
       ];
 
       const seen = new Set();
       const combined = [];
       for (const t of allTitles) {
+        if (!t) continue;
         const k = t.toLowerCase();
         if (!seen.has(k)) {
           seen.add(k);
@@ -3222,20 +3311,32 @@ window.PLANTELES = {"actualizado":"12/10/2026","equipos":{"boca":{"fecha":"Wikip
         }
       }
 
-      combined.sort((a, b) => (isLikelyFootballClub(b) ? 1 : 0) - (isLikelyFootballClub(a) ? 1 : 0));
+      const valid = combined.filter((t) => scoreClubMatch(t, q) > -50);
+      valid.sort((a, b) => scoreClubMatch(b, q) - scoreClubMatch(a, q));
 
-      if (!combined.length) {
-        showStatus('No se encontraron artículos en Wikipedia con ese nombre.', 'error');
+      if (!valid.length) {
+        showStatus('No se encontraron clubes en Wikipedia con ese nombre.', 'error');
         addSearchBtn.disabled = false;
         return;
       }
 
-      if (combined.length === 1) {
-        await selectWikipediaArticle(combined[0]);
+      const top = valid[0];
+      const topScore = scoreClubMatch(top, q);
+
+      if (valid.length === 1 || topScore >= 120) {
+        await selectWikipediaArticle(top);
+        const others = valid.filter((t) => t.toLowerCase() !== top.toLowerCase()).slice(0, 4);
+        if (others.length) {
+          addSearchResults.hidden = false;
+          addSearchResults.innerHTML = `<div style="font-size:.78rem;color:var(--muted);padding:4px 6px 2px">¿Buscabas otro equipo?</div>` +
+            others.map((t) =>
+              `<button type="button" class="search-res-item" data-title="${esc(t)}">${esc(t)} <span>Descargar</span></button>`
+            ).join('');
+        }
       } else {
         hideStatus();
         addSearchResults.hidden = false;
-        addSearchResults.innerHTML = combined.map((t) =>
+        addSearchResults.innerHTML = valid.slice(0, 6).map((t) =>
           `<button type="button" class="search-res-item" data-title="${esc(t)}">${esc(t)} <span>Descargar</span></button>`
         ).join('');
       }
